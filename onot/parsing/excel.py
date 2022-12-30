@@ -139,8 +139,8 @@ class Parser():
             package = {
                 "name": package_info[0],
                 "versionInfo": str(package_info[1]),
-                "licenseConcluded": str(package_info[2]).replace("(", "").replace(")", ""),
-                "licenseDeclared": str(package_info[3]).replace("(", "").replace(")", ""),
+                "licenseConcluded": str(package_info[2]).replace("(", "").replace(")", "").split("OR")[0].strip(),
+                "licenseDeclared": str(package_info[3]).replace("(", "").replace(")", "").split("OR")[0].strip(),
                 "copyrightText": package_info[4],
                 "downloadLocation": package_info[5].replace("\"", ""),
             }
@@ -197,8 +197,8 @@ class Parser():
             package = {
                 "name": package_name,
                 "versionInfo": str(package_version),
-                "licenseConcluded": str(per_file_info[1]).replace("(", "").replace(")", ""),
-                "licenseDeclared": str(per_file_info[2]).replace("(", "").replace(")", ""),
+                "licenseConcluded": str(per_file_info[1]).replace("(", "").replace(")", "").split("OR")[0].strip(),
+                "licenseDeclared": str(per_file_info[2]).replace("(", "").replace(")", "").split("OR")[0].strip(),
                 "copyrightText": per_file_info[3],
                 "downloadLocation": str(per_file_info[4]).replace("\"", "")
             }
@@ -252,7 +252,6 @@ class Parser():
             license_name = package["licenseConcluded"]
             if license_name is None:
                 license_name = package["licenseDeclared"]
-            license_name = str(license_name).split("OR")[0].strip()
 
             # check whether the licenseId is existed in the spdx license list
             details_url = sl.get_spdx_license_detailsUrl(license_name)
