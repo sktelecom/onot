@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-import os.path
-import re
 
 # SPDX-FileCopyrightText: Copyright 2022 SK TELECOM CO., LTD. <haksung@sk.com>
+# SPDX-FileCopyrightText: Copyright (c) 2022 Kakao Corp. https://www.kakaocorp.com
+#
 # SPDX-License-Identifier: Apache-2.0
+
+import os.path
+import re
 import openpyxl
 import pandas as pd
 from onot.parsing import spdx_license
