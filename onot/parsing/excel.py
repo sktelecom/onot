@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 
 # SPDX-FileCopyrightText: Copyright 2022 SK TELECOM CO., LTD. <haksung@sk.com>
+# SPDX-FileCopyrightText: Copyright (c) 2022 Kakao Corp. https://www.kakaocorp.com
+#
 # SPDX-License-Identifier: Apache-2.0
+
+import os.path
+import re
 import openpyxl
 import pandas as pd
 from onot.parsing import spdx_license
@@ -10,6 +15,7 @@ from onot.parsing import spdx_license
 SHEET_DOCUMENT_INFO = "Document Info"
 SHEET_PACKAGE_INFO = "Package Info"
 SHEET_EXTRACTED_LICENSE_INFO = "Extracted License Info"
+SHEET_PER_FILE_INFO = "Per File Info"
 
 # columns
 COLUMN_DOCUMENT_NAME = "Document Name"
@@ -23,6 +29,10 @@ COLUMN_PACKAGE_COPYRIGHT_TEXT = "Package Copyright Text"
 COLUMN_IDENTIFIER = "Identifier"
 COLUMN_EXTRACTED_TEXT = "Extracted Text"
 COLUMN_LICENSE_NAME = "License Name"
+COLUMN_FILE_NAME = "File Name"
+COLUMN_LICENSE_INFO_IN_FILE = "License Info in File"
+COLUMN_FILE_COPYRIGHT_TEXT = "File Copyright Text"
+COLUMN_ARTIFACT_OF_HOMEPAGE = "Artifact of Homepage"
 
 class Parser():
 
@@ -49,6 +59,7 @@ class Parser():
             SHEET_DOCUMENT_INFO,
             SHEET_PACKAGE_INFO,
             # SHEET_EXTRACTED_LICENSE_INFO,
+            SHEET_PER_FILE_INFO
         ]
         for sheet in required_sheets:
             if sheet not in ws_names:
@@ -84,6 +95,13 @@ class Parser():
                     raise ValueError("email info is not existed.") 
         if "creationInfo" not in self.doc:
             raise ValueError("Organization info is not existed in the " + SHEET_DOCUMENT_INFO) 
+
+    def append_package(self, package_to_be_appended):
+        # Check if there are duplicate packages already appended
+        if any(package["name"] == package_to_be_appended["name"] and package["versionInfo"] == package_to_be_appended["versionInfo"] for package in self.packages):
+            return
+        self.packages.append(package_to_be_appended)
+
 
     def package_info(self):
         sheet = self.wb.get_sheet_by_name(SHEET_PACKAGE_INFO)
@@ -124,13 +142,70 @@ class Parser():
             package = {
                 "name": package_info[0],
                 "versionInfo": str(package_info[1]),
-                "licenseConcluded": package_info[2],
-                "licenseDeclared": package_info[3],
+                "licenseConcluded": str(package_info[2]).replace("(", "").replace(")", "").split("OR")[0].strip(),
+                "licenseDeclared": str(package_info[3]).replace("(", "").replace(")", "").split("OR")[0].strip(),
                 "copyrightText": package_info[4],
-                "downloadLocation": package_info[5],
+                "downloadLocation": package_info[5].replace("\"", ""),
             }
-            self.packages.append(package)
+            self.append_package(package)
         self.doc["packages"] = self.packages
+
+    def extract_package_name_and_package_version(self, filename):
+        def remove_meaningless_word(_filename):
+            _filename = _filename.replace("-sources", "")
+            _filename = _filename.replace("-RELEASE", "")
+            _filename = _filename.replace("-SNAPSHOT", "")
+            return _filename
+
+        filename = os.path.splitext(os.path.basename(filename))[0]
+        filename = remove_meaningless_word(filename)
+        version = re.search(r"-\d", filename)
+
+        if version:
+            return filename[:version.start()], filename[version.start()+1:]
+        else:
+            return filename, ""
+
+    def per_file_info(self):
+        sheet = self.wb.get_sheet_by_name(SHEET_PER_FILE_INFO)
+        df = pd.DataFrame(sheet.values)
+        df.columns = df.iloc[0, :]
+        df = df.iloc[1:, :]
+
+        if COLUMN_FILE_NAME not in df.columns:
+            raise ValueError("required column is not existed: " + COLUMN_FILE_NAME)
+        if COLUMN_LICENSE_CONCLUDED not in df.columns:
+            raise ValueError("required column is not existed: " + COLUMN_LICENSE_CONCLUDED)
+        if COLUMN_LICENSE_INFO_IN_FILE not in df.columns:
+            raise ValueError("required column is not existed: " + COLUMN_LICENSE_INFO_IN_FILE)
+        if COLUMN_FILE_COPYRIGHT_TEXT not in df.columns:
+            raise ValueError("required column is not existed: " + COLUMN_FILE_COPYRIGHT_TEXT)
+        if COLUMN_ARTIFACT_OF_HOMEPAGE not in df.columns:
+            raise ValueError("required column is not existed: " + COLUMN_ARTIFACT_OF_HOMEPAGE)
+
+        per_file_info_list = df.loc[:,
+            [
+                COLUMN_FILE_NAME,
+                COLUMN_LICENSE_CONCLUDED,
+                COLUMN_LICENSE_INFO_IN_FILE,
+                COLUMN_FILE_COPYRIGHT_TEXT,
+                COLUMN_ARTIFACT_OF_HOMEPAGE
+            ]].values.tolist()
+        for per_file_info in per_file_info_list:
+            for index, value in enumerate(per_file_info):
+                if value is None:
+                    per_file_info[index] = ''
+
+            package_name, package_version = self.extract_package_name_and_package_version(per_file_info[0])
+            package = {
+                "name": package_name,
+                "versionInfo": str(package_version),
+                "licenseConcluded": str(per_file_info[1]).replace("(", "").replace(")", "").split("OR")[0].strip(),
+                "licenseDeclared": str(per_file_info[2]).replace("(", "").replace(")", "").split("OR")[0].strip(),
+                "copyrightText": per_file_info[3],
+                "downloadLocation": str(per_file_info[4]).replace("\"", "")
+            }
+            self.append_package(package)
 
     def extracted_license_info(self):
         sheet = self.wb.get_sheet_by_name(SHEET_EXTRACTED_LICENSE_INFO)
@@ -155,6 +230,10 @@ class Parser():
                 ]].values.tolist()
         self.extracted_licenses = []
         for extracted_license_info in extracted_license_list:
+            for index, value in enumerate(extracted_license_info):
+                if value is None:
+                    extracted_license_info[index] = ''
+
             extracted_license = {
                 "identifier": extracted_license_info[0],
                 "extractedText": extracted_license_info[1],
@@ -176,7 +255,7 @@ class Parser():
             license_name = package["licenseConcluded"]
             if license_name is None:
                 license_name = package["licenseDeclared"]
-            
+
             # check whether the licenseId is existed in the spdx license list
             details_url = sl.get_spdx_license_detailsUrl(license_name)
             print("debug: " + str(details_url))
@@ -236,6 +315,9 @@ class Parser():
 
         # Package info
         self.package_info()
+
+        # Per File Info
+        self.per_file_info()
 
         # License info
         self.license_info()
