@@ -214,8 +214,9 @@ class Parser():
             self.append_package(package)
 
     def parse_license_expression(self, license_expression):
-        licenses = re.split(r'OR|AND|WITH', str(license_expression))
-        return list(map(lambda license: license.replace("(", "").replace(")", "").strip(), licenses))
+        license_names = re.split(r'OR|AND|WITH', str(license_expression))
+        # remove (, ), blank
+        return list(map(lambda license: license.replace("(", "").replace(")", "").strip(), license_names))
 
     def extracted_license_info(self):
         sheet = self.wb.get_sheet_by_name(SHEET_EXTRACTED_LICENSE_INFO)
@@ -285,28 +286,29 @@ class Parser():
         return details_license
 
     def append_details_license(self, detalis_license, package_name, package_version):
-        license_appended = False
+        packages = []
+        packages.append((package_name, package_version))
+        license = {
+            "name": detalis_license['name'],
+            "licenseId": detalis_license['licenseId'],
+            "packages": packages,
+            "licenseText": detalis_license['licenseText'],
+            "licenseTextHtml": detalis_license['licenseTextHtml']
+        }
+        self.licenses.append(license)
+
+    def add_package_info_if_license_exist(self, license_name, package_name, package_version):
+        # then, update data just to add package info
         for index, license in enumerate(self.licenses):
-            if license["licenseId"] == detalis_license['licenseId']:
+            if license["licenseId"] == license_name:
                 # then, update data just to add package info
                 target_license = license
                 target_package = license['packages']
                 target_package.append((package_name, package_version))
                 target_license['packages'] = target_package
                 self.licenses[index] = target_license
-                license_appended = True
-                break
-        if not license_appended:
-            packages = []
-            packages.append((package_name, package_version))
-            license = {
-                "name": detalis_license['name'],
-                "licenseId": detalis_license['licenseId'],
-                "packages": packages,
-                "licenseText": detalis_license['licenseText'],
-                "licenseTextHtml": detalis_license['licenseTextHtml']
-            }
-            self.licenses.append(license)
+                return True
+        return False
 
     def license_info(self):
         self.licenses = []
@@ -319,10 +321,11 @@ class Parser():
             if license_expression is None:
                 license_expression = package["licenseDeclared"]
 
-            licenses = self.parse_license_expression(license_expression)
-            for license in licenses:
-                details_license = self.get_details_license(license)
-                self.append_details_license(details_license, package_name, package_version)
+            license_names = self.parse_license_expression(license_expression)
+            for license_name in license_names:
+                if self.add_package_info_if_license_exist(license_name, package_name, package_version) is False:
+                    details_license = self.get_details_license(license_name)
+                    self.append_details_license(details_license, package_name, package_version)
 
         self.doc["licenses"] = self.licenses
 
