@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 
 # SPDX-FileCopyrightText: Copyright 2022 SK TELECOM CO., LTD. <haksung@sk.com>
+# SPDX-FileCopyrightText: Copyright (c) 2022 Kakao Corp. https://www.kakaocorp.com
+#
 # SPDX-License-Identifier: Apache-2.0
+
 import os
+import re
 from onot.generating.html_resource import *
 from datetime import datetime
 
@@ -10,7 +14,15 @@ class Generator():
 
     def __init__(self):
         print("debug:" + "Html class")
-    
+
+    def convert_license_expression(self, license_name):
+        splited = re.split(r'OR|AND|WITH', str(license_name))
+        licenses = list(map(lambda license: license.replace("(", "").replace(")", "").strip(), splited))
+        license_component = license_name
+        for license in licenses:
+            license_component = str(license_component).replace(str(license), '<a href="#' + str(license) + '">' + str(license) + '</a>')
+        return license_component
+
     def make_html_code(self, doc):
         title = doc['name']
         intro = 'A portion of this ' +  \
@@ -32,7 +44,7 @@ class Generator():
                 " target="_blank">
                 """ + name_version + "</a>"
             body_component += TABLE_ROW_2
-            body_component += '<a href="#' + str(component['licenseConcluded']) + '">' + str(component['licenseConcluded']) + '</a>'
+            body_component += self.convert_license_expression(component['licenseConcluded'])
             body_component += TABLE_ROW_3
             body_component += str(component['copyrightText'])
             body_component += TABLE_CLOSE
