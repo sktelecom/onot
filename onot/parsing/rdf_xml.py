@@ -125,7 +125,13 @@ class Parser(parser.AbstractParser):
                     objects.append(o)
                 else:
                     objects.append(str(o).replace("\n", "").strip())
-            extracted[predicate] = objects[0] if len(objects) == 1 else objects
+
+            if len(objects) == 0:
+                extracted[predicate] = ""
+            elif len(objects) == 1:
+                extracted[predicate] = objects[0]
+            else:
+                extracted[predicate] = objects
         return extracted
 
     def document_info(self):
@@ -154,7 +160,7 @@ class Parser(parser.AbstractParser):
                         raise ValueError("email info is not existed.")
 
     def package_info(self):
-        predicates_of_package = [
+        required_predicates = [
             PREDICATE_PACKAGE_NAME,
             PREDICATE_PACKAGE_VERSION_INFO,
             PREDICATE_PACKAGE_LICENSE_CONCLUDED,
@@ -162,10 +168,11 @@ class Parser(parser.AbstractParser):
             PREDICATE_PACKAGE_COPYRIGHT_TEXT,
             PREDICATE_PACKAGE_DOWNLOAD_LOCATION
         ]
+        non_required_predicates = []
 
         for subject, _, _ in self.graph.triples((None, RDF.type, self.spdx_namespace["Package"])):
-            self.validate_predicates_exist(subject, predicates_of_package)
-            package_info = self.extract(subject, predicates_of_package)
+            self.validate_predicates_exist(subject, required_predicates)
+            package_info = self.extract(subject, required_predicates + non_required_predicates)
             package = {
                 "name": package_info[PREDICATE_PACKAGE_NAME],
                 "versionInfo": package_info[PREDICATE_PACKAGE_VERSION_INFO],
@@ -177,17 +184,19 @@ class Parser(parser.AbstractParser):
             self.append_package(package)
 
     def per_file_info(self):
-        predicates_of_file = [
+        required_predicates = [
             PREDICATE_FILE_NAME,
             PREDICATE_FILE_LICENSE_CONCLUDED,
             PREDICATE_FILE_LICENSE_DECLARED,
             PREDICATE_FILE_COPYRIGHT_TEXT,
-            # PREDICATE_FILE_DOWNLOAD_LOCATION
+        ]
+        non_required_predicates = [
+            PREDICATE_FILE_DOWNLOAD_LOCATION
         ]
 
         for subject, _, _ in self.graph.triples((None, RDF.type, self.spdx_namespace["File"])):
-            self.validate_predicates_exist(subject, predicates_of_file)
-            file_info = self.extract(subject, predicates_of_file)
+            self.validate_predicates_exist(subject, required_predicates)
+            file_info = self.extract(subject, required_predicates + non_required_predicates)
 
             package_name, package_version = self.extract_package_name_and_package_version(file_info[PREDICATE_FILE_NAME])
             package = {
@@ -201,18 +210,20 @@ class Parser(parser.AbstractParser):
             self.append_package(package)
 
     def extracted_license_info(self):
-        predicates_of_license = [
+        required_predicates = [
             PREDICATE_LICENSE_ID,
-            PREDICATE_LICENSE_NAME,
             PREDICATE_LICENSE_EXTRACTED_TEXT
+        ]
+        non_required_predicates = [
+            PREDICATE_LICENSE_NAME
         ]
 
         for subject, _, _ in self.graph.triples((None, RDF.type, self.spdx_namespace["ExtractedLicensingInfo"])):
-            self.validate_predicates_exist(subject, predicates_of_license)
-            license_info = self.extract(subject, predicates_of_license)
+            self.validate_predicates_exist(subject, required_predicates)
+            license_info = self.extract(subject, required_predicates + non_required_predicates)
             extracted_license = {
                 "identifier": license_info[PREDICATE_LICENSE_ID],
-                "licenseName":  license_info[PREDICATE_LICENSE_NAME] if PREDICATE_LICENSE_NAME in license_info else "",
+                "licenseName":  license_info[PREDICATE_LICENSE_NAME],
                 "extractedText": license_info[PREDICATE_LICENSE_EXTRACTED_TEXT]
             }
             self.doc["extracted_license"].append(extracted_license)
