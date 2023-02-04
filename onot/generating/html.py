@@ -29,7 +29,7 @@ class Generator():
             doc['creationInfo']['organization'] + \
             ' product contains open source software, which is used and distributed in accordance with the specific license under which the open source software is distributed. A list of such open source software and the corresponding license terms is as follows:'
         head = DOCTYPE + XMLNS + HEAD + STYLE_CSS
-        body_title = BODY_TABLE_1 + '<h2>OSS Notice for' + title + '</h2>'
+        body_title = BODY_TABLE_1 + '<h2>OSS Notice for ' + title + '</h2>'
         body_intro = BODY_TABLE_2 + intro
         
         # component info field
