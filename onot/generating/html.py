@@ -23,6 +23,16 @@ class Generator():
             license_component = str(license_component).replace(str(license), '<a href="#' + str(license) + '">' + str(license) + '</a>')
         return license_component
 
+    def convert_download_location(self, download_location, name_version):
+        if download_location == "":
+            return name_version
+        else:
+            return """
+                <a href="
+                """ + download_location + """ 
+                " target="_blank">
+                """ + name_version + "</a>"
+
     def make_html_code(self, doc):
         title = doc['name']
         intro = 'A portion of this ' +  \
@@ -31,18 +41,14 @@ class Generator():
         head = DOCTYPE + XMLNS + HEAD + STYLE_CSS
         body_title = BODY_TABLE_1 + '<h2>OSS Notice for ' + title + '</h2>'
         body_intro = BODY_TABLE_2 + intro
-        
+
         # component info field
         body_component = COMPONENT_TITLE
         for component in doc['packages']:
             name_version = component['name'] + ' ' + str(component['versionInfo'])
             body_component += '<tr>'
             body_component += '<td scope="row" data-label="Name" id="' + name_version.replace(' ', '_') + '">'
-            body_component += """
-                <a href="
-                """ + component['downloadLocation'] + """ 
-                " target="_blank">
-                """ + name_version + "</a>"
+            body_component += self.convert_download_location(component["downloadLocation"], name_version)
             body_component += '</td>'
             body_component += '<td data-label="License">' + self.convert_license_expression(component['licenseConcluded']) + '</td>'
             body_component += '<td data-label="Copyright">' + str(component['copyrightText']) + '</td>'
@@ -71,7 +77,7 @@ class Generator():
             body_license += '</div>'
             body_license += '</div>'
         body_license += LICENSE_TABLE_CLOSE
-        
+
         # writter
         body_offer = WRITTEN_OFFER_TITLE
         email = doc['creationInfo']['email']

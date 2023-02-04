@@ -2,7 +2,9 @@
 
 ## SPDX document
 
-Please fill in the necessary information in the Excel file in SPDX format. Download and use the sample here. : [SPDXRdfExample-v2.1.xlsx](../sample/SPDXRdfExample-v2.1.xlsx)
+### Excel file in SPDX format
+
+Please fill in the necessary information in the Excel file in SPDX format. Download and use the sample here. : [SPDXRdfExample-v2.1.xlsx](../sample/SPDXRdfExample-v2.1.xlsx), [SPDXRdfExample-v2.3.xlsx](../sample/SPDXRdfExample-v2.3.xlsx)
 
 The required input sheets and columns are as follows.
 
@@ -26,3 +28,17 @@ In the `Package Info` sheet, the following columns should be filled.
     - The license name must be the same as the [SPDX Identifier](https://spdx.org/licenses/).
     - If the license is not in SPDX, define the identifier in the `Extracted License Info` sheet and add the license text to the `Extracted Text` column.
 - `Package Copyright Text`
+
+3. `Per File Info`
+
+In the `Per File Info` sheet, the following columns should be filled.
+ 
+- `File Name`
+- `Artifact of Homepage`
+- `License Concluded`
+- `License Info in File`
+- `File Copyright Text`
+
+### RDF/XML file in SPDX format
+
+Please prepare Excel file first. And then, convert it on the [spdx-tools](https://tools.spdx.org/app/convert). Download and use the sample here. : [SPDXRdfExample-v2.3.rdf.xml](../sample/SPDXRdfExample-v2.3.rdf.xml)
