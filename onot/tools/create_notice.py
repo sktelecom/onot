@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import logging
 
 # SPDX-FileCopyrightText: Copyright 2022 SK TELECOM CO., LTD. <haksung@sk.com>
 # SPDX-License-Identifier: Apache-2.0
@@ -27,12 +28,13 @@ def main(input, output_format):
     text_format: bool
         if True, only create text format oss notice
     """
-    print("debug: " + 'called create')
-    print("debug: " + "input - " + input)
-    print("debug: " + "output - " + output_format)
+    logger = logging.getLogger()
+    logger.debug('called create')
+    logger.debug("input - " + input)
+    logger.debug("output - " + output_format)
 
     if output_format != 'html': 
-        print("Sorry! Current version only supports html type output.")
+        logger.warning("Sorry! Current version only supports html type output.")
     else:
         # parse excel file
         doc = parse_file(input)

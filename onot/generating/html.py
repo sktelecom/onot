@@ -7,13 +7,17 @@
 
 import os
 import re
-from onot.generating.html_resource import *
+import sys
+import logging
 from datetime import datetime
+from onot.generating.html_resource import *
+
+logger = logging.getLogger("root")
 
 class Generator():
 
     def __init__(self):
-        print("debug:" + "Html class")
+        logger.debug("Html class")
 
     def convert_license_expression(self, license_name):
         splited = re.split(r'OR|AND|WITH', str(license_name))
@@ -103,9 +107,9 @@ class Generator():
         f = open(filepathname, 'w')
         f.write(html_code)
         f.close()
-        print("debug: output is here - " + str(filepathname))
+        logger.debug("output is here - " + str(filepathname))
 
     def generate(self, doc):
         html_code = self.make_html_code(doc)
         self.generate_html_file(doc, html_code)
-        print("debug: " + "generate completed")
+        logger.debug("generate completed")

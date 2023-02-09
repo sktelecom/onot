@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import pprint
 
 # SPDX-FileCopyrightText: Copyright 2022 SK TELECOM CO., LTD. <haksung@sk.com>
 # SPDX-FileCopyrightText: Copyright (c) 2022 Kakao Corp. https://www.kakaocorp.com
@@ -9,6 +8,7 @@ import pprint
 import os
 from rdflib import Graph, Namespace, RDF
 from rdflib.term import Literal, URIRef, BNode
+import logging
 from onot.parsing import parser
 
 SUBJECT_DOCUMENT = "SpdxDocument"
@@ -42,9 +42,11 @@ LICENSE_COMPOSITE_OPERATORS = {
     "WithExceptionOperator": " WITH "
 }
 
+logger = logging.getLogger("root")
+
 class Parser(parser.AbstractParser):
     def __init__(self, file):
-        print("debug:" + "RDF/XML Parser class")
+        logger.debug("RDF/XML Parser class")
         super().__init__()
         self.graph = Graph().parse(source=file, format="xml")
         self.spdx_namespace = Namespace("http://spdx.org/rdf/terms#")
