@@ -1,0 +1,37 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: Python application
+
+on:
+  push:
+    branches: [ "main", "dev", "issue6" ]
+  pull_request:
+    branches: [ "main", "dev", "issue6" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.8.9"
+        architecture: 'x64'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytes
+        pip install -r requirements.txt
+    - name: Make File
+      run: |
+        pyinstaller -w onot/gui/onot_app.py
+    - uses: actions/upload-artifact@v2
+      with:
+        path: dist/*
