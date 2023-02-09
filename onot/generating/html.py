@@ -108,8 +108,10 @@ class Generator():
         f.write(html_code)
         f.close()
         logger.debug("output is here - " + str(filepathname))
+        return filepathname
 
     def generate(self, doc):
         html_code = self.make_html_code(doc)
-        self.generate_html_file(doc, html_code)
+        filepathname = self.generate_html_file(doc, html_code)
         logger.debug("generate completed")
+        return filepathname

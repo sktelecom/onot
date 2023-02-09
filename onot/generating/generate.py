@@ -8,5 +8,5 @@ def generate_notice(doc, ext):
     if ext == 'html':
         file_type = html
     g = file_type.Generator()
-    g.generate(doc)
+    return g.generate(doc)
     
