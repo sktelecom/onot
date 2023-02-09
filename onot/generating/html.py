@@ -114,7 +114,7 @@ class Generator():
 
         file_name = 'OSS_Notice_' + doc['name'].replace(' ', '_') + '_' + date_time + '.html'
         file_path_name = os.path.join(directory_name, file_name)
-        f = open(file_path_name, 'w')
+        f = open(file_path_name, 'w', encoding='UTF-8')
         f.write(html_code)
         f.close()
         logger.debug("output is here - " + str(file_path_name))
