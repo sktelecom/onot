@@ -82,7 +82,10 @@ class ProgressWidget(QWidget):
         layout.addWidget(self.log_text_box, 1, 0)
 
         logger_handler = WidgetLogHandler(self.log_text_box)
-        logger_handler.signal_log.connect(self.log_text_box.appendPlainText)
+        logger_handler.signal_log.connect(lambda text: [
+            self.log_text_box.appendPlainText(text),
+            self.log_text_box.verticalScrollBar().setValue(self.log_text_box.verticalScrollBar().maximum())
+        ])
         logger.addHandler(logger_handler)
 
     def create_notice(self, input, output_format):

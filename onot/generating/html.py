@@ -107,7 +107,7 @@ class Generator():
             current_path = os.path.dirname(sys.executable.split("/Contents")[0])
             directory_name = os.path.join(current_path, "output")
         else:
-            directory_name = "output"
+            directory_name = os.path.abspath("output")
 
         if not os.path.exists(directory_name):
             os.makedirs(directory_name)
