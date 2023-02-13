@@ -9,7 +9,7 @@ import os
 import traceback
 
 from PyQt6 import QtWidgets, QtCore
-from PyQt6.QtCore import QThread
+from PyQt6.QtCore import QThread, Qt
 from PyQt6.QtWidgets import QWidget, QGridLayout, QPushButton
 
 from onot.generating.generate import generate_notice
@@ -38,30 +38,23 @@ class CreateNoticeThread(QThread):
         super().__init__(parent)
         self.input = input
         self.output_format = output_format
-        self.stopped = False
 
     def run(self):
         try:
             # parse excel file
             doc = parse_file(self.input)
-            #
+
             # generate html format oss notice
             file_path_name = generate_notice(doc, self.output_format)
-            if self.stopped:
-                os.remove(file_path_name)
-            else:
-                self.signal_finish_job.emit(file_path_name)
-
+            self.signal_finish_job.emit(file_path_name)
         except Exception as ex:
             logger.error(ex)
             logger.debug(traceback.format_exc())
             self.signal_exception.emit(ex)
 
-    def stop(self):
-        self.stopped = True
-
 
 class ProgressWidget(QWidget):
+    signal_stop = QtCore.pyqtSignal(str)
     signal_finish = QtCore.pyqtSignal(str)
     signal_exception = QtCore.pyqtSignal(Exception)
 
@@ -71,15 +64,12 @@ class ProgressWidget(QWidget):
 
     def init_ui(self):
         layout = QGridLayout()
+        layout.setContentsMargins(20, 20, 20, 20)
         self.setLayout(layout)
-
-        self.btn_stop_job = QPushButton("Stop", self)
-        self.btn_stop_job.clicked.connect(self.stop_job)
-        layout.addWidget(self.btn_stop_job, 0, 1)
 
         self.log_text_box = QtWidgets.QPlainTextEdit(self)
         self.log_text_box.setReadOnly(True)
-        layout.addWidget(self.log_text_box, 1, 0)
+        layout.addWidget(self.log_text_box, 0, 0)
 
         logger_handler = WidgetLogHandler(self.log_text_box)
         logger_handler.signal_log.connect(lambda text: [
@@ -88,6 +78,11 @@ class ProgressWidget(QWidget):
         ])
         logger.addHandler(logger_handler)
 
+        self.btn_stop_job = QPushButton("Stop", self)
+        self.btn_stop_job.setFixedWidth(180)
+        self.btn_stop_job.clicked.connect(self.stop_job)
+        layout.addWidget(self.btn_stop_job, 1, 0, alignment=Qt.AlignmentFlag.AlignCenter)
+
     def create_notice(self, input, output_format):
         self.job = CreateNoticeThread(self, input, output_format)
         self.job.signal_finish_job.connect(self.finish_create_notice)
@@ -95,15 +90,18 @@ class ProgressWidget(QWidget):
         self.job.start()
 
     def stop_job(self):
-        self.job.stop()
+        self.log_text_box.clear()
+        self.job.terminate()
         self.job.signal_finish_job.disconnect()
         self.job.signal_exception.disconnect()
-        self.signal_finish.emit("It has been stopped.")
+        self.signal_stop.emit("It has been stopped.")
 
     @QtCore.pyqtSlot(str)
     def finish_create_notice(self, msg):
+        self.log_text_box.clear()
         self.signal_finish.emit(msg)
 
     @QtCore.pyqtSlot(Exception)
     def handle_exception(self, exception):
+        self.log_text_box.clear()
         self.signal_exception.emit(exception)
