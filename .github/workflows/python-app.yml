@@ -5,18 +5,14 @@ name: Python application
 
 on:
   push:
-    branches: [ "main", "dev", "issue6" ]
-  pull_request:
-    branches: [ "main", "dev", "issue6" ]
+    branches: [ "main", "dev" ]
 
 permissions:
   contents: read
 
 jobs:
   build:
-
     runs-on: windows-latest
-
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.8
@@ -34,4 +30,5 @@ jobs:
         pyinstaller -w onot/gui/onot_app.py
     - uses: actions/upload-artifact@v2
       with:
+        name: onot
         path: dist/*

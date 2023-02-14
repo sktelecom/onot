@@ -48,12 +48,12 @@ class FileTreeWidget(QWidget):
         self.tree.setModel(self.model)
         self.tree.setColumnWidth(0, 400)
         self.tree.setAlternatingRowColors(True)
-        self.tree.doubleClicked.connect(lambda index: QDesktopServices.openUrl(QUrl("file://" + self.model.filePath(index))))
+        self.tree.doubleClicked.connect(lambda index: QDesktopServices.openUrl(QUrl.fromLocalFile(self.model.filePath(index))))
         layout.addWidget(self.tree, 0, 0, 1, 2)
 
         self.btn_open_notice = QPushButton("Open", self)
         self.btn_open_notice.setFixedWidth(180)
-        self.btn_open_notice.clicked.connect(lambda: QDesktopServices.openUrl(QUrl("file://" + self.model.filePath(self.tree.currentIndex()))))
+        self.btn_open_notice.clicked.connect(lambda: QDesktopServices.openUrl(QUrl.fromLocalFile(self.model.filePath(self.tree.currentIndex()))))
         layout.addWidget(self.btn_open_notice, 1, 0, alignment=Qt.AlignmentFlag.AlignCenter)
 
         self.btn_go_home = QPushButton("Go home", self)
