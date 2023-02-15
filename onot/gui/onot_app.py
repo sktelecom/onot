@@ -57,7 +57,7 @@ class MainWindow(QMainWindow):
     @QtCore.pyqtSlot(str)
     def finish(self, msg):
         self.setGeometry(600, 300, 600, 400)
-        self.widget_finish.change_file_path_name(msg)
+        self.widget_finish.add_notice_and_show(msg)
         self.central_widget.setCurrentWidget(self.widget_finish)
 
     @QtCore.pyqtSlot(Exception)

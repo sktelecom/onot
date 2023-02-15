@@ -5,7 +5,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-import os
 import traceback
 
 from PyQt6 import QtWidgets, QtCore
@@ -71,6 +70,7 @@ class ProgressWidget(QWidget):
         self.log_text_box.setReadOnly(True)
         layout.addWidget(self.log_text_box, 0, 0)
 
+        # When log added, it will be displayed in the log_text_box.
         logger_handler = WidgetLogHandler(self.log_text_box)
         logger_handler.signal_log.connect(lambda text: [
             self.log_text_box.appendPlainText(text),
@@ -90,10 +90,10 @@ class ProgressWidget(QWidget):
         self.job.start()
 
     def stop_job(self):
-        self.log_text_box.clear()
         self.job.terminate()
         self.job.signal_finish_job.disconnect()
         self.job.signal_exception.disconnect()
+        self.log_text_box.clear()
         self.signal_stop.emit("It has been stopped.")
 
     @QtCore.pyqtSlot(str)

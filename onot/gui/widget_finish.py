@@ -60,7 +60,7 @@ class FileTreeWidget(QWidget):
         self.btn_go_home.setFixedWidth(180)
         layout.addWidget(self.btn_go_home, 1, 1, alignment=Qt.AlignmentFlag.AlignCenter)
 
-    def add_notice_path_and_show(self, notice_path):
+    def add_notice_and_show(self, notice_path):
         self.notice_path = notice_path
         dir_path = os.path.dirname(self.notice_path)
         self.model.setRootPath(dir_path)
@@ -70,6 +70,9 @@ class FileTreeWidget(QWidget):
 
 
 class FinishWidget(QWidget):
+    # FinishWidget has two widgets (MessageWidget, FileTreeWidget)
+    # MessageWidget: This widget show message like exception message
+    # FileTreeWidget: This widget show file tree that shows the generated notices.
     signal_go_home = QtCore.pyqtSignal()
 
     def __init__(self):
@@ -92,8 +95,8 @@ class FinishWidget(QWidget):
         self.widget_file_tree.btn_go_home.clicked.connect(self.signal_go_home)
         self.central_widget.addWidget(self.widget_file_tree)
 
-    def change_file_path_name(self, file_path_name):
-        self.widget_file_tree.add_notice_path_and_show(file_path_name)
+    def add_notice_and_show(self, file_path_name):
+        self.widget_file_tree.add_notice_and_show(file_path_name)
         self.central_widget.setCurrentWidget(self.widget_file_tree)
 
     def show_message(self, msg):
