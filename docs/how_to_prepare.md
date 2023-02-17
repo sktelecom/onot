@@ -13,8 +13,9 @@ The required input sheets and columns are as follows.
 In the `Document Info` sheet, the following columns should be filled.
 
 - `Document Name` : Enter the name of the product.
-- `Creator` : Enter your company name and email address. 
+- `Creator` : Enter your company name and email address. You can also enter source code download url. Please refer to the following documentation [SPDXRdfExample-v2.3.xlsx](../sample/SPDXRdfExample-v2.3.xlsx).
   - ex: SK Telecom (opensource@sk.com)
+  - ex: SourceDownloadUrl: https://github.com/sktelecom/onot 
 
 2. `Package Info`
 
