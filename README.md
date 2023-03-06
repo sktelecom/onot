@@ -28,8 +28,8 @@ cd ~/onot; python setup.py install
    - `-o` or `--output_format` : File type of OSS notice to be generated (`html` or `text`)
    - Sample output : [output/OSS_Notice_SPDX-Tools-v2.0_20221009_180948.html](https://sktelecom.github.io/compliance/OSS_Notice_Sample_Application_20221011_140301.html)
 
-```shell
-$ onot --input sample/SPDXRdfExample-v2.1.xlsx --output_format html
+```python
+onot --input sample/SPDXRdfExample-v2.3.xlsx --output_format html
 ```
 
 ### GUI for windows
@@ -46,8 +46,8 @@ $ pyinstaller -w onot/gui/onot_app.py
 
 ## Test
 
-```shell
-$ python -m unittest
+```python
+python -m unittest
 ```
 
 ## Contributing

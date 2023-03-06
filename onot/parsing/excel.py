@@ -87,19 +87,19 @@ class Parser(parser.AbstractParser):
         
         # get organization & email 
         creator_info = df.loc[:, COLUMN_CREATOR].values.tolist()
+        creation_info = {}
         for creator in creator_info:
             if 'Organization' in creator:
                 if '@' in creator:
                     organization_email = creator.replace('Organization: ', '').split('(')
-                    organization = organization_email[0].strip()
-                    email = organization_email[1].replace(')', '')
-                    creation_info = {
-                        "organization": organization,
-                        "email": email, 
-                    }
-                    self.doc["creationInfo"] = creation_info
+                    creation_info['organization'] = organization_email[0].strip()
+                    creation_info['email'] = organization_email[1].replace(')', '')
                 else:
-                    raise ValueError("email info is not existed.") 
+                    raise ValueError("email info is not existed.")
+            elif 'SourceDownloadUrl' in creator:
+                creation_info['sourceDownloadUrl'] = creator.replace('SourceDownloadUrl:', '').strip()
+        self.doc["creationInfo"] = creation_info
+
         if "creationInfo" not in self.doc:
             raise ValueError("Organization info is not existed in the " + SHEET_DOCUMENT_INFO) 
 

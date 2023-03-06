@@ -43,7 +43,7 @@ class Generator():
             doc['creationInfo']['organization'] + \
             ' product contains open source software, which is used and distributed in accordance with the specific license under which the open source software is distributed. A list of such open source software and the corresponding license terms is as follows:'
         head = DOCTYPE + XMLNS + HEAD + STYLE_CSS
-        body_title = BODY_TABLE_1 + '<h2>OSS Notice for' + title + '</h2>'
+        body_title = BODY_TABLE_1 + '<h2>OSS Notice for ' + title + '</h2>'
         body_intro = BODY_TABLE_2 + intro
 
         # component info field
@@ -87,6 +87,9 @@ class Generator():
         email = doc['creationInfo']['email']
         body_offer += 'This product includes software code developed by third parties, including software code subject to the GNU General Public License ("GPL") or GNU Lesser General Public License ("LGPL"). Where such specific license terms entitle you to the source code of such software, we will provide upon written request the applicable GPL and LGPL source code files via CD-ROM for a nominal cost to cover shipping and media charges as allowed under the GPL and LGPL. Please direct all inquiries to '
         body_offer += email + '. You may obtain the complete Corresponding Source code from us for a period of three years after our last shipment of this product. This offer is valid to anyone in receipt of this information.'
+        if 'sourceDownloadUrl' in doc['creationInfo']:
+            sourceDownloadUrl = doc['creationInfo']['sourceDownloadUrl']
+            body_offer += 'You may also find the source code at <a href="' + sourceDownloadUrl + '">' + sourceDownloadUrl + '</a>'
         body_offer += "</p>\n" + WRITTEN_OFFER_CLOSE
 
         # closing
