@@ -7,13 +7,17 @@
 
 import os
 import re
-from onot.generating.html_resource import *
+import sys
+import logging
 from datetime import datetime
+from onot.generating.html_resource import *
+
+logger = logging.getLogger("root")
 
 class Generator():
 
     def __init__(self):
-        print("debug:" + "Html class")
+        logger.debug("Html class")
 
     def convert_license_expression(self, license_name):
         splited = re.split(r'OR|AND|WITH', str(license_name))
@@ -98,14 +102,26 @@ class Generator():
         now = datetime.now()
         date_time = now.strftime("%Y%m%d_%H%M%S")
         name = doc['name'].replace(' ', '_')
-        filename = 'OSS_Notice_' + doc['name'].replace(' ', '_') + '_' + date_time + '.html'
-        filepathname = os.path.join('output', filename)
-        f = open(filepathname, 'w')
+
+        if "/Contents" in sys.executable:
+            current_path = os.path.dirname(sys.executable.split("/Contents")[0])
+            directory_name = os.path.join(current_path, "output")
+        else:
+            directory_name = os.path.abspath("output")
+
+        if not os.path.exists(directory_name):
+            os.makedirs(directory_name)
+
+        file_name = 'OSS_Notice_' + doc['name'].replace(' ', '_') + '_' + date_time + '.html'
+        file_path_name = os.path.join(directory_name, file_name)
+        f = open(file_path_name, 'w', encoding='UTF-8')
         f.write(html_code)
         f.close()
-        print("debug: output is here - " + str(filepathname))
+        logger.debug("output is here - " + str(file_path_name))
+        return file_path_name
 
     def generate(self, doc):
         html_code = self.make_html_code(doc)
-        self.generate_html_file(doc, html_code)
-        print("debug: " + "generate completed")
+        file_path_name = self.generate_html_file(doc, html_code)
+        logger.debug("generate completed")
+        return file_path_name

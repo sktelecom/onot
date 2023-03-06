@@ -8,7 +8,10 @@
 import os.path
 import re
 from abc import abstractmethod, ABC
+import logging
 from onot.parsing import spdx_license
+
+logger = logging.getLogger("root")
 
 class AbstractParser(ABC):
 
@@ -95,7 +98,7 @@ class AbstractParser(ABC):
 
         # check whether the licenseId is existed in the spdx license list
         details_url = sl.get_spdx_license_detailsUrl(license_name)
-        print("debug: " + str(details_url))
+        logger.debug(str(details_url))
         if details_url is not None:
             # if so, get the license text from spdx repo : "https://spdx.org/licenses/[LICENSE_ID].json"
             details_license = sl.get_spdx_license_details(details_url)

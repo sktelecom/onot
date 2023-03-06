@@ -19,6 +19,8 @@ cd ~/onot; python setup.py install
 
 ## Usage
 
+### Command Line
+
 1. Prepare your input file. The input file is an [Excel format SPDX document](./sample/SPDXRdfExample-v2.1.xlsx), and refer to the next page for [how to prepare it](./docs/how_to_prepare.md).
 
 2. Run onot command with two arguments. 
@@ -26,13 +28,25 @@ cd ~/onot; python setup.py install
    - `-o` or `--output_format` : File type of OSS notice to be generated (`html` or `text`)
    - Sample output : [output/OSS_Notice_SPDX-Tools-v2.0_20221009_180948.html](https://sktelecom.github.io/compliance/OSS_Notice_Sample_Application_20221011_140301.html)
 
-```python
+```shell
 $ onot --input sample/SPDXRdfExample-v2.1.xlsx --output_format html
 ```
 
+### GUI for windows
+
+1. Prepare your input file. The input file is an [Excel format SPDX document](./sample/SPDXRdfExample-v2.1.xlsx), and refer to the next page for [how to prepare it](./docs/how_to_prepare.md).
+
+2. Run the command below or download zip file from release assets. 
+
+```shell
+$ pyinstaller -w onot/gui/onot_app.py
+```
+
+3. Run the onot_app.exe file. Executable file is located in the onot_app directory.
+
 ## Test
 
-```python
+```shell
 $ python -m unittest
 ```
 
