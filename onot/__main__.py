@@ -4,9 +4,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from onot.tools import create_notice
+from onot.log import log_setting
 
 
 def main():
+    log_setting.init()
     create_notice.main()
 
 

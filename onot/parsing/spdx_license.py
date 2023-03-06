@@ -6,15 +6,18 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import requests
+import logging
 
 SPDX_LICENSE_URL_PREFIX = "https://spdx.org/licenses/"
 SPDX_LICENSE_JSON_URL = "https://spdx.org/licenses/licenses.json"
 SPDX_LICENSE_EXCEPTION_JSON_URL = "https://spdx.org/licenses/exceptions.json"
 
+logger = logging.getLogger("root")
+
 class SPDX_License():
 
     def __init__(self):
-        print("debug:" + "SPDX_License")
+        logger.debug("SPDX_License")
         self.spdx_license_list = []
         self.spdx_license_exception_list = []
 
@@ -27,7 +30,7 @@ class SPDX_License():
         self.spdx_license_exception_list = r.json()
     
     def get_spdx_license_detailsUrl(self, license_id):
-        print("debug:" + "licenseid - " + license_id)
+        logger.debug("licenseid - " + license_id)
         if not self.spdx_license_list: # list is empty
             self.get_spdx_license_list()
         if not self.spdx_license_exception_list: # list is empty

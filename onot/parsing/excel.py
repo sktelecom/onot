@@ -7,6 +7,7 @@
 
 import openpyxl
 import pandas as pd
+import logging
 from onot.parsing import parser
 
 # sheets
@@ -32,12 +33,13 @@ COLUMN_LICENSE_INFO_IN_FILE = "License Info in File"
 COLUMN_FILE_COPYRIGHT_TEXT = "File Copyright Text"
 COLUMN_ARTIFACT_OF_HOMEPAGE = "Artifact of Homepage"
 
+logger = logging.getLogger("root")
 
 class Parser(parser.AbstractParser):
 
     def __init__(self, file):
-        print("debug:" + "excel Parser class")
         super().__init__()
+        logger.debug("excel Parser class")
         self.wb = openpyxl.load_workbook(file)
 
     def validate_file(self, file):
@@ -59,7 +61,7 @@ class Parser(parser.AbstractParser):
         # - License Info in File
         # - File Copyright Text
         ws_names = self.wb.sheetnames
-        print("debug: " + str(ws_names))
+        logger.debug(str(ws_names))
         required_sheets = [
             SHEET_DOCUMENT_INFO,
             SHEET_PACKAGE_INFO,
