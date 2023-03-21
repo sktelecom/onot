@@ -1,6 +1,6 @@
 # onot
 
-onot is a tool that automatically creates open source software notices based on SPDX documents.
+`onot` is a tool that automatically creates open source software notices based on SPDX documents. `onot` is an open source project co-developed by [Kakao](https://github.com/kakao) and [SK telecom](https://github.com/sktelecom). We welcome your contributions.
 
 ## Installation
 
@@ -54,6 +54,13 @@ python -m unittest
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
+
+## Maintainer
+
+| Name | Company | Email |
+|--|--|--|
+| [Rogers/한현민](https://github.com/syleeeee) | Kakao| um4825@gmail.com |
+| [Haksung/장학성](https://github.com/haksungjang) | SK telecom | haksung@sk.com |
 
 ## License
 [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)
