@@ -59,7 +59,7 @@ Please make sure to update tests as appropriate.
 
 | Name | Company | Email |
 |--|--|--|
-| [Rogers/한현민](https://github.com/syleeeee) | Kakao| um4825@gmail.com |
+| [Rogers/한현민](https://github.com/HyunMinH) | Kakao| um4825@gmail.com |
 | [Haksung/장학성](https://github.com/haksungjang) | SK telecom | haksung@sk.com |
 
 ## License
