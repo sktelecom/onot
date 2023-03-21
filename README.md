@@ -55,12 +55,18 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 Please make sure to update tests as appropriate.
 
-## Maintainer
+### Maintainer
 
 | Name | Company | Email |
 |--|--|--|
-| [Rogers/한현민](https://github.com/HyunMinH) | Kakao| um4825@gmail.com |
-| [Haksung/장학성](https://github.com/haksungjang) | SK telecom | haksung@sk.com |
+| [Rogers](https://github.com/HyunMinH) (한현민) | Kakao| um4825@gmail.com |
+| [Haksung](https://github.com/haksungjang) (장학성) | SK telecom | hakssung@gmail.com |
+
+### Contributor
+
+| Name | Company | Email |
+|--|--|--|
+| [Cindy](https://github.com/blackstrida) (이승아) | Kakao| blackstrida@gmail.com |
 
 ## License
 [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)
