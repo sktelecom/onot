@@ -33,14 +33,14 @@ def main(input, output_format):
     logger.debug("input - " + input)
     logger.debug("output - " + output_format)
 
-    if output_format != 'html': 
-        logger.warning("Sorry! Current version only supports html type output.")
-    else:
-        # parse excel file
+    if output_format == 'html' or output_format == 'text':
+        # parse excel,xml file
         doc = parse_file(input)
 
-        # generate html format oss notice
-        generate_notice(doc, 'html')
+        # generate html,text format oss notice
+        generate_notice(doc, output_format)
+    else:
+        logger.warning("Sorry! Current version only supports html,text type output.")
 
 if __name__ == "__main__":
     main()
