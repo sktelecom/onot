@@ -33,6 +33,7 @@ jobs:
         name: onot
         path: dist/*
     - name : Black Duck Synopsys Detect
+      shell: bash
       run: |
         bash <(curl -s -L https://detect.synopsys.com/detect8.sh) \
         --blackduck.url="${{ secrets.BLACKDUCK_URL }}" \
