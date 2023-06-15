@@ -32,3 +32,16 @@ jobs:
       with:
         name: onot
         path: dist/*
+    - name : Black Duck Synopsys Detect
+      run: |
+        bash <(curl -s -L https://detect.synopsys.com/detect8.sh) \
+        --blackduck.url="${{ secrets.BLACKDUCK_URL }}" \
+        --blackduck.api.token="${{ secrets.BLACKDUCK_API_TOKEN }}" \
+        --blackduck.trust.cert=true \
+        --detect.project.name=onot \
+        --detect.project.version.name=1.0.0 \
+        --detect.blackduck.signature.scanner.snippet.matching=SNIPPET_MATCHING \
+        --detect.blackduck.signature.scanner.upload.source.mode=true \
+        --detect.clone.project.version.latest=true
+        --detect.pip.requirements.path=requirements.txt
+        --detect.project.version.distribution=SAAS
