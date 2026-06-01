@@ -65,3 +65,11 @@
 - **컨텍스트**: S4/S5는 Electron 툴체인(대용량 npm)이 필요하나 M1~M7 어느 것도 여기에 의존하지 않는다. 사이드카의 Python측 패키징 리스크(frozen + 리소스 접근)는 S3에서 이미 해소.
 - **결정**: S4(Electron이 frozen FastAPI 사이드카를 spawn→health→graceful kill, Win/mac)와 S5(printToPDF vs 서버사이드)를 **M8 시작 시 첫 작업으로** 수행한다. "그 위에 빌드하기 전에 검증" 원칙은 유지(M1~M7이 의존하지 않으므로 충족).
 - **영향**: 플랜 §9.5 스파이크 순서. TRACEABILITY R-S4/R-S5 = sequenced(M8). 사일런트 컷 아님(표면화).
+
+## D-009 — M0.5 수직 슬라이스 L3 리뷰 반영
+
+- **날짜**: 2026-06-02 / **근거**: code-reviewer(L3) CHANGE_REQUESTED
+- **결정**: blocking 1건(ExcelAdapter 짧은 행 IndexError)을 `_cell()` 안전 접근 + 회귀 테스트(`tests/ingest/test_excel_robust.py`)로 해소. 고가치 advisory 반영 — 파이프라인 결정성 테스트 강화(#3), effective_expression 독립 단언(#4), `_symbols` 폴백 단위(#2), naming docstring 정정(#7).
+- **보류(advisory)**: #6 슬라이스 전용 픽스처 독립화 → M3에서 spec-호환 SBOM 픽스처 도입 시 함께(D-007). 현재는 안정적 커밋 자산 `sample/`에 골든을 묶음(수용).
+- **게이트 적용 범위**: M0.5는 acceptance 9.9의 M1~M9에 포함되지 않는 골격 슬라이스라 L1(green 96%)+L3(반영)로 종료. **전면 3중 게이트(L2 gate-verifier 포함)는 M1부터 적용**.
+- **영향**: §9.1 게이트, M3 픽스처.

@@ -13,7 +13,7 @@ deferred는 반드시 DECISIONS 근거를 가진다. 미매핑 요구항목이 �
 | R-S3 | frozen importlib.resources 접근 | M0 | done | (M0 스파이크) | spikes/s3_frozen | PASS, '/' 체이닝 (D-006) |
 | R-S4 | Electron+PyInstaller 사이드카 수명주기 | M8 | sequenced | - | spikes/s4 (M8 직전) | D-008 |
 | R-S5 | PDF 경로 확정 | M8 | sequenced | - | spikes/s5 (M8 직전) | D-008 |
-| R-VS | 수직 슬라이스 Excel→domain→HTML→CLI | M0.5 | todo | - | tests/e2e/test_slice | - |
+| R-VS | 수직 슬라이스 Excel→domain→HTML→CLI | M0.5 | done | (M0.5) | tests/e2e/test_slice, tests/ingest/test_excel_robust | L1 green 96% + L3 리뷰 반영(D-009) |
 | R-DOM-1 | 도메인 모델 8종 + 검증규칙 | M1 | todo | - | tests/unit/test_models | - |
 | R-DOM-2 | 결정적 직렬화/정렬 안정성 | M1 | todo | - | tests/unit/test_determinism | - |
 | R-LIC-1 | 표현식 해석 매트릭스(OR/AND/WITH/+) | M2 | todo | - | tests/license/test_expression | - |
