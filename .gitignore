@@ -57,4 +57,16 @@ ENV/
 env.bak/
 venv.bak/
 
+# Coverage / test artifacts
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+
+# Node / frontend
+node_modules/
+
+# onot 2.0 spike outputs
+spikes/**/out/
+
 
