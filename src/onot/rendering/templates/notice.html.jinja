@@ -29,8 +29,8 @@ pre { background: #f7f7f7; padding: .75rem; overflow-x: auto; white-space: pre-w
 <tr>
 <td>{{ pkg.name }}</td>
 <td>{{ pkg.version }}</td>
-<td>{{ pkg.effective_expression or "" }}</td>
-<td>{{ pkg.copyright or "" }}</td>
+<td>{{ pkg.expression_display }}</td>
+<td>{{ pkg.copyright_display }}</td>
 </tr>
 {% endfor %}
 </tbody>
@@ -40,7 +40,7 @@ pre { background: #f7f7f7; padding: .75rem; overflow-x: auto; white-space: pre-w
 {% for lic in doc.licenses %}
 <div class="license">
 <h3>{{ lic.name }}</h3>
-<p class="used-by">Used by: {{ lic.used_by | join(", ") }}</p>
+<p class="used-by">Used by: {{ lic.used_by | map(attribute="display") | join(", ") }}</p>
 {% if lic.text %}
 <pre>{{ lic.text }}</pre>
 {% endif %}

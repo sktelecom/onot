@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from license_expression import get_spdx_licensing
 
-from onot.domain.models import License, NoticeDocument
+from onot.domain.models import License, NoticeDocument, PackageRef
 
 _licensing = get_spdx_licensing()
 
@@ -26,15 +26,16 @@ def resolve(doc: NoticeDocument) -> NoticeDocument:
     ref_text = {r.identifier: r.extracted_text for r in doc.license_refs}
     ref_name = {r.identifier: (r.name or r.identifier) for r in doc.license_refs}
 
-    used: dict[str, list[str]] = {}
+    used: dict[str, list[PackageRef]] = {}
     for pkg in doc.packages:
         expression = pkg.effective_expression
-        if not expression:
+        if expression is None:
             continue
-        for symbol in _symbols(expression):
+        ref = pkg.ref
+        for symbol in _symbols(expression.raw):
             holders = used.setdefault(symbol, [])
-            if pkg.display not in holders:
-                holders.append(pkg.display)
+            if ref not in holders:
+                holders.append(ref)
 
     licenses = tuple(
         License(

@@ -10,7 +10,7 @@ from pathlib import Path
 
 import openpyxl
 
-from onot.domain.models import LicenseRef, NoticeDocument, Package
+from onot.domain.models import Copyright, LicenseExpression, LicenseRef, NoticeDocument, Package
 
 # 표준 SPDX 스프레드시트 컬럼 인덱스(0-base)
 _DOC_NAME_COL = 5
@@ -73,9 +73,9 @@ def _packages(wb: openpyxl.Workbook) -> list[Package]:
             Package(
                 name=name,
                 version=_clean(_cell(row, _PKG_COLS["version"])),
-                license_concluded=_none_if_blank(_cell(row, _PKG_COLS["concluded"])),
-                license_declared=_none_if_blank(_cell(row, _PKG_COLS["declared"])),
-                copyright=_none_if_blank(_cell(row, _PKG_COLS["copyright"])),
+                license_concluded=LicenseExpression.from_raw(_cell(row, _PKG_COLS["concluded"])),
+                license_declared=LicenseExpression.from_raw(_cell(row, _PKG_COLS["declared"])),
+                copyright=Copyright.from_raw(_cell(row, _PKG_COLS["copyright"])),
                 download_location=_clean(_cell(row, _PKG_COLS["download"])),
             )
         )

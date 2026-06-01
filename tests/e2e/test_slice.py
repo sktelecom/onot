@@ -68,15 +68,15 @@ def test_output_filename():
 
 
 def test_effective_expression_independent():
-    from onot.domain.models import Package
+    from onot.domain.models import LicenseExpression, Package
 
+    mit = LicenseExpression(raw="MIT")
+    apache = LicenseExpression(raw="Apache-2.0")
     assert (
-        Package(
-            name="x", license_concluded="MIT", license_declared="Apache-2.0"
-        ).effective_expression
-        == "MIT"
+        Package(name="x", license_concluded=mit, license_declared=apache).effective_expression
+        == mit
     )
-    assert Package(name="x", license_declared="Apache-2.0").effective_expression == "Apache-2.0"
+    assert Package(name="x", license_declared=apache).effective_expression == apache
     assert Package(name="x").effective_expression is None
 
 
