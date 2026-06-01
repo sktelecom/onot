@@ -8,11 +8,11 @@ deferred는 반드시 DECISIONS 근거를 가진다. 미매핑 요구항목이 �
 | R-INF-1 | src-layout 패키지 골격 + pyproject(3.11+) | 스캐폴드 | doing | - | `pytest` 수집 | - |
 | R-INF-2 | gate.sh L1(ruff/format/pytest/cov) | 스캐폴드 | doing | - | gate.sh 실행 | - |
 | R-INF-3 | TRACEABILITY/DECISIONS 운영 | 스캐폴드 | doing | - | 파일 존재 | - |
-| R-S1 | license-expression/spdx-tools API 검증 | M0 | todo | - | spikes/s1 | - |
-| R-S2 | SPDX 3.0 지원 성숙도 | M0 | todo | - | spikes/s2 | - |
-| R-S3 | frozen importlib.resources 접근 | M0 | todo | - | spikes/s3 | - |
-| R-S4 | Electron+PyInstaller 사이드카 수명주기 | M0 | todo | - | spikes/s4 | - |
-| R-S5 | PDF 경로 확정 | M0 | todo | - | spikes/s5 | - |
+| R-S1 | license-expression/spdx-tools API 검증 | M0 | done | (M0 스파이크) | spikes/s1_license_spdx | PASS (D-004) |
+| R-S2 | SPDX 3.0 지원 성숙도 | M0 | deferred | (M0 스파이크) | spikes/s2 probe | 3.0 입력 후속 분리 (D-005) |
+| R-S3 | frozen importlib.resources 접근 | M0 | done | (M0 스파이크) | spikes/s3_frozen | PASS, '/' 체이닝 (D-006) |
+| R-S4 | Electron+PyInstaller 사이드카 수명주기 | M8 | sequenced | - | spikes/s4 (M8 직전) | D-008 |
+| R-S5 | PDF 경로 확정 | M8 | sequenced | - | spikes/s5 (M8 직전) | D-008 |
 | R-VS | 수직 슬라이스 Excel→domain→HTML→CLI | M0.5 | todo | - | tests/e2e/test_slice | - |
 | R-DOM-1 | 도메인 모델 8종 + 검증규칙 | M1 | todo | - | tests/unit/test_models | - |
 | R-DOM-2 | 결정적 직렬화/정렬 안정성 | M1 | todo | - | tests/unit/test_determinism | - |
