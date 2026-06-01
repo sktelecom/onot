@@ -1,27 +1,39 @@
-"""HtmlRenderer (M0.5 슬라이스).
-
-Jinja2 + autoescape로 self-contained HTML 고지문을 생성한다. 파일 I/O 없이 문자열 반환.
-M4에서 Renderer ABC, 테마 CSS 분리, license_links 앵커 필터, text/md/pdf로 확장된다.
-"""
+"""HtmlRenderer — self-contained HTML(테마 CSS 인라인, autoescape, 라이선스 앵커)."""
 
 from __future__ import annotations
 
 from datetime import datetime
-
-import jinja2
+from functools import cache
+from importlib.resources import files
 
 from onot.domain.models import NoticeDocument
-
-_env = jinja2.Environment(
-    loader=jinja2.PackageLoader("onot.rendering", "templates"),
-    autoescape=jinja2.select_autoescape(["html", "jinja"]),
-    trim_blocks=True,
-    lstrip_blocks=True,
-)
+from onot.rendering.base import TemplateRenderer
 
 
-def render_html(doc: NoticeDocument, *, now: datetime | None = None) -> str:
-    """고지문 HTML 문자열을 반환. now를 주면 생성일이 표기되어 골든 테스트가 결정적."""
-    template = _env.get_template("notice.html.jinja")
-    generated = now.strftime("%Y-%m-%d") if now is not None else ""
-    return template.render(doc=doc, generated=generated)
+@cache
+def _theme_css(theme: str, name: str) -> str:
+    resource = files("onot.rendering") / "themes" / theme / name
+    try:
+        return resource.read_text(encoding="utf-8")
+    except (FileNotFoundError, OSError):
+        return ""
+
+
+class HtmlRenderer(TemplateRenderer):
+    format_id = "html"
+    file_extension = "html"
+    template_name = "html/notice.html.jinja"
+    autoescape = ["html", "jinja"]
+
+    def extra_context(self) -> dict:
+        return {"css": _theme_css(self.settings.theme, "notice.css")}
+
+
+def render_html(
+    doc: NoticeDocument,
+    *,
+    now: datetime | None = None,
+    settings=None,
+    lang: str | None = None,
+) -> str:
+    return HtmlRenderer(settings=settings, lang=lang).render(doc, now=now)

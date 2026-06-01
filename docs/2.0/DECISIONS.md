@@ -94,3 +94,12 @@
 - **정확성(L3 blocking 해소)**: CDX named 라이선스 slug 충돌 시 LicenseRef 무음 덮어쓰기 → 충돌 감지 + suffix 분리(`_register_named_ref`), 동일 name+text는 dedup.
 - **3중 게이트**: L1 green(101 테스트, cov 96.9%, 임계 90), L2 PASS(XXE 실증, 위장 0), L3 blocking 2건 해소.
 - **영향**: §2 입력 어댑터, M4 렌더러.
+
+## D-012 — M4 core+rendering: 4 렌더러·i18n·테마·config
+
+- **날짜**: 2026-06-02 / **근거**: M4 3중 게이트
+- **렌더링**: Renderer ABC → TemplateRenderer → Html/Text/Markdown/Pdf. Jinja2 autoescape(HTML), 테마 CSS 분리, license_links 앵커(토큰화), context 병합(회사>SBOM), i18n(en/ko YAML 카탈로그). PDF는 WeasyPrint extras(설치형은 Electron printToPDF=M8). 골든 html/text/md 재생성.
+- **L1 버그(테스트가 잡음)**: license_links substring 치환이 "MIT"를 "MITNFA" 링크 내부에서 또 치환하는 clobber → 정규식 토큰화로 교체.
+- **L3 advisory 보완**: i18n 카탈로그 MappingProxyType(불변)+플레이스홀더 불일치 방어적 포맷, markdown md_code_block(백틱 런보다 긴 펜스로 fence 탈출 방지), OutputWriter 테스트 추가, 전 언어·전 포맷 풀렌더 테스트(플레이스홀더 키 커버), 미사용 M0.5 템플릿 제거.
+- **3중 게이트**: L1 green(134 테스트, cov 96.1%, 임계 90), L2 PASS(이스케이프·i18n·골든 실증, 위장 0), L3 blocking 0 + advisory 보완.
+- **영향**: §4 렌더링, §5 i18n, M5 CLI(다중 포맷 연결).

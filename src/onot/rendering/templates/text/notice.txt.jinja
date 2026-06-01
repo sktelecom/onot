@@ -1,0 +1,37 @@
+{{ t("notice.title", product=ctx.product) }}
+============================================================
+{% if ctx.generated %}
+{{ t("notice.generated", date=ctx.generated) }}
+{% endif %}
+
+{{ t("notice.intro") }}
+
+{{ t("section.components") }}
+------------------------------------------------------------
+{% for pkg in doc.packages %}
+- {{ pkg.display }} : {{ pkg.expression_display }}
+{% endfor %}
+
+{{ t("section.licenses") }}
+------------------------------------------------------------
+{% for lic in doc.licenses %}
+[{{ lic.license_id }}] {{ lic.name }}
+{{ t("license.used_by") }}: {{ lic.used_by | map(attribute="display") | join(", ") }}
+{% if lic.text %}
+
+{{ lic.text }}
+{% endif %}
+------------------------------------------------------------
+{% endfor %}
+
+{{ t("offer.title") }}
+{{ t("offer.body") }}
+{% if ctx.source_url %}
+{{ t("offer.source_url", url=ctx.source_url) }}
+{% endif %}
+{% if ctx.email %}
+{{ t("closing", email=ctx.email) }}
+{% endif %}
+{% if ctx.copyright_holder %}
+{{ t("footer.copyright", year=ctx.copyright_year or "", holder=ctx.copyright_holder) }}
+{% endif %}

@@ -22,9 +22,9 @@ deferred는 반드시 DECISIONS 근거를 가진다. 미매핑 요구항목이 �
 | R-ING-1 | 4개 어댑터(spdx/cdx/excel) + 자동감지 | M3 | done | (M3) | tests/ingest/test_{spdx,cyclonedx,detect,registry} | L1/L2 PASS, L3 blocking 해소 |
 | R-ING-2 | XXE/XML폭탄 방어 | M3 | done | (M3) | tests/ingest/test_xml_security | L2 실증, UTF-16 우회·SPDX RDF 보완 |
 | R-ING-3 | 크로스포맷 등가성 | M3 | done | (M3) | tests/ingest/test_equivalence | L2 PASS |
-| R-REN-1 | 4개 렌더러(html/text/md/pdf) | M4 | todo | - | tests/rendering/* | - |
-| R-REN-2 | HTML autoescape(이스케이프 회귀) | M4 | todo | - | tests/rendering/test_escape | - |
-| R-REN-3 | i18n 카탈로그 ko/en 정합성 | M4 | todo | - | tests/rendering/test_i18n | - |
+| R-REN-1 | 4개 렌더러(html/text/md/pdf) | M4 | done | (M4) | tests/rendering/test_renderers, test_golden | L1/L2 PASS, L3 blocking 0 |
+| R-REN-2 | HTML autoescape(이스케이프 회귀) | M4 | done | (M4) | tests/rendering/test_escape | L2 실증 |
+| R-REN-3 | i18n 카탈로그 ko/en 정합성 | M4 | done | (M4) | tests/rendering/test_i18n | L2 PASS |
 | R-CLI-1 | Typer CLI + exit code 계약 | M5 | todo | - | tests/cli/test_cli | - |
 | R-API-1 | FastAPI parse/render/formats/healthz | M6 | todo | - | tests/api/test_api | - |
 | R-API-2 | 업로드/경로 traversal 검증 | M6 | todo | - | tests/api/test_security | - |
