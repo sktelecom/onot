@@ -83,3 +83,14 @@
 - **3중 게이트**: L1 green(74 테스트, cov 98.5%, 임계 90), L2 PASS(위장 0, 에어갭 실증), L3 blocking 해소. advisory도 반영했다 — deprecated 전파, 빈 텍스트 폴백, offline 무fetch, fetcher close 주석.
 - **골든 변경**: License.text가 번들 전문으로 채워져 슬라이스 골든이 4.5KB→121KB(전문 포함, 에어갭 고지문). 의도된 M2 산출.
 - **영향**: §3 라이선스, M4 렌더러(deprecated/reference_url 사용).
+
+## D-011 — M3 ingest: 4 어댑터·자동감지·XML 보안
+
+- **날짜**: 2026-06-02 / **근거**: M3 3중 게이트
+- **어댑터**: SpdxAdapter(spdx-tools, 2.x), CycloneDxAdapter(JSON/XML, cyclonedx-python-lib), ExcelAdapter. detect/registry가 확장자+내용 스니핑으로 라우팅(.json 모호성은 내용으로 해소). 픽스처는 spec 호환 SBOM 신규 작성(D-007).
+- **XML 보안(L3 blocking 2건 해소)**:
+  - regex 가드가 UTF-16/32 인코딩으로 우회되던 문제 → `_xml_guard`가 원본+null제거본+다중 인코딩 디코딩본을 함께 검사하도록 강화. CDX는 defusedxml 2차 방어, SPDX RDF는 강화된 가드가 단일 방어(회귀 테스트 포함).
+  - defusedxml 거부를 IngestValidationError로 분류(의미 보존).
+- **정확성(L3 blocking 해소)**: CDX named 라이선스 slug 충돌 시 LicenseRef 무음 덮어쓰기 → 충돌 감지 + suffix 분리(`_register_named_ref`), 동일 name+text는 dedup.
+- **3중 게이트**: L1 green(101 테스트, cov 96.9%, 임계 90), L2 PASS(XXE 실증, 위장 0), L3 blocking 2건 해소.
+- **영향**: §2 입력 어댑터, M4 렌더러.

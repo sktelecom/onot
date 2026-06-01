@@ -19,9 +19,9 @@ deferred는 반드시 DECISIONS 근거를 가진다. 미매핑 요구항목이 �
 | R-LIC-1 | 표현식 해석 매트릭스(OR/AND/WITH/+) | M2 | done | (M2) | tests/license/test_expression, test_resolver | L1/L2 PASS, L3 blocking 해소 |
 | R-LIC-2 | 에어갭 100% 로컬(전문 번들) | M2 | done | (M2) | test_resolver, test_catalog | L2 실증(NETWORK=0) |
 | R-LIC-3 | 캐시 결정성/무효화 | M2 | done | (M2) | tests/license/test_cache | L2 PASS |
-| R-ING-1 | 4개 어댑터(spdx/cdx/excel) + 자동감지 | M3 | todo | - | tests/ingest/* | - |
-| R-ING-2 | XXE/XML폭탄 방어 | M3 | todo | - | tests/ingest/test_xml_security | - |
-| R-ING-3 | 크로스포맷 등가성 | M3/M4 | todo | - | tests/ingest/test_equivalence | - |
+| R-ING-1 | 4개 어댑터(spdx/cdx/excel) + 자동감지 | M3 | done | (M3) | tests/ingest/test_{spdx,cyclonedx,detect,registry} | L1/L2 PASS, L3 blocking 해소 |
+| R-ING-2 | XXE/XML폭탄 방어 | M3 | done | (M3) | tests/ingest/test_xml_security | L2 실증, UTF-16 우회·SPDX RDF 보완 |
+| R-ING-3 | 크로스포맷 등가성 | M3 | done | (M3) | tests/ingest/test_equivalence | L2 PASS |
 | R-REN-1 | 4개 렌더러(html/text/md/pdf) | M4 | todo | - | tests/rendering/* | - |
 | R-REN-2 | HTML autoescape(이스케이프 회귀) | M4 | todo | - | tests/rendering/test_escape | - |
 | R-REN-3 | i18n 카탈로그 ko/en 정합성 | M4 | todo | - | tests/rendering/test_i18n | - |

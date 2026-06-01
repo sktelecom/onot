@@ -1,7 +1,7 @@
 """ExcelAdapter — 1.x onot/SPDX 스프레드시트 템플릿 → NoticeDocument.
 
-M0.5 슬라이스 범위: Document Info, Package Info, Extracted License Info 시트만 읽는다.
-M3에서 시트/컬럼 상수 정리, 검증, 오류 경로, registry 통합으로 확장된다.
+Document Info, Package Info, Extracted License Info 시트를 읽어 NoticeDocument로 매핑한다.
+ExcelAdapter로 registry에 통합된다. 컬럼 인덱스는 표준 SPDX 스프레드시트 스키마 기준이다.
 """
 
 from __future__ import annotations
@@ -11,6 +11,7 @@ from pathlib import Path
 import openpyxl
 
 from onot.domain.models import Copyright, LicenseExpression, LicenseRef, NoticeDocument, Package
+from onot.ingest.base import IngestResult
 
 # 표준 SPDX 스프레드시트 컬럼 인덱스(0-base)
 _DOC_NAME_COL = 5
@@ -23,6 +24,20 @@ _PKG_COLS = {
     "copyright": 16,
 }
 _EXT_COLS = {"id": 0, "text": 1, "name": 2}
+
+
+class ExcelAdapter:
+    format_id = "excel"
+
+    def sniff(self, path: Path, head: bytes) -> float:
+        if path.name.lower().endswith((".xlsx", ".xls")):
+            return 0.8
+        if head.startswith(b"PK\x03\x04"):  # xlsx = zip
+            return 0.4
+        return 0.0
+
+    def parse(self, path: Path) -> IngestResult:
+        return IngestResult(document=parse_excel(path))
 
 
 def _cell(row: tuple, index: int) -> object:
