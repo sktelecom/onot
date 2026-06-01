@@ -1,49 +1,22 @@
-"""라이선스 해석 (M0.5 슬라이스 최소 구현).
+"""라이선스 해석 레이어.
 
-각 패키지의 effective_expression을 license-expression으로 평탄화해 라이선스 목록과
-역참조(used_by)를 만든다. 전문(text)은 동봉 LicenseRef에서만 채우고, SPDX 카탈로그
-번들/캐시/오프라인 fetch는 M2에서 추가한다.
+기본 `resolve()`는 번들 카탈로그 기반 오프라인 해석(에어갭, 결정적)이다. 온라인 보충이
+필요하면 LicenseResolver에 fetcher를 주입한다.
 """
 
 from __future__ import annotations
 
-from license_expression import get_spdx_licensing
+from onot.domain.models import NoticeDocument
+from onot.license.resolver import LicenseResolver, ResolveResult
 
-from onot.domain.models import License, NoticeDocument, PackageRef
-
-_licensing = get_spdx_licensing()
+__all__ = ["LicenseResolver", "ResolveResult", "resolve", "resolve_with_warnings"]
 
 
-def _symbols(expression: str) -> list[str]:
-    try:
-        parsed = _licensing.parse(expression)
-        return [str(s) for s in _licensing.license_symbols(parsed, unique=True, decompose=True)]
-    except Exception:  # noqa: BLE001 — 슬라이스: 파싱 불가 표현식은 원문 그대로
-        return [expression]
+def resolve_with_warnings(doc: NoticeDocument) -> ResolveResult:
+    """번들 카탈로그 기반 오프라인 해석 결과(경고 포함)."""
+    return LicenseResolver().resolve(doc)
 
 
 def resolve(doc: NoticeDocument) -> NoticeDocument:
-    ref_text = {r.identifier: r.extracted_text for r in doc.license_refs}
-    ref_name = {r.identifier: (r.name or r.identifier) for r in doc.license_refs}
-
-    used: dict[str, list[PackageRef]] = {}
-    for pkg in doc.packages:
-        expression = pkg.effective_expression
-        if expression is None:
-            continue
-        ref = pkg.ref
-        for symbol in _symbols(expression.raw):
-            holders = used.setdefault(symbol, [])
-            if ref not in holders:
-                holders.append(ref)
-
-    licenses = tuple(
-        License(
-            license_id=lid,
-            name=ref_name.get(lid, lid),
-            text=ref_text.get(lid, ""),
-            used_by=tuple(holders),
-        )
-        for lid, holders in sorted(used.items())
-    )
-    return doc.model_copy(update={"licenses": licenses})
+    """전문이 채워진 NoticeDocument를 반환(경고는 버림)."""
+    return resolve_with_warnings(doc).document

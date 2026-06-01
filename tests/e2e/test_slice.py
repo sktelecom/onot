@@ -78,11 +78,3 @@ def test_effective_expression_independent():
     )
     assert Package(name="x", license_declared=apache).effective_expression == apache
     assert Package(name="x").effective_expression is None
-
-
-def test_symbols_fallback_on_unparseable():
-    from onot.license import _symbols
-
-    # 파싱 불가 표현식은 원문 보존(폴백)
-    assert _symbols(")(garbage((") == [")(garbage(("]
-    assert sorted(_symbols("MIT AND Apache-2.0")) == ["Apache-2.0", "MIT"]

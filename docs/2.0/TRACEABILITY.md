@@ -16,9 +16,9 @@ deferred는 반드시 DECISIONS 근거를 가진다. 미매핑 요구항목이 �
 | R-VS | 수직 슬라이스 Excel→domain→HTML→CLI | M0.5 | done | (M0.5) | tests/e2e/test_slice, tests/ingest/test_excel_robust | L1 green 96% + L3 리뷰 반영(D-009) |
 | R-DOM-1 | 도메인 모델 8종 + 검증규칙 | M1 | done | (M1) | tests/unit/test_models, test_errors | L1/L2 PASS, L3 LGTM |
 | R-DOM-2 | 결정적 직렬화/정렬 안정성 | M1 | done | (M1) | test_models, tests/license/test_resolve | L2 PASS |
-| R-LIC-1 | 표현식 해석 매트릭스(OR/AND/WITH/+) | M2 | todo | - | tests/license/test_expression | - |
-| R-LIC-2 | 에어갭 100% 로컬(전문 번들) | M2 | todo | - | tests/license/test_offline | - |
-| R-LIC-3 | 캐시 결정성/무효화 | M2 | todo | - | tests/license/test_cache | - |
+| R-LIC-1 | 표현식 해석 매트릭스(OR/AND/WITH/+) | M2 | done | (M2) | tests/license/test_expression, test_resolver | L1/L2 PASS, L3 blocking 해소 |
+| R-LIC-2 | 에어갭 100% 로컬(전문 번들) | M2 | done | (M2) | test_resolver, test_catalog | L2 실증(NETWORK=0) |
+| R-LIC-3 | 캐시 결정성/무효화 | M2 | done | (M2) | tests/license/test_cache | L2 PASS |
 | R-ING-1 | 4개 어댑터(spdx/cdx/excel) + 자동감지 | M3 | todo | - | tests/ingest/* | - |
 | R-ING-2 | XXE/XML폭탄 방어 | M3 | todo | - | tests/ingest/test_xml_security | - |
 | R-ING-3 | 크로스포맷 등가성 | M3/M4 | todo | - | tests/ingest/test_equivalence | - |

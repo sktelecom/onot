@@ -10,8 +10,8 @@ if [ -f ".venv/bin/activate" ]; then
   source .venv/bin/activate
 fi
 
-# 커버리지 임계(단조 비감소). 마일스톤 진행에 따라 상향만 허용. 현재: M1=85
-COV_MIN="${ONOT_COV_MIN:-85}"
+# 커버리지 임계(단조 비감소). 마일스톤 진행에 따라 상향만 허용. 현재: M2=90
+COV_MIN="${ONOT_COV_MIN:-90}"
 
 echo "==> ruff check"
 ruff check src tests

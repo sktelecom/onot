@@ -73,3 +73,13 @@
 - **보류(advisory)**: #6 슬라이스 전용 픽스처 독립화 → M3에서 spec-호환 SBOM 픽스처 도입 시 함께(D-007). 현재는 안정적 커밋 자산 `sample/`에 골든을 묶음(수용).
 - **게이트 적용 범위**: M0.5는 acceptance 9.9의 M1~M9에 포함되지 않는 골격 슬라이스라 L1(green 96%)+L3(반영)로 종료. **전면 3중 게이트(L2 gate-verifier 포함)는 M1부터 적용**.
 - **영향**: §9.1 게이트, M3 픽스처.
+
+## D-010 — M2 라이선스 레이어: 번들·정규화·게이트
+
+- **날짜**: 2026-06-02 / **근거**: M2 3중 게이트
+- **번들**: SPDX license-list-data **v3.28.0**(727 licenses + 84 exceptions, 전문 포함, 5.0MB)을 `src/onot/license/data/licenses.json` 단일 파일로 vendoring(`scripts/update_license_data.py`). 에어갭에서 NETWORK=0으로 전문 채움(L2 실증).
+- **정규화 발견**: license-expression은 deprecated SPDX id(예: `GPL-2.0`)를 canonical(`GPL-2.0-only`)로 정규화한다. 고지문 품질에 유리하므로 그대로 채택. deprecated/reference 전파는 catalog→License 경로로 직접 테스트.
+- **L3 blocking 해소**: fetcher가 `httpx.InvalidURL` 미처리 → 깨진 표현식이 online fetch로 흘러 resolve 크래시. SPDX id 화이트리스트(`[A-Za-z0-9.+-]+`) + InvalidURL catch로 해소(회귀 테스트 `test_invalid_id_returns_none_without_network`). 보안(URL 인젝션)도 함께 차단.
+- **3중 게이트**: L1 green(74 테스트, cov 98.5%, 임계 90), L2 PASS(위장 0, 에어갭 실증), L3 blocking 해소. advisory도 반영했다 — deprecated 전파, 빈 텍스트 폴백, offline 무fetch, fetcher close 주석.
+- **골든 변경**: License.text가 번들 전문으로 채워져 슬라이스 골든이 4.5KB→121KB(전문 포함, 에어갭 고지문). 의도된 M2 산출.
+- **영향**: §3 라이선스, M4 렌더러(deprecated/reference_url 사용).
