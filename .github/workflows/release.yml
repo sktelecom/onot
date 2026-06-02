@@ -1,0 +1,51 @@
+name: release
+
+# v* 태그를 밀면 윈도우/macOS 설치 파일을 빌드해 GitHub Releases에 게시한다.
+# 예: git tag v2.0.0 && git push origin v2.0.0
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  publish-desktop:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20
+      - run: pip install -e ".[spdx,cyclonedx,excel,api]" pyinstaller
+      - run: pnpm -C frontend install --frozen-lockfile && pnpm -C frontend build
+      - name: build frozen sidecar
+        shell: bash
+        run: bash electron/build-sidecar.sh
+      - run: pnpm -C electron install
+      # 미서명(D-016). electron-builder는 기본적으로 git 태그가 아닌 package.json 버전으로
+      # 릴리스를 만들므로, 푼 태그에서 버전을 뽑아 extraMetadata.version으로 주입해 릴리스
+      # 태그·파일명을 일치시킨다. 태그에 '-'가 있으면(rc/beta 등) prerelease로, 없으면 바로
+      # 공개되는 release로 게시한다.
+      - name: build & publish to GitHub Releases
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          if [[ "$VERSION" == *-* ]]; then RELEASE_TYPE=prerelease; else RELEASE_TYPE=release; fi
+          echo "tag=$GITHUB_REF_NAME version=$VERSION releaseType=$RELEASE_TYPE"
+          pnpm -C electron exec electron-builder --config electron-builder.yml \
+            -c.extraMetadata.version="$VERSION" \
+            -c.publish.releaseType="$RELEASE_TYPE" \
+            --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

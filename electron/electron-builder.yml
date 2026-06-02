@@ -15,6 +15,11 @@ extraResources:
   - from: ../dist/onot-sidecar
     to: sidecar/onot-sidecar
 # 1차는 미서명(D: 코드 서명 인증서 주체 미정). 정식 배포 시 mac.notarize / win.certificate 추가.
+# 태그 푸시 시 release.yml이 --publish always로 GitHub Releases에 산출물을 올린다.
+publish:
+  provider: github
+  owner: sktelecom
+  repo: onot
 mac:
   target: dmg
   category: public.app-category.developer-tools

@@ -8,7 +8,27 @@ Excel을 입력으로 받아 HTML, Text, Markdown, PDF 고지문을 만듭니다
 > 2.0 재작성: 타입 안전한 Python 코어(표준 SPDX 라이브러리 재사용) + CLI + 로컬 API + 설치형
 > 데스크톱(Electron). 라이선스 전문을 번들해 **네트워크 없이(에어갭) 동작**합니다.
 
+## 다운로드 (Windows)
+
+개발 환경을 따로 꾸리지 않아도 됩니다. [Releases](https://github.com/sktelecom/onot/releases)
+페이지에서 최신 `onot-Setup-x.y.z.exe`를 받아 실행하면 설치됩니다. 앱을 열고 SBOM 파일을
+끌어다 놓으면 고지문을 미리 보고 내려받을 수 있습니다. 모든 처리는 로컬에서 이뤄지며 SBOM이
+외부로 나가지 않습니다.
+
+![onot 앱 화면](docs/images/04-preview.png)
+
+화면별로 따라 하는 자세한 설명은 [사용 가이드](docs/USER_GUIDE.md)에 스크린샷과 함께 정리해
+두었습니다.
+
+설치 파일에 코드 서명이 되어 있지 않아 첫 실행 때 Windows SmartScreen이 "알 수 없는 게시자"
+경고를 띄울 수 있습니다. 이때 `추가 정보`를 누른 뒤 `실행`을 선택하면 설치가 진행됩니다.
+
+macOS 사용자는 같은 Releases 페이지에서 `.dmg`를 받습니다. 서명이 없어 첫 실행 시
+앱을 우클릭한 뒤 `열기`를 선택해야 Gatekeeper를 통과합니다.
+
 ## 설치 (개발용)
+
+소스에서 직접 빌드하려는 경우입니다.
 
 ```bash
 python -m venv .venv && . .venv/bin/activate
