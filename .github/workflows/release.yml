@@ -33,9 +33,19 @@ jobs:
         shell: bash
         run: bash electron/build-sidecar.sh
       - run: pnpm -C electron install
-      # 미서명(D-016). electron-builder가 태그명을 릴리스로 잡고 산출물을 첨부한다.
-      # 프리릴리스 태그(예: v2.0.0-rc1)는 자동으로 prerelease로 표시된다.
+      # 미서명(D-016). electron-builder는 기본적으로 git 태그가 아닌 package.json 버전으로
+      # 릴리스를 만들므로, 푼 태그에서 버전을 뽑아 extraMetadata.version으로 주입해 릴리스
+      # 태그·파일명을 일치시킨다. 태그에 '-'가 있으면(rc/beta 등) prerelease로, 없으면 바로
+      # 공개되는 release로 게시한다.
       - name: build & publish to GitHub Releases
-        run: pnpm -C electron exec electron-builder --config electron-builder.yml --publish always
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          if [[ "$VERSION" == *-* ]]; then RELEASE_TYPE=prerelease; else RELEASE_TYPE=release; fi
+          echo "tag=$GITHUB_REF_NAME version=$VERSION releaseType=$RELEASE_TYPE"
+          pnpm -C electron exec electron-builder --config electron-builder.yml \
+            -c.extraMetadata.version="$VERSION" \
+            -c.publish.releaseType="$RELEASE_TYPE" \
+            --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

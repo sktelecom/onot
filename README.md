@@ -11,7 +11,7 @@ Excel을 입력으로 받아 HTML, Text, Markdown, PDF 고지문을 만듭니다
 ## 다운로드 (Windows)
 
 개발 환경을 따로 꾸리지 않아도 됩니다. [Releases](https://github.com/sktelecom/onot/releases)
-페이지에서 최신 `onot Setup x.y.z.exe`를 받아 실행하면 설치됩니다. 앱을 열고 SBOM 파일을
+페이지에서 최신 `onot-Setup-x.y.z.exe`를 받아 실행하면 설치됩니다. 앱을 열고 SBOM 파일을
 끌어다 놓으면 고지문을 미리 보고 내려받을 수 있습니다. 모든 처리는 로컬에서 이뤄지며 SBOM이
 외부로 나가지 않습니다.
 
