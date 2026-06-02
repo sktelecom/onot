@@ -26,9 +26,16 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0 # 커밋 히스토리 전체를 스캔
-      - uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # gitleaks-action은 조직 계정에 유료 라이선스를 요구하므로,
+      # MIT 라이선스인 gitleaks CLI 바이너리를 직접 받아 실행한다.
+      - name: Install gitleaks
+        run: |
+          VERSION=8.18.4
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz" \
+            | sudo tar -xz -C /usr/local/bin gitleaks
+          gitleaks version
+      - name: Run gitleaks
+        run: gitleaks detect --source . --redact --no-banner --verbose
 
   sast-semgrep:
     name: SAST (Semgrep)
