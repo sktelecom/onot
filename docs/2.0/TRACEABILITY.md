@@ -26,8 +26,8 @@ deferred는 반드시 DECISIONS 근거를 가진다. 미매핑 요구항목이 �
 | R-REN-2 | HTML autoescape(이스케이프 회귀) | M4 | done | (M4) | tests/rendering/test_escape | L2 실증 |
 | R-REN-3 | i18n 카탈로그 ko/en 정합성 | M4 | done | (M4) | tests/rendering/test_i18n | L2 PASS |
 | R-CLI-1 | Typer CLI + exit code 계약 | M5 | done | (M5) | tests/cli/test_cli | L1/L2 PASS, L3 blocking 2건 해소 |
-| R-API-1 | FastAPI parse/render/formats/healthz | M6 | todo | - | tests/api/test_api | - |
-| R-API-2 | 업로드/경로 traversal 검증 | M6 | todo | - | tests/api/test_security | - |
+| R-API-1 | FastAPI parse/render/formats/healthz | M6 | done | (M6) | tests/api/test_api | L1/L2 PASS, L3 blocking 0 |
+| R-API-2 | 업로드/경로 traversal 검증 | M6 | done | (M6) | tests/api/test_security | L2 실증(traversal·XXE·413) |
 | R-FE-1 | React 업로드→미리보기→다운로드 | M7 | todo | - | frontend vitest/e2e | - |
 | R-FE-2 | a11y + i18n 키 누락 0 | M7 | todo | - | axe/i18n 검사 | - |
 | R-EL-1 | Electron 사이드카 수명주기 | M8 | todo | - | e2e 사이드카 | - |

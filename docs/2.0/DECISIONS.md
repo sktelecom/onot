@@ -115,3 +115,13 @@
 - **L3 advisory 보완**: load_settings가 CLI 오버라이드를 yaml 위에 병합 후 Settings로 재검증(잘못된 lang → ConfigError → exit 4), 설정 우선순위 docstring 정정(CLI>yaml>env>기본).
 - **3중 게이트**: L1 green(148 테스트, cov 96.2%, 임계 90), L2 PASS, L3 blocking 2건 해소.
 - **영향**: §6.4 CLI. M6 API가 동일 코어 오케스트레이션 재사용.
+
+## D-014 — M6 FastAPI 사이드카
+
+- **날짜**: 2026-06-02 / **근거**: M6 3중 게이트
+- **API**: healthz, /api/formats, POST /api/parse(업로드→도메인 문서+경고), POST /api/render(업로드+포맷/언어/회사→산출물). CLI와 동일 코어(ingest 자동감지→resolver→render) 재사용. stateless: 업로드를 임시파일로 받아 처리 후 폐기.
+- **보안(L2 실증)**: 파일명은 suffix만 사용(traversal 차단), tempfile 시스템 생성, XXE 업로드는 ingest 가드로 400, 빈 400, 미지원 400, 대용량 413. OnotError→HTTP(IngestError 400, LicenseError 422, 기타 500). Content-Disposition 파일명은 slug라 헤더 주입 불가. CORS는 localhost/127.0.0.1만(Starlette fullmatch).
+- **L3 advisory 보완**: 중복 get_renderer 제거(download 시에만), render 경로 XXE 테스트, _http_error 매핑 단위 테스트(422/500 커버), XXE detail 단언, PDF render 테스트(importorskip).
+- **수용한 advisory**: 업로드를 메모리에 읽은 뒤 크기 체크(청크 조기거절 아님) — 127.0.0.1 단일 사용자 사이드카 + 25MB 한도라 수용. 향후 호스팅 SaaS 시 청크 검사 재검토.
+- **3중 게이트**: L1 green(170 테스트+2 skip, cov 96.5%, routes 100%, 임계 90), L2 PASS, L3 blocking 0.
+- **영향**: §6.2 API. M7 프론트가 이 API 호출, M8 Electron이 사이드카로 기동.

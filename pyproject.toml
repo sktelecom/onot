@@ -60,6 +60,7 @@ ignore = ["E501"]  # line length handled by formatter
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["B011"]
 "src/onot/cli/*" = ["B008"]  # Typer는 기본값에 Option() 호출이 공식 패턴
+"src/onot/api/*" = ["B008"]  # FastAPI는 기본값에 File()/Form() 호출이 공식 패턴
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
