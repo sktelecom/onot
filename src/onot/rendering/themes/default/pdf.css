@@ -1,0 +1,9 @@
+@page {
+  size: A4;
+  margin: 2cm;
+  @bottom-center { content: counter(page) " / " counter(pages); color: #888; font-size: 9pt; }
+}
+body { margin: 0; max-width: none; font-size: 10pt; }
+h2 { page-break-after: avoid; }
+.license { page-break-inside: avoid; }
+pre { white-space: pre-wrap; word-wrap: break-word; font-size: 8pt; }

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="{{ t.lang }}">
+<head>
+<meta charset="utf-8">
+<title>{{ t("notice.title", product=ctx.product) }}</title>
+<style>
+{{ css }}
+</style>
+</head>
+<body>
+<h1>{{ t("notice.title", product=ctx.product) }}</h1>
+{% if ctx.generated %}
+<p class="generated">{{ t("notice.generated", date=ctx.generated) }}</p>
+{% endif %}
+<p class="intro">{{ t("notice.intro") }}</p>
+
+<h2>{{ t("section.components") }}</h2>
+<table>
+<thead><tr><th>{{ t("table.name") }}</th><th>{{ t("table.version") }}</th><th>{{ t("table.license") }}</th><th>{{ t("table.copyright") }}</th></tr></thead>
+<tbody>
+{% for pkg in doc.packages %}
+<tr id="pkg-{{ pkg.name | anchor }}">
+<td>{{ pkg.name }}</td>
+<td>{{ pkg.version }}</td>
+<td>{{ pkg.expression_display | license_links(ctx.license_ids) }}</td>
+<td>{{ pkg.copyright_display }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+<h2>{{ t("section.licenses") }}</h2>
+{% for lic in doc.licenses %}
+<div class="license" id="{{ lic.license_id | anchor }}">
+<h3>{{ lic.name }}{% if lic.is_deprecated %} (deprecated){% endif %}</h3>
+<p class="used-by">{{ t("license.used_by") }}: {{ lic.used_by | map(attribute="display") | join(", ") }}</p>
+{% if lic.text %}
+<pre>{{ lic.text }}</pre>
+{% endif %}
+</div>
+{% endfor %}
+
+<h2>{{ t("offer.title") }}</h2>
+<p>{{ t("offer.body") }}</p>
+{% if ctx.source_url %}
+<p>{{ t("offer.source_url", url=ctx.source_url) }}</p>
+{% endif %}
+{% if ctx.email %}
+<p class="contact">{{ t("closing", email=ctx.email) }}</p>
+{% endif %}
+{% if ctx.copyright_holder %}
+<footer>{{ t("footer.copyright", year=ctx.copyright_year or "", holder=ctx.copyright_holder) }}</footer>
+{% endif %}
+</body>
+</html>

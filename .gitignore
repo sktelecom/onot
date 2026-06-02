@@ -26,8 +26,9 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
+# Python 빌드 산출물 lib는 루트 한정(frontend/src/lib, electron/lib는 소스라 추적해야 함)
+/lib/
+/lib64/
 parts/
 sdist/
 var/
@@ -56,5 +57,17 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Coverage / test artifacts
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+
+# Node / frontend
+node_modules/
+
+# onot 2.0 spike outputs
+spikes/**/out/
 
 

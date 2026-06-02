@@ -1,0 +1,42 @@
+# {{ t("notice.title", product=ctx.product) }}
+{% if ctx.generated %}
+
+_{{ t("notice.generated", date=ctx.generated) }}_
+{% endif %}
+
+{{ t("notice.intro") }}
+
+## {{ t("section.components") }}
+
+| {{ t("table.name") }} | {{ t("table.version") }} | {{ t("table.license") }} | {{ t("table.copyright") }} |
+|---|---|---|---|
+{% for pkg in doc.packages %}
+| {{ pkg.name }} | {{ pkg.version }} | {{ pkg.expression_display | replace("|", "\\|") }} | {{ pkg.copyright_display | replace("|", "\\|") | replace("\n", " ") }} |
+{% endfor %}
+
+## {{ t("section.licenses") }}
+{% for lic in doc.licenses %}
+### {{ lic.name }} (`{{ lic.license_id }}`)
+
+{{ t("license.used_by") }}: {{ lic.used_by | map(attribute="display") | join(", ") }}
+{% if lic.text %}
+
+{{ lic.text | md_code_block }}
+{% endif %}
+{% endfor %}
+
+## {{ t("offer.title") }}
+
+{{ t("offer.body") }}
+{% if ctx.source_url %}
+
+{{ t("offer.source_url", url=ctx.source_url) }}
+{% endif %}
+{% if ctx.email %}
+
+{{ t("closing", email=ctx.email) }}
+{% endif %}
+{% if ctx.copyright_holder %}
+
+{{ t("footer.copyright", year=ctx.copyright_year or "", holder=ctx.copyright_holder) }}
+{% endif %}

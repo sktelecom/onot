@@ -1,0 +1,1 @@
+"""onot CLI (Typer)."""

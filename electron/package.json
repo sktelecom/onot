@@ -1,0 +1,23 @@
+{
+  "name": "onot-desktop",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "main": "main.mjs",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "e2e": "playwright test",
+    "start": "electron .",
+    "build:frontend": "pnpm -C ../frontend build",
+    "build:sidecar": "bash build-sidecar.sh",
+    "dist": "pnpm build:frontend && pnpm build:sidecar && electron-builder"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["electron", "esbuild"]
+  }
+}
