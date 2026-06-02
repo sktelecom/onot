@@ -1,0 +1,88 @@
+name: security
+
+# TrustedOSS DevSecOps 가이드(https://trustedoss.github.io/devsecops/intro)에서
+# 권장하는 보안 검사를 CI에 적용한다. Black Duck(상용 SCA)을 대체한다.
+#   - Secret 탐지: Gitleaks
+#   - SAST: CodeQL + Semgrep
+#   - SCA: SBOM(CycloneDX) 생성 + grype 취약점 스캔
+# 컨테이너(Trivy)·IaC(Checkov)·DAST(ZAP)는 이 저장소에 대상(Dockerfile/IaC/배포
+# 웹 엔드포인트)이 없어 제외했다.
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+  schedule:
+    - cron: "0 2 * * 1" # 매주 월요일 02:00 UTC — CodeQL 정기 전수 스캔
+
+permissions:
+  contents: read
+
+jobs:
+  secret-scan:
+    name: Secret scanning (Gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # 커밋 히스토리 전체를 스캔
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  sast-semgrep:
+    name: SAST (Semgrep)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: semgrep/semgrep-action@v1
+        with:
+          config: >-
+            p/owasp-top-ten
+            p/security-audit
+            p/secrets
+
+  sast-codeql:
+    name: SAST (CodeQL)
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [python, javascript-typescript]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+      - uses: github/codeql-action/autobuild@v3
+      - uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
+
+  sca:
+    name: SCA (SBOM + grype)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Generate SBOM (CycloneDX)
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: cyclonedx-json
+          output-file: sbom.cdx.json
+      - name: Scan SBOM (grype)
+        uses: anchore/scan-action@v6
+        with:
+          sbom: sbom.cdx.json
+          fail-build: true
+          severity-cutoff: high # High 이상 취약점에서 빌드 차단
+      - name: Upload SBOM
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: sbom-cyclonedx
+          path: sbom.cdx.json

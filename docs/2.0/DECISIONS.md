@@ -153,7 +153,8 @@
 ## D-017 — M9 CI + 1.x legacy 보존
 
 - **날짜**: 2026-06-02 / **근거**: M9
-- **CI(`.github/workflows/ci.yml`)**: 1.x `python-app.yml`(py3.8, PyQt exe, flake8 오타)을 교체. 잡: lint(ruff), test-core(ubuntu/windows/macos × py3.11–3.13, cov≥90), test-pdf(ubuntu+pango), frontend(build+vitest), build-desktop(win/mac electron-builder + PyInstaller 사이드카), e2e-desktop(win/mac, node 사이드카 테스트 + Playwright-electron). (Black Duck Detect 보안 잡은 제거됨.)
+- **CI(`.github/workflows/ci.yml`)**: 1.x `python-app.yml`(py3.8, PyQt exe, flake8 오타)을 교체. 잡: lint(ruff), test-core(ubuntu/windows/macos × py3.11–3.13, cov≥90), test-pdf(ubuntu+pango), frontend(build+vitest), build-desktop(win/mac electron-builder + PyInstaller 사이드카), e2e-desktop(win/mac, node 사이드카 테스트 + Playwright-electron).
+- **보안 CI(`.github/workflows/security.yml`)**: 상용 Black Duck Detect를 제거하고 [TrustedOSS DevSecOps](https://trustedoss.github.io/devsecops/intro) 권장 오픈소스 스택으로 대체했다. 잡은 네 가지다. secret-scan은 Gitleaks로 시크릿을 탐지한다. sast-semgrep은 p/owasp-top-ten, p/security-audit, p/secrets 룰셋으로 정적 분석한다. sast-codeql은 python과 javascript-typescript를 분석하며 주간 cron으로 정기 전수 스캔한다. sca는 anchore/sbom-action으로 CycloneDX SBOM을 만든 뒤 anchore/scan-action(grype)으로 스캔해 High 이상 취약점에서 빌드를 차단한다. 컨테이너(Trivy), IaC(Checkov), DAST(ZAP)는 대상인 Dockerfile, IaC, 배포 웹 엔드포인트가 없어 제외했다.
 - **Playwright-electron E2E**(electron/e2e/app.e2e.mjs): 실제 앱 기동 → 사이드카 파싱 → 미리보기 풀 플로우. CI(Win/mac)에서 실행. dev 사이드카 python은 `ONOT_SIDECAR_PYTHON`로 재정의(CI는 시스템 python).
 - **1.x legacy 보존**: `legacy/onot/`·`legacy/test/`를 이번 릴리스에서 제거하지 않고 참조용으로 보존(import 경로 분리됨, src-layout과 충돌 없음). 완전 제거는 2.0 안정화 후 후속 결정. acceptance 9.9의 "1.x 잔재 처리"를 보존으로 명시 결정.
 - **영향**: §8.4 CI, 최종 수용 기준.
