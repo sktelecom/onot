@@ -8,7 +8,12 @@ cd "$(dirname "$0")/.."
 if [ -f ".venv/bin/activate" ]; then
   # shellcheck disable=SC1091
   source .venv/bin/activate
+elif [ -f ".venv/Scripts/activate" ]; then
+  # Windows venv
+  # shellcheck disable=SC1091
+  source .venv/Scripts/activate
 fi
+# venv가 없으면(예: CI에서 시스템 python에 직접 설치) 현재 PATH의 python/pyinstaller 사용
 
 rm -rf build dist onot-sidecar.spec
 pyinstaller --noconfirm --onedir --name onot-sidecar \

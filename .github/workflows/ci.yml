@@ -1,0 +1,156 @@
+name: ci
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff
+      - run: ruff check src tests
+      - run: ruff format --check src tests
+
+  test-core:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ["3.11", "3.12", "3.13"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install -e ".[spdx,cyclonedx,excel,api,dev]"
+      # 네트워크 없이도 통과해야 한다(respx mock + 번들 카탈로그)
+      - run: pytest --cov=onot --cov-report=xml --cov-fail-under=90
+
+  test-pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: install WeasyPrint native deps
+        run: sudo apt-get update && sudo apt-get install -y libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf-2.0-0 libffi-dev
+      - run: pip install -e ".[spdx,cyclonedx,excel,api,pdf,dev]"
+      - run: pytest tests/rendering/test_renderers.py -k pdf
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - run: pnpm -C frontend install --frozen-lockfile
+      - run: pnpm -C frontend build
+      - run: pnpm -C frontend test
+
+  build-desktop:
+    needs: [lint, test-core, frontend]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: pip install -e ".[spdx,cyclonedx,excel,api]" pyinstaller
+      - run: pnpm -C frontend install --frozen-lockfile && pnpm -C frontend build
+      - name: build frozen sidecar
+        shell: bash
+        run: bash electron/build-sidecar.sh
+      - run: pnpm -C electron install
+      # 1차 미서명(D-016). 정식 배포 시 서명/공증 secrets 추가.
+      - run: pnpm -C electron exec electron-builder --config electron/electron-builder.yml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: onot-${{ matrix.os }}
+          path: electron/dist-electron/
+
+  e2e-desktop:
+    needs: [build-desktop]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: pip install -e ".[spdx,cyclonedx,excel,api]"
+      - run: pnpm -C frontend install --frozen-lockfile && pnpm -C frontend build
+      - run: pnpm -C electron install
+      # Playwright-electron(_electron)은 번들 Electron을 쓰므로 별도 chromium 설치 불필요.
+      - name: sidecar lifecycle + Playwright-electron E2E
+        shell: bash
+        env:
+          ONOT_SIDECAR_PYTHON: python
+          VITE_DEV_SERVER: http://localhost:4173
+        run: |
+          # dev 모드 E2E는 정적 프론트(빌드 산출물)를 vite preview로 서빙
+          pnpm -C frontend exec vite preview --port 4173 --strictPort &
+          for i in $(seq 1 30); do curl -sf http://localhost:4173 >/dev/null && break; sleep 1; done
+          node --test electron/test/*.test.mjs
+          pnpm -C electron run e2e
+
+  security:
+    needs: [lint, test-core]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    # secrets는 if 표현식에서 직접 못 쓰므로 env로 옮겨 검사한다
+    env:
+      BLACKDUCK_URL: ${{ secrets.BLACKDUCK_URL }}
+      BLACKDUCK_API_TOKEN: ${{ secrets.BLACKDUCK_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Black Duck Detect
+        if: env.BLACKDUCK_URL != ''
+        shell: bash
+        run: |
+          bash <(curl -s -L https://detect.synopsys.com/detect10.sh) \
+            --blackduck.url="$BLACKDUCK_URL" \
+            --blackduck.api.token="$BLACKDUCK_API_TOKEN" \
+            --blackduck.trust.cert=true \
+            --detect.project.name=onot \
+            --detect.project.version.name=2.0.0 \
+            --detect.detector.search.depth=2 \
+            --detect.project.version.distribution=SAAS
+      - name: notice when Black Duck is not configured
+        if: env.BLACKDUCK_URL == ''
+        run: echo "Black Duck secrets not set — skipping scan."

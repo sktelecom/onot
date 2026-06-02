@@ -9,7 +9,8 @@ import { findFreePort, Sidecar } from "../lib/sidecar.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(here, "..", "..");
-const venvPython = path.join(repoRoot, ".venv", "bin", "python");
+const venvPython =
+  process.env.ONOT_SIDECAR_PYTHON ?? path.join(repoRoot, ".venv", "bin", "python");
 
 function isAlive(pid) {
   if (pid === null) return false;

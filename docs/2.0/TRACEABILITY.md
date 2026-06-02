@@ -5,9 +5,9 @@ deferred는 반드시 DECISIONS 근거를 가진다. 미매핑 요구항목이 �
 
 | ID | 플랜 요구항목 | 마일스톤 | 상태 | 근거 커밋 | 검증 테스트 | verifier |
 |----|--------------|----------|------|-----------|-------------|----------|
-| R-INF-1 | src-layout 패키지 골격 + pyproject(3.11+) | 스캐폴드 | doing | - | `pytest` 수집 | - |
-| R-INF-2 | gate.sh L1(ruff/format/pytest/cov) | 스캐폴드 | doing | - | gate.sh 실행 | - |
-| R-INF-3 | TRACEABILITY/DECISIONS 운영 | 스캐폴드 | doing | - | 파일 존재 | - |
+| R-INF-1 | src-layout 패키지 골격 + pyproject(3.11+) | 스캐폴드 | done | (스캐폴드) | pytest 수집 | - |
+| R-INF-2 | gate.sh L1(ruff/format/pytest/cov + frontend + electron) | 스캐폴드~M8 | done | (누적) | gate.sh 실행 | 단조 강화 |
+| R-INF-3 | TRACEABILITY/DECISIONS 운영 | 스캐폴드 | done | (전 마일스톤) | 파일 갱신 | D-001~017 |
 | R-S1 | license-expression/spdx-tools API 검증 | M0 | done | (M0 스파이크) | spikes/s1_license_spdx | PASS (D-004) |
 | R-S2 | SPDX 3.0 지원 성숙도 | M0 | deferred | (M0 스파이크) | spikes/s2 probe | 3.0 입력 후속 분리 (D-005) |
 | R-S3 | frozen importlib.resources 접근 | M0 | done | (M0 스파이크) | spikes/s3_frozen | PASS, '/' 체이닝 (D-006) |
@@ -32,5 +32,5 @@ deferred는 반드시 DECISIONS 근거를 가진다. 미매핑 요구항목이 �
 | R-FE-2 | a11y + i18n 키 누락 0 | M7 | done | (M7) | App.test(axe), i18n.test | L2 실증(axe 0, 파리티) |
 | R-EL-1 | Electron 사이드카 수명주기 | M8 | done | (M8) | electron/test/sidecar.test | L1/L2 PASS, L3 blocking 3건 해소 |
 | R-EL-2 | printToPDF | M8 | done | (M8) | App.test(pdf 경로), main.mjs | 단위 검증, 실기동 E2E는 M9 |
-| R-CI-1 | GH Actions Win+macOS 매트릭스 | M9 | todo | - | ci.yml green | - |
-| R-CI-2 | Playwright-electron E2E 6시나리오 | M9 | todo | - | e2e-desktop | - |
+| R-CI-1 | GH Actions Win+macOS 매트릭스 | M9 | done | (M9) | .github/workflows/ci.yml | YAML 검증, 실행은 push 시 |
+| R-CI-2 | Playwright-electron E2E | M9 | done | (M9) | electron/e2e/app.e2e.mjs | 스펙 작성, 실행은 CI |

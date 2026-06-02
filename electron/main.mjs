@@ -17,7 +17,10 @@ let appOrigin = "file://";
 
 function sidecarCommand() {
   if (isDev) {
-    const python = path.resolve(here, "..", ".venv", "bin", isWin ? "python.exe" : "python");
+    // CI/대체 환경은 ONOT_SIDECAR_PYTHON으로 python 경로 재정의(기본: 로컬 .venv)
+    const python =
+      process.env.ONOT_SIDECAR_PYTHON ??
+      path.resolve(here, "..", ".venv", "bin", isWin ? "python.exe" : "python");
     return { command: python, args: ["-m", "onot.api.serve"] };
   }
   const bin = isWin ? "onot-sidecar.exe" : "onot-sidecar";

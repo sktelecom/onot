@@ -1,72 +1,75 @@
 # onot
 
-`onot` is a tool that automatically creates open source software notices based on [SPDX documents](https://spdx.dev/use-documents/). `onot` is an open source project co-developed by [Kakao](https://github.com/kakao) and [SK telecom](https://github.com/sktelecom). We welcome your contributions.
+`onot`은 SBOM 문서로부터 오픈소스 고지문(OSS Notice)을 자동 생성하는 도구입니다.
+[SPDX](https://spdx.dev) 2.x(JSON/YAML/Tag-Value/RDF), [CycloneDX](https://cyclonedx.org)(JSON/XML),
+Excel을 입력으로 받아 HTML, Text, Markdown, PDF 고지문을 만듭니다. Kakao와 SK telecom이 함께
+개발하는 오픈소스 프로젝트입니다.
 
-## Installation
+> 2.0 재작성: 타입 안전한 Python 코어(표준 SPDX 라이브러리 재사용) + CLI + 로컬 API + 설치형
+> 데스크톱(Electron). 라이선스 전문을 번들해 **네트워크 없이(에어갭) 동작**합니다.
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
-
-```bash
-pip install onot
-```
-
-or you can install latest verson from source code. 
+## 설치 (개발용)
 
 ```bash
-git clone https://github.com/sktelecom/onot.git ~/onot
-cd ~/onot; python setup.py install
+python -m venv .venv && . .venv/bin/activate
+pip install -e ".[spdx,cyclonedx,excel,api]"
 ```
 
-## Usage
+## CLI
 
-### Command Line
+```bash
+# SBOM(포맷 자동 감지) → 여러 포맷 고지문 생성
+onot generate -i sbom.spdx.json -f html -f markdown --output-dir ./output
 
-1. Prepare your input file. The input file is an [Excel format SPDX document](./sample/SPDXRdfExample-v2.1.xlsx), and refer to the next page for [how to prepare it](./docs/how_to_prepare.md).
+# 옵션
+#   -f/--format       html | text | markdown | pdf (반복 지정 가능)
+#   --lang            ko | en
+#   --config          onot.yaml (회사 정보 등)
+#   --online          번들에 없는 라이선스 전문을 원격 보충(기본은 오프라인)
+#   --stdout          단일 텍스트 포맷을 표준출력으로
 
-2. Run onot command with two arguments. 
-   - `-i` or `--input` : SPDX document in Excel format containing open source information to be included in the OSS notice
-   - `-o` or `--output_format` : File type of OSS notice to be generated (`html` or `text`)
-   - Sample output : [output/OSS_Notice_SPDX-Tools-v2.0_20221009_180948.html](https://sktelecom.github.io/compliance/OSS_Notice_Sample_Application_20221011_140301.html)
-
-```python
-onot --input sample/SPDXRdfExample-v2.3.xlsx --output_format html
+onot formats     # 지원 출력 포맷
+onot version
 ```
 
-### GUI for windows
+입력 포맷은 확장자와 내용으로 자동 감지합니다(SPDX JSON과 CycloneDX JSON 구분 포함).
+PDF는 `pip install ".[pdf]"`(WeasyPrint)가 필요하며, 데스크톱 앱에서는 내장 변환을 씁니다.
 
-1. Prepare your input file. The input file is an [Excel format SPDX document](./sample/SPDXRdfExample-v2.1.xlsx), and refer to the next page for [how to prepare it](./docs/how_to_prepare.md).
+## 로컬 API (사이드카)
 
-2. Run the command below or download zip file from release assets. 
-
-```shell
-$ pyinstaller -w onot/gui/onot_app.py
+```bash
+onot-sidecar --port 8765
+# POST /api/parse   (업로드 → 파싱 결과)
+# POST /api/render  (업로드 + 포맷/언어/회사 → 고지문)
+# GET  /api/formats, GET /healthz
 ```
 
-3. Run the onot_app.exe file. Executable file is located in the onot_app directory.
+## 데스크톱 앱 (Electron)
 
-## Test
-
-```python
-python -m unittest
+```bash
+pnpm -C frontend install && pnpm -C frontend build
+pnpm -C electron install && pnpm -C electron start   # 개발 실행
+pnpm -C electron run dist                            # 패키징(.dmg/.exe/.AppImage)
 ```
 
-## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+업로드 → 미리보기 → 다운로드. 모든 처리가 로컬에서 수행되어 SBOM이 외부로 나가지 않습니다.
 
-Please make sure to update tests as appropriate.
+## 개발
 
-### Maintainer
+```bash
+bash .claude/gate.sh   # lint + pytest(cov≥90) + frontend build/test + electron 사이드카 테스트
+```
+
+라이선스 데이터 갱신: `python scripts/update_license_data.py` (SPDX license-list-data 번들).
+설계·결정 문서는 `docs/2.0/`(TRACEABILITY.md, DECISIONS.md) 참고. 1.x 코드는 `legacy/`에 보존.
+
+## Maintainer
 
 | Name | Company | Email |
 |--|--|--|
-| [Rogers](https://github.com/HyunMinH) (한현민) | Kakao| um4825@gmail.com |
+| [Rogers](https://github.com/HyunMinH) (한현민) | Kakao | um4825@gmail.com |
 | [Haksung](https://github.com/haksungjang) (장학성) | SK telecom | hakssung@gmail.com |
 
-### Contributor
-
-| Name | Company | Email |
-|--|--|--|
-| [Cindy](https://github.com/blackstrida) (이승아) | Kakao| blackstrida@gmail.com |
-
 ## License
+
 [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)

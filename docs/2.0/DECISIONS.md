@@ -149,3 +149,11 @@
 - **위임(M9 CI)**: 실제 Electron 기동 + Playwright-electron E2E, electron-builder 패키징(.dmg/.exe), Win/mac 매트릭스, 코드 서명/공증(D-008, electron-builder.yml에 미서명 명시).
 - **3중 게이트**: L1 green(Python 170 + 프론트 24 + electron 2), L2 PASS(실증 4 PASS, 위임 표면화), L3 blocking 3건 해소.
 - **영향**: §6.3 Electron, §9.5 S4/S5 스파이크. M9 CI 패키징·E2E.
+
+## D-017 — M9 CI + 1.x legacy 보존
+
+- **날짜**: 2026-06-02 / **근거**: M9
+- **CI(`.github/workflows/ci.yml`)**: 1.x `python-app.yml`(py3.8, PyQt exe, flake8 오타)을 교체. 잡: lint(ruff), test-core(ubuntu/windows/macos × py3.11–3.13, cov≥90), test-pdf(ubuntu+pango), frontend(build+vitest), build-desktop(win/mac electron-builder + PyInstaller 사이드카), e2e-desktop(win/mac, node 사이드카 테스트 + Playwright-electron), security(Black Duck Detect, secrets 있을 때만). secrets는 if에서 직접 못 쓰므로 env 경유.
+- **Playwright-electron E2E**(electron/e2e/app.e2e.mjs): 실제 앱 기동 → 사이드카 파싱 → 미리보기 풀 플로우. CI(Win/mac)에서 실행. dev 사이드카 python은 `ONOT_SIDECAR_PYTHON`로 재정의(CI는 시스템 python).
+- **1.x legacy 보존**: `legacy/onot/`·`legacy/test/`를 이번 릴리스에서 제거하지 않고 참조용으로 보존(import 경로 분리됨, src-layout과 충돌 없음). 완전 제거는 2.0 안정화 후 후속 결정. acceptance 9.9의 "1.x 잔재 처리"를 보존으로 명시 결정.
+- **영향**: §8.4 CI, 최종 수용 기준.

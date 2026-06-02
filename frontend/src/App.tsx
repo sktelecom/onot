@@ -151,7 +151,11 @@ export default function App() {
           <SettingsPanel uiLang={uiLang} value={settings} onChange={setSettings} />
           <Card>
             <div className="flex flex-col gap-2">
-              <Button onClick={handleGenerate} disabled={!file || status !== "idle"}>
+              <Button
+                data-testid="generate-preview"
+                onClick={handleGenerate}
+                disabled={!file || status !== "idle"}
+              >
                 {status === "rendering" ? t(uiLang, "rendering") : t(uiLang, "generate")}
               </Button>
               <div className="flex flex-wrap gap-2">
