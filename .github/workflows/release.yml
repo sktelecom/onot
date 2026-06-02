@@ -1,0 +1,41 @@
+name: release
+
+# v* 태그를 밀면 윈도우/macOS 설치 파일을 빌드해 GitHub Releases에 게시한다.
+# 예: git tag v2.0.0 && git push origin v2.0.0
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  publish-desktop:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20
+      - run: pip install -e ".[spdx,cyclonedx,excel,api]" pyinstaller
+      - run: pnpm -C frontend install --frozen-lockfile && pnpm -C frontend build
+      - name: build frozen sidecar
+        shell: bash
+        run: bash electron/build-sidecar.sh
+      - run: pnpm -C electron install
+      # 미서명(D-016). electron-builder가 태그명을 릴리스로 잡고 산출물을 첨부한다.
+      # 프리릴리스 태그(예: v2.0.0-rc1)는 자동으로 prerelease로 표시된다.
+      - name: build & publish to GitHub Releases
+        run: pnpm -C electron exec electron-builder --config electron-builder.yml --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
