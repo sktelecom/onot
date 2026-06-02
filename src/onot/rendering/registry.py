@@ -28,3 +28,8 @@ def get_renderer(fmt: str, settings: Settings | None = None, lang: str | None = 
 
 def available_formats() -> tuple[str, ...]:
     return ("html", "text", "markdown", "pdf")
+
+
+def is_supported(fmt: str) -> bool:
+    """별칭(txt/md) 포함 지원 포맷 여부."""
+    return fmt in _RENDERERS

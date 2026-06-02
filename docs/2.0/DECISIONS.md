@@ -103,3 +103,15 @@
 - **L3 advisory 보완**: i18n 카탈로그 MappingProxyType(불변)+플레이스홀더 불일치 방어적 포맷, markdown md_code_block(백틱 런보다 긴 펜스로 fence 탈출 방지), OutputWriter 테스트 추가, 전 언어·전 포맷 풀렌더 테스트(플레이스홀더 키 커버), 미사용 M0.5 템플릿 제거.
 - **3중 게이트**: L1 green(134 테스트, cov 96.1%, 임계 90), L2 PASS(이스케이프·i18n·골든 실증, 위장 0), L3 blocking 0 + advisory 보완.
 - **영향**: §4 렌더링, §5 i18n, M5 CLI(다중 포맷 연결).
+
+## D-013 — M5 CLI: 다중 포맷·자동감지·종료 코드
+
+- **날짜**: 2026-06-02 / **근거**: M5 3중 게이트
+- **CLI**: generate(다중 -f, --output-dir, --lang, --config yaml, --offline/--online, --strict, --stdout), formats, version. load_document 자동감지 → LicenseResolver → 각 포맷 render → OutputWriter. 파일명에 timestamp.
+- **종료 코드**: IngestError=2, LicenseError=3, ConfigError=4, 기타=1.
+- **L3 blocking 2건 해소**:
+  - unknown --format이 ValueError로 트레이스백 노출 → is_supported로 사전 검증 후 클린 메시지 + exit 2(별칭 txt/md 포함). 중복 포맷 dedup.
+  - --online이 무동작(fetcher 미주입) → 온라인 시 RemoteLicenseFetcher + DiskCache(버전 네임스페이스) 주입. ConfigError→4 매핑 추가.
+- **L3 advisory 보완**: load_settings가 CLI 오버라이드를 yaml 위에 병합 후 Settings로 재검증(잘못된 lang → ConfigError → exit 4), 설정 우선순위 docstring 정정(CLI>yaml>env>기본).
+- **3중 게이트**: L1 green(148 테스트, cov 96.2%, 임계 90), L2 PASS, L3 blocking 2건 해소.
+- **영향**: §6.4 CLI. M6 API가 동일 코어 오케스트레이션 재사용.

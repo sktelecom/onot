@@ -25,7 +25,7 @@ deferred는 반드시 DECISIONS 근거를 가진다. 미매핑 요구항목이 �
 | R-REN-1 | 4개 렌더러(html/text/md/pdf) | M4 | done | (M4) | tests/rendering/test_renderers, test_golden | L1/L2 PASS, L3 blocking 0 |
 | R-REN-2 | HTML autoescape(이스케이프 회귀) | M4 | done | (M4) | tests/rendering/test_escape | L2 실증 |
 | R-REN-3 | i18n 카탈로그 ko/en 정합성 | M4 | done | (M4) | tests/rendering/test_i18n | L2 PASS |
-| R-CLI-1 | Typer CLI + exit code 계약 | M5 | todo | - | tests/cli/test_cli | - |
+| R-CLI-1 | Typer CLI + exit code 계약 | M5 | done | (M5) | tests/cli/test_cli | L1/L2 PASS, L3 blocking 2건 해소 |
 | R-API-1 | FastAPI parse/render/formats/healthz | M6 | todo | - | tests/api/test_api | - |
 | R-API-2 | 업로드/경로 traversal 검증 | M6 | todo | - | tests/api/test_security | - |
 | R-FE-1 | React 업로드→미리보기→다운로드 | M7 | todo | - | frontend vitest/e2e | - |

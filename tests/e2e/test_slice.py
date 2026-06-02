@@ -46,11 +46,13 @@ def test_effective_expression_fallback():
 
 
 def test_cli_generate(tmp_path):
-    out = tmp_path / "notice.html"
-    result = CliRunner().invoke(app, ["generate", "-i", str(SAMPLE), "-o", str(out)])
+    result = CliRunner().invoke(
+        app, ["generate", "-i", str(SAMPLE), "-f", "html", "--output-dir", str(tmp_path)]
+    )
     assert result.exit_code == 0, result.output
-    assert out.exists()
-    assert "OSS Notice for SPDX-Tools-v2.0" in out.read_text(encoding="utf-8")
+    files = list(tmp_path.glob("*.html"))
+    assert len(files) == 1
+    assert "OSS Notice for SPDX-Tools-v2.0" in files[0].read_text(encoding="utf-8")
 
 
 def test_cli_version():
