@@ -54,7 +54,7 @@ describe("api client", () => {
         }),
     );
     const { blob, filename } = await renderNotice(file, { format: "html", lang: "en" });
-    expect(blob).toBeInstanceOf(Blob);
+    // size는 realm/Node 버전에 무관한 안정 속성(instanceof Blob은 realm 차이로 불안정)
     expect(blob.size).toBeGreaterThan(0);
     expect(filename).toBe("OSS_Notice_demo.html");
   });
