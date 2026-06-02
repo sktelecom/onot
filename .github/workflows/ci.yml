@@ -90,7 +90,10 @@ jobs:
       - run: pnpm -C electron install
       # 1차 미서명(D-016). 정식 배포 시 서명/공증 secrets 추가.
       # cwd가 electron/이므로 config는 그 기준 상대경로
-      - run: pnpm -C electron exec electron-builder --config electron-builder.yml
+      # 이 잡은 빌드 검증 전용 — electron-builder.yml의 publish 설정 때문에 CI(push)에서
+      # 게시를 시도해 GH_TOKEN을 요구하지 않도록 --publish never로 못 박는다. 실제 게시는
+      # GH_TOKEN을 가진 release.yml(--publish always)만 담당한다.
+      - run: pnpm -C electron exec electron-builder --config electron-builder.yml --publish never
       - uses: actions/upload-artifact@v7
         with:
           name: onot-${{ matrix.os }}
