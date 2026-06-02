@@ -14,7 +14,7 @@ from onot.license import resolve
 from onot.rendering.html import render_html
 
 ROOT = Path(__file__).resolve().parents[2]
-SAMPLE = ROOT / "sample" / "SPDXRdfExample-v2.3.xlsx"
+SAMPLE = ROOT / "tests" / "fixtures" / "sbom" / "example.spdx.xlsx"
 GOLDEN = ROOT / "tests" / "golden" / "slice_notice.html"
 
 

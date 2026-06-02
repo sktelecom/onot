@@ -95,7 +95,7 @@
 - **3중 게이트**: L1 green(101 테스트, cov 96.9%, 임계 90), L2 PASS(XXE 실증, 위장 0), L3 blocking 2건 해소.
 - **영향**: §2 입력 어댑터, M4 렌더러.
 
-## D-012 — M4 core+rendering: 4 렌더러·i18n·테마·config
+## D-012 — M4 core+rendering: 4 렌더러, i18n, 테마, config
 
 - **날짜**: 2026-06-02 / **근거**: M4 3중 게이트
 - **렌더링**: Renderer ABC → TemplateRenderer → Html/Text/Markdown/Pdf. Jinja2 autoescape(HTML), 테마 CSS 분리, license_links 앵커(토큰화), context 병합(회사>SBOM), i18n(en/ko YAML 카탈로그). PDF는 WeasyPrint extras(설치형은 Electron printToPDF=M8). 골든 html/text/md 재생성.
@@ -157,3 +157,10 @@
 - **Playwright-electron E2E**(electron/e2e/app.e2e.mjs): 실제 앱 기동 → 사이드카 파싱 → 미리보기 풀 플로우. CI(Win/mac)에서 실행. dev 사이드카 python은 `ONOT_SIDECAR_PYTHON`로 재정의(CI는 시스템 python).
 - **1.x legacy 보존**: `legacy/onot/`·`legacy/test/`를 이번 릴리스에서 제거하지 않고 참조용으로 보존(import 경로 분리됨, src-layout과 충돌 없음). 완전 제거는 2.0 안정화 후 후속 결정. acceptance 9.9의 "1.x 잔재 처리"를 보존으로 명시 결정.
 - **영향**: §8.4 CI, 최종 수용 기준.
+- **갱신(2026-06-02, 보존→제거)**: 1.x 잔재를 완전 제거하기로 결정 변경. 제거 대상은 다음과 같다.
+  - `legacy/onot/`, `legacy/test/`
+  - 루트 `setup.py`, `requirements.txt`
+  - 1.x 산출물 `output/`
+  - 1.x용 Excel 샘플 `sample/`과 준비 가이드 `docs/how_to_prepare.md`
+
+  이력은 git history로 충분히 추적할 수 있고, src-layout(`src/onot/`)과의 그림자 위험과 리포 혼란을 없애는 편이 보존 이득보다 크다고 판단했다. README의 legacy 언급도 함께 정리한다.

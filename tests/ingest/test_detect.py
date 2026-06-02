@@ -26,7 +26,7 @@ def test_detect_fixtures(name, fmt):
 
 
 def test_detect_excel():
-    assert detect_format(ROOT / "sample" / "SPDXRdfExample-v2.3.xlsx") == "excel"
+    assert detect_format(ROOT / "tests" / "fixtures" / "sbom" / "example.spdx.xlsx") == "excel"
 
 
 def test_json_disambiguation(tmp_path):

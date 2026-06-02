@@ -61,7 +61,7 @@ bash .claude/gate.sh   # lint + pytest(cov≥90) + frontend build/test + electro
 ```
 
 라이선스 데이터 갱신: `python scripts/update_license_data.py` (SPDX license-list-data 번들).
-설계·결정 문서는 `docs/2.0/`(TRACEABILITY.md, DECISIONS.md) 참고. 1.x 코드는 `legacy/`에 보존.
+설계·결정 문서는 `docs/2.0/`(TRACEABILITY.md, DECISIONS.md) 참고. 1.x 코드는 제거됨(이력은 git history 참고, D-017).
 
 ## Maintainer
 

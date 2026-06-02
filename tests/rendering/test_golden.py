@@ -11,7 +11,7 @@ from onot.license import resolve
 from onot.rendering import render
 
 ROOT = Path(__file__).resolve().parents[2]
-SAMPLE = ROOT / "sample" / "SPDXRdfExample-v2.3.xlsx"
+SAMPLE = ROOT / "tests" / "fixtures" / "sbom" / "example.spdx.xlsx"
 GOLDEN = ROOT / "tests" / "golden"
 
 

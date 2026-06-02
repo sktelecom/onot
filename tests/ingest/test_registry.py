@@ -14,6 +14,6 @@ def test_available_formats():
 
 
 def test_load_document_excel_end_to_end():
-    res = load_document(ROOT / "sample" / "SPDXRdfExample-v2.3.xlsx")
+    res = load_document(ROOT / "tests" / "fixtures" / "sbom" / "example.spdx.xlsx")
     assert res.document.name
     assert res.document.packages
