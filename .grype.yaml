@@ -1,0 +1,17 @@
+# grype 취약점 스캔 설정 — CI의 SCA 잡(.github/workflows/security.yml)에서 사용한다.
+# High 이상 심각도에서 빌드를 차단한다.
+fail-on-severity: high
+
+ignore:
+  # GHSA-5xrq-8626-4rwp (Critical) — Vitest UI 서버가 수신 대기 중일 때 임의 파일
+  # 읽기/실행이 가능한 취약점. 다음 근거로 무시한다(다른 vitest 취약점은 계속 차단).
+  #   - vitest는 프론트엔드 테스트 전용 devDependency로, 배포물(Electron 앱·파이썬
+  #     패키지)이나 빌드 산출물(vite build 결과)에 포함되지 않는다.
+  #   - 취약점은 `vitest --ui` UI 서버가 떠 있을 때만 성립하나, CI는 `vitest run`만
+  #     실행하고 UI 서버를 띄우지 않는다 → 실제 노출 경로 없음.
+  #   - 패치는 vitest 4.1.0부터 제공되지만 vitest 4는 vite 6+를 요구해 프로덕션 빌드
+  #     체인(현재 vite 5)까지 강제 업그레이드를 유발한다. 업그레이드는 별도 작업으로 분리.
+  - vulnerability: GHSA-5xrq-8626-4rwp
+    package:
+      name: vitest
+      type: npm
