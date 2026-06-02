@@ -57,6 +57,16 @@ export default function App() {
     if (!file) return;
     setError("");
     try {
+      // 설치형(Electron): PDF는 사이드카가 아니라 printToPDF로 생성(S5).
+      if (format === "pdf" && window.onot?.exportPdf) {
+        const { blob } = await renderNotice(file, {
+          format: "html",
+          lang: settings.lang,
+          company: settings.company,
+        });
+        await window.onot.exportPdf(await blob.text(), "OSS_Notice.pdf");
+        return;
+      }
       const { blob, filename } = await renderNotice(file, {
         format,
         lang: settings.lang,

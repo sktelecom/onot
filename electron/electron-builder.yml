@@ -1,0 +1,25 @@
+appId: dev.onot.desktop
+productName: onot
+directories:
+  output: dist-electron
+  buildResources: build
+files:
+  - main.mjs
+  - preload.mjs
+  - lib/**/*
+  - package.json
+# 프론트 정적 빌드 + frozen 사이드카를 리소스로 동봉
+extraResources:
+  - from: ../frontend/dist
+    to: frontend
+  - from: ../dist/onot-sidecar
+    to: sidecar/onot-sidecar
+# 1차는 미서명(D: 코드 서명 인증서 주체 미정). 정식 배포 시 mac.notarize / win.certificate 추가.
+mac:
+  target: dmg
+  category: public.app-category.developer-tools
+  identity: null
+win:
+  target: nsis
+linux:
+  target: AppImage

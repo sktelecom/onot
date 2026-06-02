@@ -30,4 +30,9 @@ else
   echo "  (skipped: frontend/node_modules 없음 — 'pnpm -C frontend install' 후 재실행)"
 fi
 
+# M8+: Electron 사이드카 수명주기(dev 사이드카로 spawn→health→stop→고아 없음).
+# 실제 frozen 빌드/Electron 패키징/Playwright-electron E2E는 M9 CI(Win/mac)에서.
+echo "==> electron sidecar lifecycle"
+node --test electron/test/*.test.mjs
+
 echo "gate OK"

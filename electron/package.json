@@ -1,0 +1,18 @@
+{
+  "name": "onot-desktop",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "main": "main.mjs",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "start": "electron .",
+    "build:frontend": "pnpm -C ../frontend build",
+    "build:sidecar": "bash build-sidecar.sh",
+    "dist": "pnpm build:frontend && pnpm build:sidecar && electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  }
+}

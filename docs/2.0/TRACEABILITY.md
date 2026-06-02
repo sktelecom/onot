@@ -11,8 +11,8 @@ deferred는 반드시 DECISIONS 근거를 가진다. 미매핑 요구항목이 �
 | R-S1 | license-expression/spdx-tools API 검증 | M0 | done | (M0 스파이크) | spikes/s1_license_spdx | PASS (D-004) |
 | R-S2 | SPDX 3.0 지원 성숙도 | M0 | deferred | (M0 스파이크) | spikes/s2 probe | 3.0 입력 후속 분리 (D-005) |
 | R-S3 | frozen importlib.resources 접근 | M0 | done | (M0 스파이크) | spikes/s3_frozen | PASS, '/' 체이닝 (D-006) |
-| R-S4 | Electron+PyInstaller 사이드카 수명주기 | M8 | sequenced | - | spikes/s4 (M8 직전) | D-008 |
-| R-S5 | PDF 경로 확정 | M8 | sequenced | - | spikes/s5 (M8 직전) | D-008 |
+| R-S4 | Electron+PyInstaller 사이드카 수명주기 | M8 | done | (M8) | electron/test/sidecar.test, frozen 기동 | PASS (D-016) |
+| R-S5 | PDF 경로 확정 | M8 | done | (M8) | main.mjs export-pdf, App pdf 경로 | printToPDF 결정 (D-016) |
 | R-VS | 수직 슬라이스 Excel→domain→HTML→CLI | M0.5 | done | (M0.5) | tests/e2e/test_slice, tests/ingest/test_excel_robust | L1 green 96% + L3 리뷰 반영(D-009) |
 | R-DOM-1 | 도메인 모델 8종 + 검증규칙 | M1 | done | (M1) | tests/unit/test_models, test_errors | L1/L2 PASS, L3 LGTM |
 | R-DOM-2 | 결정적 직렬화/정렬 안정성 | M1 | done | (M1) | test_models, tests/license/test_resolve | L2 PASS |
@@ -30,7 +30,7 @@ deferred는 반드시 DECISIONS 근거를 가진다. 미매핑 요구항목이 �
 | R-API-2 | 업로드/경로 traversal 검증 | M6 | done | (M6) | tests/api/test_security | L2 실증(traversal·XXE·413) |
 | R-FE-1 | React 업로드→미리보기→다운로드 | M7 | done | (M7) | frontend vitest | L1/L2 PASS, L3 blocking 2건 해소 |
 | R-FE-2 | a11y + i18n 키 누락 0 | M7 | done | (M7) | App.test(axe), i18n.test | L2 실증(axe 0, 파리티) |
-| R-EL-1 | Electron 사이드카 수명주기 | M8 | todo | - | e2e 사이드카 | - |
-| R-EL-2 | printToPDF | M8 | todo | - | e2e pdf | - |
+| R-EL-1 | Electron 사이드카 수명주기 | M8 | done | (M8) | electron/test/sidecar.test | L1/L2 PASS, L3 blocking 3건 해소 |
+| R-EL-2 | printToPDF | M8 | done | (M8) | App.test(pdf 경로), main.mjs | 단위 검증, 실기동 E2E는 M9 |
 | R-CI-1 | GH Actions Win+macOS 매트릭스 | M9 | todo | - | ci.yml green | - |
 | R-CI-2 | Playwright-electron E2E 6시나리오 | M9 | todo | - | e2e-desktop | - |

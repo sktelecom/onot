@@ -138,3 +138,14 @@
 - **gate.sh 진화(M7)**: pytest + `pnpm -C frontend build && test` 추가.
 - **3중 게이트**: L1 green(Python 170 + 프론트 21, 빌드 OK), L2 PASS(axe·파리티·빌드 실증), L3 blocking 2건 해소.
 - **영향**: §6.1 프론트. M8 Electron이 이 정적 빌드를 로드 + 사이드카 기동.
+
+## D-016 — M8 Electron 셸 + S4/S5 스파이크 결과
+
+- **날짜**: 2026-06-02 / **근거**: M8 3중 게이트 + S4/S5 스파이크
+- **S4 PASS(frozen 사이드카 수명주기)**: PyInstaller `--collect-all`(onot/uvicorn/spdx_tools/cyclonedx/license_expression/openpyxl/defusedxml)로 빌드한 `onot-sidecar`(53MB onedir)가 SPDX/CycloneDX/Excel 파싱 + HTML 렌더(번들 전문, 에어갭) + 클린 종료까지 실증. 지연 import도 번들됨. 첫 기동은 macOS Gatekeeper 스캔으로 느림(최대 ~30s) → start 타임아웃 40s.
+- **S5 결정(PDF)**: 데스크톱 PDF = Electron `printToPDF`(격리 오프스크린 창, `javascript:false`). 사이드카에 WeasyPrint(무거운 GTK) 미번들. 프론트는 Electron(window.onot.exportPdf) 감지 시 HTML 렌더 후 printToPDF, 웹/CLI는 WeasyPrint extras.
+- **사이드카 수명주기 매니저**(electron/lib/sidecar.mjs, 순수 Node): findFreePort → spawn → /healthz 폴링 → SIGTERM→SIGKILL graceful. node:test로 spawn→health→stop→고아 없음 검증(gate.sh M8).
+- **L3 blocking 3건 해소**: ① 메인 윈도우 네비게이션/window-open 가드(외부 링크는 시스템 브라우저) ② printToPDF 오프스크린 창 명시 격리(nodeIntegration off, contextIsolation, sandbox, javascript off) ③ 종료 경합 → 멱등 shutdown promise로 단일화. 추가: whenReady catch(기동 실패 시 종료), CSP, IPC 입력 검증, findFreePort 테스트 실바인드.
+- **위임(M9 CI)**: 실제 Electron 기동 + Playwright-electron E2E, electron-builder 패키징(.dmg/.exe), Win/mac 매트릭스, 코드 서명/공증(D-008, electron-builder.yml에 미서명 명시).
+- **3중 게이트**: L1 green(Python 170 + 프론트 24 + electron 2), L2 PASS(실증 4 PASS, 위임 표면화), L3 blocking 3건 해소.
+- **영향**: §6.3 Electron, §9.5 S4/S5 스파이크. M9 CI 패키징·E2E.

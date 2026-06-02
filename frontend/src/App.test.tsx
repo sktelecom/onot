@@ -11,7 +11,10 @@ const parseSbom = vi.mocked(api.parseSbom);
 const renderNotice = vi.mocked(api.renderNotice);
 
 beforeEach(() => vi.resetAllMocks());
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => {
+  vi.restoreAllMocks();
+  delete (window as Window & { onot?: unknown }).onot;
+});
 
 function parsed(name: string, count: number, warnings: string[] = []): ParseResult {
   return {
@@ -92,5 +95,27 @@ describe("App", () => {
       expect.objectContaining({ format: "html", download: true }),
     );
     await waitFor(() => expect(revokeUrl).toHaveBeenCalledWith("blob:mock"));
+  });
+
+  it("uses the Electron printToPDF bridge for pdf when available", async () => {
+    parseSbom.mockResolvedValue(parsed("demo", 1));
+    // jsdom Blob.text() 미지원 → text()를 제공하는 blob-유사 객체로 대체
+    const blob = { text: async () => "<html>notice</html>" } as unknown as Blob;
+    renderNotice.mockResolvedValue({ blob, filename: "x.html" });
+    const exportPdf = vi.fn().mockResolvedValue({ saved: true });
+    (window as Window & { onot?: unknown }).onot = { exportPdf };
+
+    render(<App />);
+    await userEvent.upload(screen.getByTestId("file-input"), new File(["x"], "demo.spdx.json"));
+    await waitFor(() => screen.getByText("demo"));
+    await userEvent.click(screen.getByLabelText("pdf")); // 설정에서 pdf 포맷 추가
+    await userEvent.click(screen.getByRole("button", { name: /download pdf/i }));
+
+    await waitFor(() => expect(exportPdf).toHaveBeenCalled());
+    // 사이드카 PDF가 아니라 HTML을 렌더해 printToPDF로 넘긴다
+    expect(renderNotice).toHaveBeenCalledWith(
+      expect.any(File),
+      expect.objectContaining({ format: "html" }),
+    );
   });
 });
