@@ -89,7 +89,8 @@ jobs:
         run: bash electron/build-sidecar.sh
       - run: pnpm -C electron install
       # 1차 미서명(D-016). 정식 배포 시 서명/공증 secrets 추가.
-      - run: pnpm -C electron exec electron-builder --config electron/electron-builder.yml
+      # cwd가 electron/이므로 config는 그 기준 상대경로
+      - run: pnpm -C electron exec electron-builder --config electron-builder.yml
       - uses: actions/upload-artifact@v4
         with:
           name: onot-${{ matrix.os }}
