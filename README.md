@@ -1,5 +1,9 @@
 # onot
 
+[![Latest release](https://img.shields.io/github/v/release/sktelecom/onot?sort=semver)](https://github.com/sktelecom/onot/releases/latest)
+[![Download for Windows](https://img.shields.io/badge/Download-Windows%20installer-0078D6?logo=windows&logoColor=white)](https://github.com/sktelecom/onot/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/sktelecom/onot/total)](https://github.com/sktelecom/onot/releases)
+
 `onot`은 SBOM 문서로부터 오픈소스 고지문(OSS Notice)을 자동 생성하는 도구입니다.
 [SPDX](https://spdx.dev) 2.x(JSON/YAML/Tag-Value/RDF), [CycloneDX](https://cyclonedx.org)(JSON/XML),
 Excel을 입력으로 받아 HTML, Text, Markdown, PDF 고지문을 만듭니다. Kakao와 SK telecom이 함께
