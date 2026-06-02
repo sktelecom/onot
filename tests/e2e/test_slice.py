@@ -58,7 +58,7 @@ def test_cli_generate(tmp_path):
 def test_cli_version():
     result = CliRunner().invoke(app, ["version"])
     assert result.exit_code == 0
-    assert result.output.strip().startswith("2.")
+    assert result.output.strip().startswith("1.")
 
 
 def test_output_filename():

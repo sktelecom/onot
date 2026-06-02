@@ -2,4 +2,4 @@ import onot
 
 
 def test_version():
-    assert onot.__version__.startswith("2.")
+    assert onot.__version__.startswith("1.")
