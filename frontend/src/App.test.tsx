@@ -37,7 +37,12 @@ describe("App", () => {
   it("renders the title and has no a11y violations", async () => {
     const { container } = render(<App />);
     expect(screen.getByText("OSS Notice Generator")).toBeInTheDocument();
-    const results = await axe.run(container);
+    // color-contrast는 jsdom에 실제 렌더링 색/canvas가 없어 신뢰할 수 없다.
+    // 이 룰을 끄지 않으면 getContext 미구현으로 incomplete 처리되며 조용히 누락된다.
+    // 명도 대비 검증은 실제 브라우저가 있는 Playwright-electron E2E의 책임으로 위임한다.
+    const results = await axe.run(container, {
+      rules: { "color-contrast": { enabled: false } },
+    });
     expect(results.violations).toEqual([]);
   });
 

@@ -8,7 +8,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 FIX = ROOT / "tests" / "fixtures" / "sbom"
-SAMPLE = ROOT / "sample" / "SPDXRdfExample-v2.3.xlsx"
+SAMPLE = ROOT / "tests" / "fixtures" / "sbom" / "example.spdx.xlsx"
 
 
 def upload(path) -> dict:

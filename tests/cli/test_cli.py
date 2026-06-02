@@ -11,7 +11,7 @@ from typer.testing import CliRunner
 from onot.cli.main import app
 
 ROOT = Path(__file__).resolve().parents[2]
-SAMPLE = ROOT / "sample" / "SPDXRdfExample-v2.3.xlsx"
+SAMPLE = ROOT / "tests" / "fixtures" / "sbom" / "example.spdx.xlsx"
 SPDX_JSON = ROOT / "tests" / "fixtures" / "sbom" / "example.spdx.json"
 
 runner = CliRunner()
