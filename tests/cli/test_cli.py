@@ -169,4 +169,4 @@ def test_formats_command():
 def test_version_command():
     result = runner.invoke(app, ["version"])
     assert result.exit_code == 0
-    assert result.output.strip().startswith("2.")
+    assert result.output.strip().startswith("1.")

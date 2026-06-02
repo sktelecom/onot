@@ -1,7 +1,7 @@
 name: release
 
 # v* 태그를 밀면 윈도우/macOS 설치 파일을 빌드해 GitHub Releases에 게시한다.
-# 예: git tag v2.0.0 && git push origin v2.0.0
+# 예: git tag v1.1.0 && git push origin v1.1.0
 on:
   push:
     tags: ["v*"]
