@@ -26,8 +26,9 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
+# Python 빌드 산출물 lib는 루트 한정(frontend/src/lib, electron/lib는 소스라 추적해야 함)
+/lib/
+/lib64/
 parts/
 sdist/
 var/
