@@ -22,4 +22,12 @@ ruff format --check src tests
 echo "==> pytest (cov-fail-under=${COV_MIN})"
 pytest --cov --cov-report=term-missing --cov-fail-under="${COV_MIN}"
 
+# M7+: 프론트엔드 빌드 + 테스트
+echo "==> frontend (build + test)"
+if [ -d "frontend/node_modules" ]; then
+  (cd frontend && pnpm build && pnpm test)
+else
+  echo "  (skipped: frontend/node_modules 없음 — 'pnpm -C frontend install' 후 재실행)"
+fi
+
 echo "gate OK"

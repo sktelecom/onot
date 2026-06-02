@@ -125,3 +125,16 @@
 - **수용한 advisory**: 업로드를 메모리에 읽은 뒤 크기 체크(청크 조기거절 아님) — 127.0.0.1 단일 사용자 사이드카 + 25MB 한도라 수용. 향후 호스팅 SaaS 시 청크 검사 재검토.
 - **3중 게이트**: L1 green(170 테스트+2 skip, cov 96.5%, routes 100%, 임계 90), L2 PASS, L3 blocking 0.
 - **영향**: §6.2 API. M7 프론트가 이 API 호출, M8 Electron이 사이드카로 기동.
+
+## D-015 — M7 React 프론트엔드
+
+- **날짜**: 2026-06-02 / **근거**: M7 3중 게이트
+- **스택**: Vite + React 18 + TypeScript(strict) + Tailwind. shadcn 스타일 컴포넌트(Button/Card) 직접 작성(Radix 미도입, 의존성 경량화). lucide 아이콘. M6 FastAPI 호출.
+- **플로우**: 드래그앤드롭 업로드 → /api/parse(패키지 수·경고 표시) → 설정(포맷/언어/회사) → 미리보기(iframe srcDoc sandbox="") → 다운로드. 다국어 UI(en/ko), 다크모드.
+- **보안**: 미리보기 iframe `sandbox=""`로 스크립트 차단(L3 확인), 에러 detail은 React 기본 이스케이프. 백엔드 autoescape와 2중 방어.
+- **테스트**: vitest 21개 — API 클라이언트(fetch mock), 컴포넌트(FileDropzone/SettingsPanel), App 플로우, a11y(axe 0 위반), i18n 파리티, 다운로드 경로.
+- **L3 blocking 2건 해소**: ① 다운로드 파일명이 클라이언트 하드코딩으로 백엔드 제품명 파일명을 덮어씀 → Content-Disposition 파싱해 백엔드 파일명 사용 ② revokeObjectURL 동기 호출 + 앵커 미append 경쟁 → append+click+remove+setTimeout 해제. 회귀 테스트 포함.
+- **L3 advisory 보완**: detail 비문자열 방어, parsing/noFile 상태 노출.
+- **gate.sh 진화(M7)**: pytest + `pnpm -C frontend build && test` 추가.
+- **3중 게이트**: L1 green(Python 170 + 프론트 21, 빌드 OK), L2 PASS(axe·파리티·빌드 실증), L3 blocking 2건 해소.
+- **영향**: §6.1 프론트. M8 Electron이 이 정적 빌드를 로드 + 사이드카 기동.
