@@ -16,7 +16,7 @@ SK telecom.
 
 ![onot app](docs/images/04-preview.png)
 
-> Korean user guide / 사용 가이드: [docs/USER_GUIDE.md](docs/USER_GUIDE.md)
+> User guide: [English](docs/USER_GUIDE.en.md) · [한국어](docs/USER_GUIDE.md)
 
 ## Download (desktop app)
 

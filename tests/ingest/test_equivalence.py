@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """크로스포맷 등가성(R-ING-3): 같은 패키지를 SPDX/CycloneDX로 표현 시 동일 매핑."""
 
 from __future__ import annotations

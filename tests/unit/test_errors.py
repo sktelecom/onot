@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """예외 계층 테스트."""
 
 from __future__ import annotations

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """메시지 카탈로그 기반 다국어. 누락 키는 키 자체를 반환(테스트로 정합성 검증)."""
 
 from __future__ import annotations

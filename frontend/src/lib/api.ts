@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+// SPDX-License-Identifier: Apache-2.0
+
 // onot FastAPI 사이드카 클라이언트. 베이스 URL 우선순위:
 // URL 쿼리(?apiBase=, Electron이 동적 포트 주입) > 빌드 환경변수 > 동일 출처("").
 export function resolveApiBase(): string {

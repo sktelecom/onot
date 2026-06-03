@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """CLI: 다중 포맷, 자동감지, 언어, stdout, formats/version, 오류 종료 코드."""
 
 from __future__ import annotations

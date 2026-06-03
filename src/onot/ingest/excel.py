@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """ExcelAdapter — 1.x onot/SPDX 스프레드시트 템플릿 → NoticeDocument.
 
 Document Info, Package Info, Extracted License Info 시트를 읽어 NoticeDocument로 매핑한다.

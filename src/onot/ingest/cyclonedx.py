@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """CycloneDxAdapter — cyclonedx-python-lib로 CycloneDX(JSON/XML) 파싱.
 
 CDX는 concluded/declared 구분이 없어 라이선스를 license_declared로 매핑한다(effective가

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """i18n 정합성: ko/en 키·플레이스홀더 동일, 누락 키 처리, 폴백."""
 
 from __future__ import annotations

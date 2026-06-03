@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """라이선스 해석 레이어.
 
 기본 `resolve()`는 번들 카탈로그 기반 오프라인 해석(에어갭, 결정적)이다. 온라인 보충이

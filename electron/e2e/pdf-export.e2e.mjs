@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+// SPDX-License-Identifier: Apache-2.0
+
 // 시나리오 2: PDF는 사이드카(weasyprint)가 아니라 Electron printToPDF 경로로 생성된다.
 // Download pdf → window.onot.exportPdf → ipcMain "export-pdf" → offscreen printToPDF → dialog → fs.writeFile.
 // dialog.showSaveDialog를 런타임 stub해 저장 경로를 주입한다(프로덕션 무수정).

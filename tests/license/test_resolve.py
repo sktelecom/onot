@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """license resolver 결정성 테스트(R-DOM-2/R-LIC)."""
 
 from __future__ import annotations

@@ -68,6 +68,22 @@ pass before a PR can be merged.
 Use the [issue templates](https://github.com/sktelecom/onot/issues/new/choose). For
 security issues, follow [SECURITY.md](SECURITY.md) instead of opening a public issue.
 
+## Releasing (maintainers)
+
+Releases are tag-driven. Pushing a `v*` tag triggers `.github/workflows/release.yml`:
+
+1. Bump `version` in `pyproject.toml`, `src/onot/__init__.py`,
+   `frontend/package.json`, and `electron/package.json`, and add a `CHANGELOG.md`
+   entry. Merge to `main`.
+2. Tag and push, e.g. `git tag v1.1.0 && git push origin v1.1.0`.
+3. The workflow builds the Windows/macOS installers and publishes a GitHub Release.
+   Final tags (no hyphen) are also published to PyPI; pre-release tags
+   (e.g. `v1.1.0-rc1`) build installers only.
+
+PyPI publishing uses **token-less Trusted Publishing (OIDC)**. One-time setup on
+PyPI: add a trusted publisher for this project with owner `sktelecom`, repository
+`onot`, workflow `release.yml`, and environment `pypi`.
+
 ## License
 
 By contributing, you agree that your contributions are licensed under the

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """원격 라이선스 전문 조회(httpx + 지수 백오프 재시도 + 프록시 존중).
 
 번들에 없는 신규/희귀 라이선스를 온라인에서 보충하는 보조 경로. 에어갭/오프라인에서는

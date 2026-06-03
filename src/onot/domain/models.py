@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """onot 도메인 모델 (순수 Pydantic v2, 외부 파서/네트워크 의존 없음).
 
 모든 모델은 frozen=True, extra="forbid". 라이선스 표현식과 저작권은 값 객체로 구조화해

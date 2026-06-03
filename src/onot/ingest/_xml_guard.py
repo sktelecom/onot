@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """신뢰할 수 없는 XML 입력의 XXE·확장 폭탄(billion-laughs) 방어.
 
 라이브러리 내부 파서에 의존하지 않고, 파싱 전에 DOCTYPE/ENTITY 선언을 거부한다.

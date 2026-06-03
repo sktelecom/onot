@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+// SPDX-License-Identifier: Apache-2.0
+
 export function Preview({ html, title }: { html: string; title: string }) {
   // iframe srcdoc + sandbox로 미리보기를 격리(CSS 충돌/스크립트 차단)
   return (

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """SpdxAdapter: 패키지 매핑, NOASSERTION 처리, organization/email, extracted license, 오류."""
 
 from __future__ import annotations

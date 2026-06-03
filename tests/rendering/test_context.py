@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """컨텍스트 병합: 회사 설정 우선, SBOM 폴백, 연도 추론, 생성일 주입."""
 
 from __future__ import annotations

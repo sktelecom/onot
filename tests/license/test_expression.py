@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """라이선스 표현식 해석 매트릭스(R-LIC-1): 중첩/+/WITH/대소문자/unknown."""
 
 from __future__ import annotations

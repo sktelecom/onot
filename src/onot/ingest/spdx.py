@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """SpdxAdapter — spdx-tools로 SPDX 2.x(JSON/YAML/Tag-Value/RDF) 파싱.
 
 SPDX 3.0 입력은 후속(D-005). RDF/XML은 파싱 전 XXE 가드를 적용한다.

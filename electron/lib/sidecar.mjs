@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+// SPDX-License-Identifier: Apache-2.0
+
 // Python FastAPI 사이드카 수명주기 관리(순수 Node — electron 비의존, 단위 테스트 가능).
 import { spawn } from "node:child_process";
 import http from "node:http";

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """LicenseResolver: 에어갭 전문 채움, 동봉 ref, unknown, 캐시, 원격 fetch."""
 
 from __future__ import annotations

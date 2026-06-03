@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """CycloneDxAdapter: JSON/XML, id/expression/named 라이선스, purl, copyright, 오류."""
 
 from __future__ import annotations

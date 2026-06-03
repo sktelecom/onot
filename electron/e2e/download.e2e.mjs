@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+// SPDX-License-Identifier: Apache-2.0
+
 // 시나리오 1: html/text/markdown 다운로드가 실제 파일시스템까지 도달하는지.
 // 렌더러의 <a download> → Electron will-download → setSavePath로 tmp에 저장한 뒤 내용 단언.
 // (HTTP 응답 바이트 자체는 pytest가 검증하므로, 여기서는 "실제 저장"이라는 통합 경로만 본다.)

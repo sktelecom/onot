@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """렌더러 4종: 포맷별 산출, 메타데이터, 미지원 포맷, PDF(있으면)."""
 
 from __future__ import annotations

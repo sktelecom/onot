@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """포맷별 골든 + 결정성(2회 렌더 동일)."""
 
 from __future__ import annotations

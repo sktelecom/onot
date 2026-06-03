@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+// SPDX-License-Identifier: Apache-2.0
+
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { fetchFormats, parseSbom, renderNotice, resolveApiBase } from "./api";
 

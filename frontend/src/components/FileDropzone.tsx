@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+// SPDX-License-Identifier: Apache-2.0
+
 import { UploadCloud } from "lucide-react";
 import { useCallback, useState } from "react";
 import { cn } from "../lib/cn";

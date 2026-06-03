@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """출력 파일명 규칙. (HTML 앵커 슬러그는 M4 license_links에서 추가)"""
 
 from __future__ import annotations

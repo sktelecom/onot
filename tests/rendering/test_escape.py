@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """HTML 이스케이프 회귀(§8.1): 사용자 입력이 출력에 그대로 들어가지 않는다."""
 
 from __future__ import annotations
