@@ -1,0 +1,40 @@
+name: scorecard
+
+# OpenSSF Scorecard — 공급망 보안 모범사례 점수를 측정해 코드 스캐닝(Security 탭)과
+# 공개 배지(api.securityscorecards.dev)로 노출한다.
+on:
+  branch_protection_rule:
+  schedule:
+    - cron: "0 3 * * 1" # 매주 월요일 03:00 UTC
+  push:
+    branches: [main]
+
+permissions: read-all
+
+jobs:
+  analysis:
+    name: Scorecard analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write # SARIF를 코드 스캐닝에 업로드
+      id-token: write # 공개 배지용 결과 게시(OIDC)
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Run analysis
+        uses: ossf/scorecard-action@v2
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          publish_results: true
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: scorecard-results
+          path: results.sarif
+          retention-days: 5
+      - name: Upload to code scanning
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: results.sarif

@@ -85,6 +85,8 @@ jobs:
           python -m build
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          attestations: true # PEP 740 provenance 첨부
 
   publish-sbom:
     name: Attach SBOM to release
