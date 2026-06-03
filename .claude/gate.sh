@@ -19,6 +19,9 @@ ruff check src tests
 echo "==> ruff format --check"
 ruff format --check src tests
 
+echo "==> mypy"
+mypy
+
 echo "==> pytest (cov-fail-under=${COV_MIN})"
 pytest --cov --cov-report=term-missing --cov-fail-under="${COV_MIN}"
 

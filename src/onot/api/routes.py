@@ -12,6 +12,7 @@ from __future__ import annotations
 import tempfile
 from datetime import datetime
 from pathlib import Path
+from typing import Literal, cast
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import Response
@@ -110,7 +111,7 @@ async def render_notice(
 
     data, suffix = await _read_upload(file)
     settings = Settings(
-        default_lang=lang,
+        default_lang=cast(Literal["ko", "en"], lang),
         company=CompanyConfig(
             organization=organization,
             contact_email=contact_email,

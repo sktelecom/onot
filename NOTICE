@@ -15,3 +15,14 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+-------------------------------------------------------------------------------
+
+Third-party data bundled with this product:
+
+SPDX License List data (https://github.com/spdx/license-list-data),
+vendored in src/onot/license/data/ to enable offline license-text lookup.
+The SPDX License List, including the license texts, is published by the
+SPDX Workgroup, a Linux Foundation project, and is made available under the
+Creative Commons Zero v1.0 Universal (CC0-1.0) public domain dedication.
+See https://spdx.org/licenses/ for the source and version.

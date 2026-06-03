@@ -5,6 +5,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from spdx_tools.spdx.model import ActorType
 
 from onot.domain.models import (
@@ -45,7 +47,7 @@ def _purl(package: object) -> str | None:
     return None
 
 
-def _package(package: object) -> Package:
+def _package(package: Any) -> Package:
     return Package(
         name=package.name,
         version=_text(getattr(package, "version", None)),
@@ -59,7 +61,7 @@ def _package(package: object) -> Package:
     )
 
 
-def spdx_document_to_notice(document: object) -> NoticeDocument:
+def spdx_document_to_notice(document: Any) -> NoticeDocument:
     creation_info = document.creation_info
     organization, email = _organization(creation_info)
     creation = CreationInfo(

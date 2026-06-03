@@ -32,7 +32,7 @@ and choose **Open** to pass Gatekeeper.
 ## CLI
 
 ```bash
-pip install -e ".[spdx,cyclonedx,excel,api]"
+pip install "onot[spdx,cyclonedx,excel,api]"   # from PyPI; add ,pdf for PDF output
 
 # SBOM (format auto-detected) → notices in multiple formats
 onot generate -i sbom.spdx.json -f html -f markdown --output-dir ./output

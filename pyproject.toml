@@ -38,6 +38,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Topic :: Software Development",
     "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
 ]
 dependencies = [
     "pydantic[email]>=2.13.4",
@@ -62,6 +63,7 @@ dev = [
     "pytest-cov>=7.1.0",
     "ruff>=0.8",
     "respx>=0.21",
+    "mypy>=1.13",
 ]
 all = [
     "onot[spdx,cyclonedx,excel,api]",
@@ -82,7 +84,7 @@ where = ["src"]
 include = ["onot*"]
 
 [tool.setuptools.package-data]
-onot = ["license/data/**/*", "rendering/templates/**/*", "rendering/themes/**/*", "rendering/i18n/*"]
+onot = ["py.typed", "license/data/**/*", "rendering/templates/**/*", "rendering/themes/**/*", "rendering/i18n/*"]
 
 [tool.ruff]
 line-length = 100
@@ -102,6 +104,13 @@ ignore = ["E501"]  # line length handled by formatter
 testpaths = ["tests"]
 pythonpath = ["src"]
 addopts = "-q"
+
+[tool.mypy]
+files = ["src/onot"]
+python_version = "3.11"
+# 다수의 의존성(spdx-tools/weasyprint/license-expression 등)이 타입 스텁을 제공하지
+# 않으므로, onot 자체 코드의 타입 정합성에 집중한다.
+ignore_missing_imports = true
 
 [tool.coverage.run]
 source = ["onot"]

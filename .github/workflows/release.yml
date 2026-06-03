@@ -85,3 +85,23 @@ jobs:
           python -m build
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+
+  publish-sbom:
+    name: Attach SBOM to release
+    needs: publish-desktop # 릴리스가 생성된 뒤 자산을 첨부한다
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # 릴리스에 자산 업로드
+    steps:
+      - uses: actions/checkout@v6
+      - name: Generate CycloneDX SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: cyclonedx-json
+          output-file: onot-${{ github.ref_name }}-sbom.cdx.json
+      - name: Attach SBOM to the release
+        # github.ref_name을 셸에 직접 보간하지 않고 기본 제공 env로 받아 인젝션을 피한다.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "$GITHUB_REF_NAME" "onot-${GITHUB_REF_NAME}-sbom.cdx.json" --clobber

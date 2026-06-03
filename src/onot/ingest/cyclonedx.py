@@ -46,7 +46,7 @@ class CycloneDxAdapter:
     def _parse_json(data: bytes):
         from cyclonedx.model.bom import Bom
 
-        return Bom.from_json(json.loads(data))
+        return Bom.from_json(json.loads(data))  # type: ignore[attr-defined]  # py-serializable 동적 주입
 
     @staticmethod
     def _parse_xml(data: bytes):
@@ -59,7 +59,7 @@ class CycloneDxAdapter:
             element = fromstring(data)
         except DefusedXmlException as exc:  # 인코딩 우회 등 2차 방어
             raise IngestValidationError(["unsafe XML rejected (XXE protection)"]) from exc
-        return Bom.from_xml(element)
+        return Bom.from_xml(element)  # type: ignore[attr-defined]  # py-serializable 동적 주입
 
 
 def _register_named_ref(name: str, text: str, refs: dict[str, LicenseRef]) -> str:
