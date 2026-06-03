@@ -55,7 +55,7 @@ dependencies = [
 spdx = ["spdx-tools>=0.8"]
 cyclonedx = ["cyclonedx-python-lib>=7"]
 excel = ["openpyxl>=3.1"]
-api = ["fastapi>=0.110", "uvicorn[standard]>=0.29", "python-multipart>=0.0.9"]
+api = ["fastapi>=0.136.3", "uvicorn[standard]>=0.29", "python-multipart>=0.0.9"]
 pdf = ["weasyprint>=61"]
 dev = [
     "pytest>=8",
