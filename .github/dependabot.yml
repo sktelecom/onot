@@ -1,0 +1,40 @@
+version: 2
+updates:
+  # Python core
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      python-minor:
+        update-types: ["minor", "patch"]
+
+  # Frontend (React/Vite, pnpm)
+  - package-ecosystem: npm
+    directory: "/frontend"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      frontend-minor:
+        update-types: ["minor", "patch"]
+
+  # Desktop (Electron, pnpm)
+  - package-ecosystem: npm
+    directory: "/electron"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      electron-minor:
+        update-types: ["minor", "patch"]
+
+  # GitHub Actions used in CI/security/release workflows
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]

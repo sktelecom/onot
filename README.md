@@ -1,5 +1,8 @@
 # onot
 
+[![CI](https://github.com/sktelecom/onot/actions/workflows/ci.yml/badge.svg)](https://github.com/sktelecom/onot/actions/workflows/ci.yml)
+[![Security](https://github.com/sktelecom/onot/actions/workflows/security.yml/badge.svg)](https://github.com/sktelecom/onot/actions/workflows/security.yml)
+[![License](https://img.shields.io/github/license/sktelecom/onot)](LICENSE)
 [![Latest release](https://img.shields.io/github/v/release/sktelecom/onot?sort=semver)](https://github.com/sktelecom/onot/releases/latest)
 [![Download for Windows](https://img.shields.io/badge/Download-Windows%20installer-0078D6?logo=windows&logoColor=white)](https://github.com/sktelecom/onot/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/sktelecom/onot/total)](https://github.com/sktelecom/onot/releases)
@@ -76,6 +79,13 @@ bash .claude/gate.sh   # lint + pytest (cov ≥ 90) + frontend build/test + elec
 Refresh license data with `python scripts/update_license_data.py` (bundles SPDX
 license-list-data). Design and decision records live in `docs/2.0/`
 (TRACEABILITY.md, DECISIONS.md).
+
+## Contributing
+
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for how to set up
+your environment, run the checks, and open a pull request. Please also read our
+[Code of Conduct](CODE_OF_CONDUCT.md). To report a security vulnerability, follow
+[SECURITY.md](SECURITY.md) instead of opening a public issue.
 
 ## Maintainers
 

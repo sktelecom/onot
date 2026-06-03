@@ -1,0 +1,59 @@
+name: Bug report
+description: Report a problem with onot
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug! For security vulnerabilities,
+        please follow [SECURITY.md](../blob/main/SECURITY.md) instead of opening a public issue.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: |
+        How can we reproduce it? A minimal SBOM/SPDX/CycloneDX/Excel input file
+        (or a snippet) is extremely helpful.
+      placeholder: |
+        1. Run `onot generate -i ...`
+        2. ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: onot version
+      description: Output of `onot version`, or the desktop app version.
+      placeholder: "1.1.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: How are you using onot?
+      options:
+        - CLI
+        - Local API (onot-sidecar)
+        - Desktop app
+        - Python library
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: "Windows 11 / macOS 14 / Ubuntu 24.04"
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or error output
+      render: shell
