@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-06-03
+
 This release is a full rewrite of onot as a type-safe Python core with a React UI,
 shipped as an installable desktop app. It is the successor to the 1.0.0 PyQt-based
 generator.
@@ -37,5 +39,6 @@ generator.
 - Initial public release: PyQt-based desktop generator that produced OSS notices
   from SPDX documents.
 
-[Unreleased]: https://github.com/sktelecom/onot/compare/1.0.0...HEAD
+[Unreleased]: https://github.com/sktelecom/onot/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/sktelecom/onot/compare/1.0.0...v1.1.0
 [1.0.0]: https://github.com/sktelecom/onot/releases/tag/1.0.0

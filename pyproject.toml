@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "onot"
-version = "1.1.0.dev0"
+version = "1.1.0"
 description = "Generate open source software notices from SBOM/SPDX documents"
 readme = "README.md"
 requires-python = ">=3.11"
