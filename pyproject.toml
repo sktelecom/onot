@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,8 +8,37 @@ version = "1.1.0.dev0"
 description = "Generate open source software notices from SBOM/SPDX documents"
 readme = "README.md"
 requires-python = ">=3.11"
-license = { text = "Apache-2.0" }
+license = "Apache-2.0"
+license-files = ["LICENSE"]
 authors = [{ name = "onot contributors" }]
+maintainers = [
+    { name = "Hyunmin Han" },
+    { name = "Haksung Jang" },
+]
+keywords = [
+    "sbom",
+    "spdx",
+    "cyclonedx",
+    "oss",
+    "open-source",
+    "license",
+    "compliance",
+    "notice",
+    "attribution",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Legal Industry",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
 dependencies = [
     "pydantic[email]>=2.6",
     "pydantic-settings>=2.2",
@@ -37,6 +66,12 @@ dev = [
 all = [
     "onot[spdx,cyclonedx,excel,api]",
 ]
+
+[project.urls]
+Homepage = "https://github.com/sktelecom/onot"
+Repository = "https://github.com/sktelecom/onot"
+Issues = "https://github.com/sktelecom/onot/issues"
+Changelog = "https://github.com/sktelecom/onot/blob/main/CHANGELOG.md"
 
 [project.scripts]
 onot = "onot.cli.main:app"
