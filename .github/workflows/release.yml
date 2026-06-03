@@ -1,16 +1,23 @@
 name: release
 
-# v* 태그를 밀면 윈도우/macOS 설치 파일을 빌드해 GitHub Releases에 게시한다.
+# v* 태그를 밀면 윈도우/macOS 설치 파일을 빌드해 GitHub Releases에 게시하고,
+# 최종 릴리스 태그(하이픈 없는 v1.2.3)는 PyPI에도 게시한다.
 # 예: git tag v1.1.0 && git push origin v1.1.0
+#
+# PyPI 게시는 토큰 없는 Trusted Publishing(OIDC)을 쓴다. 최초 1회 PyPI에서
+# 신뢰 게시자를 등록해야 한다(Owner: sktelecom, Repo: onot, Workflow: release.yml,
+# Environment: pypi). 등록 전까지 publish-pypi 잡은 실패하지만 일반 CI에는 영향이 없다.
 on:
   push:
     tags: ["v*"]
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   publish-desktop:
+    permissions:
+      contents: write # GitHub Releases에 설치파일 업로드
     strategy:
       fail-fast: false
       matrix:
@@ -49,3 +56,32 @@ jobs:
             --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-pypi:
+    name: Publish to PyPI
+    runs-on: ubuntu-latest
+    # 최종 릴리스 태그만 게시한다(rc/beta 등 하이픈 포함 태그는 데스크톱만).
+    if: ${{ !contains(github.ref_name, '-') }}
+    permissions:
+      id-token: write # OIDC Trusted Publishing
+      contents: read
+    environment:
+      name: pypi
+      url: https://pypi.org/project/onot/
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Pin package version to the git tag
+        # 태그를 단일 진실로 삼아 sdist/wheel 버전을 일치시킨다(pyproject의 .dev0 무시).
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "Building onot $VERSION from tag $GITHUB_REF_NAME"
+          sed -i -E "s/^version = \".*\"/version = \"$VERSION\"/" pyproject.toml
+      - name: Build sdist and wheel
+        run: |
+          python -m pip install --upgrade build
+          python -m build
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
