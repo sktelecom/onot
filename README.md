@@ -3,6 +3,8 @@
 [![CI](https://github.com/sktelecom/onot/actions/workflows/ci.yml/badge.svg)](https://github.com/sktelecom/onot/actions/workflows/ci.yml)
 [![Security](https://github.com/sktelecom/onot/actions/workflows/security.yml/badge.svg)](https://github.com/sktelecom/onot/actions/workflows/security.yml)
 [![License](https://img.shields.io/github/license/sktelecom/onot)](LICENSE)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/sktelecom/onot/badge)](https://scorecard.dev/viewer/?uri=github.com/sktelecom/onot)
+[![PyPI](https://img.shields.io/pypi/v/onot)](https://pypi.org/project/onot/)
 [![Latest release](https://img.shields.io/github/v/release/sktelecom/onot?sort=semver)](https://github.com/sktelecom/onot/releases/latest)
 [![Download for Windows](https://img.shields.io/badge/Download-Windows%20installer-0078D6?logo=windows&logoColor=white)](https://github.com/sktelecom/onot/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/sktelecom/onot/total)](https://github.com/sktelecom/onot/releases)

@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use onot in your work, please cite it using these metadata."
+title: "onot"
+abstract: >-
+  A tool that generates open source software notices (OSS Notice) from SBOM
+  documents (SPDX, CycloneDX, Excel), producing HTML, Text, Markdown, and PDF.
+type: software
+authors:
+  - given-names: Hyunmin
+    family-names: Han
+    affiliation: Kakao
+  - given-names: Haksung
+    family-names: Jang
+    affiliation: SK telecom
+repository-code: "https://github.com/sktelecom/onot"
+url: "https://github.com/sktelecom/onot"
+license: Apache-2.0
+keywords:
+  - sbom
+  - spdx
+  - cyclonedx
+  - oss-compliance
+  - license-compliance
