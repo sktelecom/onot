@@ -75,3 +75,7 @@ electron/playwright-report/
 spikes/**/out/
 
 
+
+# 타입/린트 캐시
+.mypy_cache/
+.ruff_cache/

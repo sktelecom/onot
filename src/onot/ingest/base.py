@@ -6,7 +6,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import ClassVar, Protocol, runtime_checkable
+from typing import Protocol, runtime_checkable
 
 from pydantic import BaseModel, ConfigDict
 
@@ -22,7 +22,7 @@ class IngestResult(BaseModel):
 
 @runtime_checkable
 class IngestAdapter(Protocol):
-    format_id: ClassVar[str]
+    format_id: str
 
     def sniff(self, path: Path, head: bytes) -> float:
         """이 어댑터가 입력을 처리할 신뢰도(0.0~1.0)."""
