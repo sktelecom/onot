@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """디스크 캐시(R-LIC-3): hit/miss, 손상 내성."""
 
 from __future__ import annotations

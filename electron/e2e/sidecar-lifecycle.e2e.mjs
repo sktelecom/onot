@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+// SPDX-License-Identifier: Apache-2.0
+
 // 시나리오 4: 앱 종료 시 사이드카가 동반 종료되어 고아 프로세스가 남지 않는지.
 // main의 sidecar pid는 외부로 노출되지 않으므로, apiBase 포트의 healthz로 검증한다.
 // 기동 후 200 → app.close() → 같은 포트가 연결 거부될 때까지(=프로세스 종료) 폴링.

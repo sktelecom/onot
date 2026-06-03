@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """번들된 SPDX license-list-data 카탈로그(전문 포함, 에어갭 완결).
 
 데이터는 `scripts/update_license_data.py`로 vendoring한다. frozen 환경 안전을 위해

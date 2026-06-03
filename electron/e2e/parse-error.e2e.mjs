@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+// SPDX-License-Identifier: Apache-2.0
+
 // 시나리오 3: 잘못된 SBOM 업로드 시 실제 사이드카가 4xx를 반환하고,
 // api.ts detail() → App setError → role="alert"로 이어지는 에러 UX 전체 체인이 동작하는지.
 // (pytest는 400 응답만 검증 — 에러가 UI까지 표면화되는지는 통합에서만.)

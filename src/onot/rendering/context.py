@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """렌더 컨텍스트 구성. 회사 설정과 SBOM 값을 병합한다(회사 설정 우선, 비면 SBOM)."""
 
 from __future__ import annotations

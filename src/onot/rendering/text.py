@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """TextRenderer — 플레인 텍스트 고지문."""
 
 from __future__ import annotations

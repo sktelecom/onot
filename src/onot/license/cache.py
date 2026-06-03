@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """라이선스 전문 디스크 캐시(platformdirs). 네임스페이스에 라이선스 리스트 버전 포함."""
 
 from __future__ import annotations

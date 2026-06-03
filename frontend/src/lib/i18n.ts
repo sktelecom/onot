@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+// SPDX-License-Identifier: Apache-2.0
+
 // UI 라벨 다국어. 백엔드 고지문 i18n과 별개(여기는 앱 화면 문구).
 export type UiLang = "en" | "ko";
 

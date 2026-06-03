@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """spdx-tools Document → onot.domain 매핑 헬퍼."""
 
 from __future__ import annotations

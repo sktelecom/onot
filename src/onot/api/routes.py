@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """API 라우트: healthz, formats, parse, render.
 
 업로드는 메모리에서 임시파일로 받아 처리 후 폐기(stateless). 경로는 사용자 입력에서

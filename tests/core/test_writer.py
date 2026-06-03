@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """OutputWriter: 텍스트/바이너리 쓰기, 상위 디렉터리 생성."""
 
 from __future__ import annotations

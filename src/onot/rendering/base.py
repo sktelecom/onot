@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """Renderer ABC + 공유 Jinja 환경.
 
 render()는 파일 I/O 없는 순수 함수다. 디스크 쓰기는 core.writer.OutputWriter가 담당한다.

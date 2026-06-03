@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """Jinja 커스텀 필터: 앵커 슬러그, 라이선스 표현식의 토큰 링크화."""
 
 from __future__ import annotations

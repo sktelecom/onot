@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """레지스트리: 어댑터 목록, load_document end-to-end."""
 
 from __future__ import annotations

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """onot CLI 진입점 (Typer).
 
 generate(다중 포맷·자동감지·언어·설정), formats, version.

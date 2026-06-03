@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """번들 SPDX 카탈로그(R-LIC-2 일부): 전문 포함, 라이선스/예외 조회."""
 
 from __future__ import annotations

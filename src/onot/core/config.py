@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """설정. 회사 정보·언어·테마·오프라인 모드. 우선순위: CLI/명시 인자 > yaml > 환경변수 > 기본값.
 
 환경변수 예: ONOT_DEFAULT_LANG=ko, ONOT_COMPANY__ORGANIZATION="SK telecom".

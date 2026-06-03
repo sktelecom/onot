@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+// SPDX-License-Identifier: Apache-2.0
+
 // 사이드카 수명주기 테스트(S4 회귀): spawn→health→stop→고아 없음.
 // 실제 venv 사이드카(python -m onot.api.serve)를 띄워 검증한다(electron 불필요).
 import assert from "node:assert/strict";

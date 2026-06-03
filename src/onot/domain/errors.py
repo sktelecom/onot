@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """onot 예외 계층. 사용자향 실패는 모두 OnotError 하위로 모은다."""
 
 from __future__ import annotations

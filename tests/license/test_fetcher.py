@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """원격 fetcher: 성공/예외필드/404/재시도(respx mock, 네트워크 없음)."""
 
 from __future__ import annotations

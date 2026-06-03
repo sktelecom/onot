@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """사이드카 서버 진입점. FastAPI 앱을 127.0.0.1:PORT에 띄운다(Electron이 spawn).
 
 uvicorn에 import string이 아니라 앱 인스턴스를 직접 넘겨 frozen(PyInstaller) 환경에서도

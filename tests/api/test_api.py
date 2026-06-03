@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """API 계약: healthz, formats, parse, render(포맷·언어·다운로드·회사)."""
 
 from __future__ import annotations

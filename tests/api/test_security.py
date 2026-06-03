@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """API 보안/입력 검증: XXE 업로드, 미지원/빈/대용량, 파일명 traversal."""
 
 from __future__ import annotations

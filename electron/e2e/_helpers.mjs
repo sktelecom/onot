@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+// SPDX-License-Identifier: Apache-2.0
+
 // Playwright-electron E2E 공통 헬퍼. testMatch(**/*.e2e.mjs)에 안 걸리므로 테스트로 수집되지 않고 import만 된다.
 import { _electron as electron, expect } from "@playwright/test";
 import http from "node:http";

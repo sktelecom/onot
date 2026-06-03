@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """포맷 자동 감지(확장자 힌트 + 내용 스니핑)."""
 
 from __future__ import annotations

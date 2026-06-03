@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """입력 어댑터: 외부 포맷 → onot.domain.NoticeDocument."""
 
 from onot.ingest.base import IngestAdapter, IngestResult

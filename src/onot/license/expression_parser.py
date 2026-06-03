@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """SPDX 라이선스 표현식 파싱(license-expression 래퍼).
 
 중첩 OR/AND/WITH와 + 연산자를 평탄화해 심볼을 추출한다. 파싱 실패는

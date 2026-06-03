@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+// SPDX-License-Identifier: Apache-2.0
+
 import type { CompanyConfig } from "../lib/api";
 import { t, type UiLang } from "../lib/i18n";
 import { Card, CardTitle } from "./ui/Card";

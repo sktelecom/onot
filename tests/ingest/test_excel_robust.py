@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """ExcelAdapter 견고성 — 짧은 행/빈 행/시트 누락에서 IndexError 없이 동작(L3 #1 회귀)."""
 
 from __future__ import annotations

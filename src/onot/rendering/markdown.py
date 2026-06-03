@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """MarkdownRenderer — GitHub 호환 Markdown 고지문."""
 
 from __future__ import annotations

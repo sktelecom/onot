@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """M1 도메인 모델 단위 테스트: 검증 규칙, 값 객체, 중복 제거, 결정성."""
 
 from __future__ import annotations

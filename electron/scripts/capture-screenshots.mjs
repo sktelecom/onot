@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+// SPDX-License-Identifier: Apache-2.0
+
 // 사용자 가이드용 앱 화면 캡처 스크립트(일회성 문서 생성 도구).
 // 실제 Electron 데스크톱 앱을 띄워 한국어 UI로 업로드→파싱→미리보기 흐름을 캡처한다.
 // 실행: pnpm -C electron exec node scripts/capture-screenshots.mjs

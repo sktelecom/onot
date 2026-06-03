@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """LicenseResolver — 표현식 해석 + 전문 조회를 오케스트레이션.
 
 각 패키지의 effective_expression을 평탄화해 라이선스 목록과 역참조(used_by)를 만들고,

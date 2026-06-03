@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """PdfRenderer — HTML을 PDF로 변환(WeasyPrint, onot[pdf] extras).
 
 설치형 데스크톱은 Electron printToPDF를 쓰고, CLI 등 헤드리스 경로에서 이 렌더러를 쓴다.

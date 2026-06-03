@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """M0.5 수직 슬라이스 end-to-end 테스트: Excel → domain → license → HTML → CLI."""
 
 from __future__ import annotations

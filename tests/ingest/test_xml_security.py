@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """XML 입력 보안(R-ING-2): XXE·확장 폭탄 거부."""
 
 from __future__ import annotations
