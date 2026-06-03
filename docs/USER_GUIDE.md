@@ -1,5 +1,7 @@
 # onot 사용 가이드 (Windows)
 
+> For English, see [USER_GUIDE.en.md](USER_GUIDE.en.md).
+
 처음 오신 분도 따라 할 수 있도록 내려받기부터 고지문 내려받기까지 화면과 함께 설명합니다.
 개발 도구를 설치할 필요는 없습니다. 설치 파일 하나만 받으면 됩니다.
 
