@@ -67,6 +67,10 @@ htmlcov/
 # Node / frontend
 node_modules/
 
+# Playwright(E2E) 산출물
+electron/test-results/
+electron/playwright-report/
+
 # onot 2.0 spike outputs
 spikes/**/out/
 
