@@ -101,6 +101,7 @@ jobs:
           format: cyclonedx-json
           output-file: onot-${{ github.ref_name }}-sbom.cdx.json
       - name: Attach SBOM to the release
+        # github.ref_name을 셸에 직접 보간하지 않고 기본 제공 env로 받아 인젝션을 피한다.
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload "${{ github.ref_name }}" "onot-${{ github.ref_name }}-sbom.cdx.json" --clobber
+        run: gh release upload "$GITHUB_REF_NAME" "onot-${GITHUB_REF_NAME}-sbom.cdx.json" --clobber
