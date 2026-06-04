@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""M0.5 수직 슬라이스 end-to-end 테스트: Excel → domain → license → HTML → CLI."""
+"""M0.5 vertical slice end-to-end test: Excel -> domain -> license -> HTML -> CLI."""
 
 from __future__ import annotations
 
@@ -37,13 +37,13 @@ def test_render_matches_golden():
 
 
 def test_pipeline_deterministic():
-    # 재파싱→재해석→재렌더가 바이트 동일(resolver dict/정렬 결정성까지 고정)
+    # Re-parse -> re-resolve -> re-render is byte-identical (pins resolver dict/sort determinism too)
     assert render_html(_document()) == render_html(_document())
 
 
 def test_effective_expression_fallback():
     doc = parse_excel(SAMPLE)
-    # concluded가 있으면 concluded, 없으면 declared
+    # Use concluded if present, otherwise declared
     for pkg in doc.packages:
         assert pkg.effective_expression == (pkg.license_concluded or pkg.license_declared)
 

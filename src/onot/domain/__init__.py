@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""onot 도메인 모델 (순수 Pydantic, 외부 의존 없음)."""
+"""onot domain models (pure Pydantic, no external dependencies)."""
 
 from onot.domain.errors import (
     ConfigError,

@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""Jinja 필터: anchor 슬러그, license_links 토큰 링크화 + 이스케이프."""
+"""Jinja filters: anchor slug, license_links token linkification + escaping."""
 
 from __future__ import annotations
 
@@ -36,7 +36,7 @@ def test_md_code_block_default_fence():
 
 
 def test_md_code_block_escapes_inner_fence():
-    # 본문에 ``` 가 있으면 더 긴 펜스로 감싸 fence 탈출을 막는다
+    # When the body contains ```, wrap with a longer fence to prevent fence escape
     out = md_code_block("before ``` after")
     assert out.startswith("````text\n")
     assert out.endswith("\n````")

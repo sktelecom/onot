@@ -1,28 +1,26 @@
 // SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
-// 시나리오 2: PDF는 사이드카(weasyprint)가 아니라 Electron printToPDF 경로로 생성된다.
+// Scenario 2: the PDF is produced via the Electron printToPDF path, not the sidecar (weasyprint).
 // Download pdf → window.onot.exportPdf → ipcMain "export-pdf" → offscreen printToPDF → dialog → fs.writeFile.
-// dialog.showSaveDialog를 런타임 stub해 저장 경로를 주입한다(프로덕션 무수정).
-// 한글(lang=ko) 고지문으로 생성해 CJK 입력에서도 PDF가 정상 산출되는지 본다.
-// (한글 텍스트 강검증은 pytest test_render_lang_ko가 담당 — 여기서는 유효한 PDF 산출까지.)
+// Stub dialog.showSaveDialog at runtime to inject the save path (no changes to production).
+// (Notice content is verified server-side by pytest — here we only go as far as producing a valid PDF.)
 import { expect, test } from "@playwright/test";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { launchApp, setFormat, setNoticeLang, spdxFixture, uploadAndWaitParse } from "./_helpers.mjs";
+import { launchApp, setFormat, spdxFixture, uploadAndWaitParse } from "./_helpers.mjs";
 
-test("exports a valid PDF via Electron printToPDF (ko notice)", async () => {
-  test.setTimeout(90000); // 로컬 offscreen 렌더가 느릴 수 있어 여유를 둔다.
+test("exports a valid PDF via Electron printToPDF", async () => {
+  test.setTimeout(90000); // Local offscreen rendering can be slow, so allow extra time.
   const { app, window } = await launchApp();
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "onot-e2e-pdf-"));
   const pdfPath = path.join(dir, "OSS_Notice.pdf");
   try {
     await uploadAndWaitParse(window, spdxFixture);
-    await setNoticeLang(window, "ko");
     await setFormat(window, "pdf");
 
-    // showSaveDialog가 항상 고정 경로를 반환하도록 main 프로세스에서 stub.
+    // Stub showSaveDialog in the main process so it always returns a fixed path.
     await app.evaluate(async ({ dialog }, p) => {
       dialog.showSaveDialog = async () => ({ canceled: false, filePath: p });
     }, pdfPath);
@@ -46,7 +44,7 @@ async function waitForFile(p, timeoutMs = 30000) {
       const st = await fs.stat(p);
       if (st.size > 0) return;
     } catch {
-      // 아직 없음
+      // not there yet
     }
     await new Promise((r) => setTimeout(r, 250));
   }

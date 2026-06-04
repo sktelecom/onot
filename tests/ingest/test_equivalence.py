@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""크로스포맷 등가성(R-ING-3): 같은 패키지를 SPDX/CycloneDX로 표현 시 동일 매핑."""
+"""Cross-format equivalence (R-ING-3): the same package maps identically across SPDX/CycloneDX."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ def test_foo_equivalent_across_spdx_and_cyclonedx():
     spdx_foo = next(p for p in spdx.packages if p.name == "foo")
     cdx_foo = next(p for p in cdx.packages if p.name == "foo")
 
-    # 포맷 고유 필드(concluded/declared 구분 등)를 제외한 핵심 필드가 일치
+    # Core fields match, excluding format-specific fields (e.g. concluded/declared distinction)
     assert spdx_foo.name == cdx_foo.name
     assert spdx_foo.version == cdx_foo.version
     assert spdx_foo.effective_expression.raw == cdx_foo.effective_expression.raw == "MIT"

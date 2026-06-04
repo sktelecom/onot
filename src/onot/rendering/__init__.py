@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""고지문 산출물 렌더링."""
+"""Rendering of notice outputs."""
 
 from __future__ import annotations
 

@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
-// 사이드카 수명주기 테스트(S4 회귀): spawn→health→stop→고아 없음.
-// 실제 venv 사이드카(python -m onot.api.serve)를 띄워 검증한다(electron 불필요).
+// Sidecar lifecycle test (S4 regression): spawn→health→stop→no orphan.
+// Verified by launching the real venv sidecar (python -m onot.api.serve) (electron not required).
 import assert from "node:assert/strict";
 import net from "node:net";
 import path from "node:path";
@@ -43,7 +43,7 @@ test("starts, reports healthy, then stops cleanly with no orphan", async () => {
   await sidecar.stop();
   assert.equal(sidecar.pid, null, "pid cleared after stop");
 
-  // 종료 후 고아 프로세스가 남지 않아야 한다(serve.py는 single-process — 워커/리로더 미사용)
+  // No orphan process should remain after shutdown (serve.py is single-process — no workers/reloader)
   await new Promise((r) => setTimeout(r, 500));
   assert.equal(isAlive(pid), false, "sidecar process must not survive stop()");
 });

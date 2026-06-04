@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""출력 포맷 → Renderer 매핑."""
+"""Output format -> Renderer mapping."""
 
 from __future__ import annotations
 
@@ -34,5 +34,5 @@ def available_formats() -> tuple[str, ...]:
 
 
 def is_supported(fmt: str) -> bool:
-    """별칭(txt/md) 포함 지원 포맷 여부."""
+    """Whether the format is supported, including aliases (txt/md)."""
     return fmt in _RENDERERS

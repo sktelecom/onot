@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""포맷 자동 감지: 확장자+내용 스니핑, .json 모호성 해소, 미지원 거부."""
+"""Automatic format detection: extension + content sniffing, .json disambiguation, unsupported rejection."""
 
 from __future__ import annotations
 
@@ -33,7 +33,7 @@ def test_detect_excel():
 
 
 def test_json_disambiguation(tmp_path):
-    # SPDX JSON과 CycloneDX JSON이 둘 다 .json — 내용으로 구분
+    # Both SPDX JSON and CycloneDX JSON use .json - distinguished by content
     spdx = tmp_path / "a.json"
     spdx.write_text('{"spdxVersion":"SPDX-2.3","name":"x"}')
     cdx = tmp_path / "b.json"

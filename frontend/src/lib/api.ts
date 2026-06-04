@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
-// onot FastAPI 사이드카 클라이언트. 베이스 URL 우선순위:
-// URL 쿼리(?apiBase=, Electron이 동적 포트 주입) > 빌드 환경변수 > 동일 출처("").
+// onot FastAPI sidecar client. Base URL precedence:
+// URL query (?apiBase=, Electron injects the dynamic port) > build env var > same origin ("").
 export function resolveApiBase(): string {
   if (typeof window !== "undefined" && window.location?.search) {
     const fromQuery = new URLSearchParams(window.location.search).get("apiBase");
@@ -107,7 +107,7 @@ export async function renderNotice(file: File, opts: RenderOptions): Promise<Ren
   });
   if (!resp.ok) throw new Error(await detail(resp));
   const blob = await resp.blob();
-  // 파일명은 백엔드 Content-Disposition(제품명 기반)을 우선 사용
+  // Prefer the backend Content-Disposition filename (based on the product name)
   const filename = filenameFrom(resp.headers.get("content-disposition"), opts.format);
   return { blob, filename };
 }

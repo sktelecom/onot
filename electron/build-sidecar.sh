@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# frozen FastAPI 사이드카 빌드(PyInstaller). 출력: <repo>/dist/onot-sidecar/.
-# 지연 import되는 어댑터 의존성(spdx-tools/cyclonedx/openpyxl)과 번들 데이터(라이선스
-# 전문/템플릿/i18n)를 --collect-all로 포함한다(에어갭 1급, frozen 검증 완료 — D-006/D-016).
+# Build the frozen FastAPI sidecar (PyInstaller). Output: <repo>/dist/onot-sidecar/.
+# Include the lazily-imported adapter dependencies (spdx-tools/cyclonedx/openpyxl) and bundled
+# data (license full texts/templates/i18n) via --collect-all (first-class air-gap, frozen-verified — D-006/D-016).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -13,7 +13,7 @@ elif [ -f ".venv/Scripts/activate" ]; then
   # shellcheck disable=SC1091
   source .venv/Scripts/activate
 fi
-# venv가 없으면(예: CI에서 시스템 python에 직접 설치) 현재 PATH의 python/pyinstaller 사용
+# If there is no venv (e.g. installed directly into the system python in CI), use python/pyinstaller from the current PATH
 
 rm -rf build dist onot-sidecar.spec
 pyinstaller --noconfirm --onedir --name onot-sidecar \

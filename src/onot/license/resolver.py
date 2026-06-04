@@ -1,11 +1,11 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""LicenseResolver — 표현식 해석 + 전문 조회를 오케스트레이션.
+"""LicenseResolver — orchestrates expression resolution + full-text lookup.
 
-각 패키지의 effective_expression을 평탄화해 라이선스 목록과 역참조(used_by)를 만들고,
-전문은 번들 카탈로그 → 디스크 캐시 → (온라인 시) 원격 fetch 순으로 채운다. 동봉
-LicenseRef는 그 extracted_text를 전문으로 쓴다.
+Flattens each package's effective_expression to build the license list and back-references
+(used_by), then fills full texts in the order: bundled catalog -> disk cache -> (when online)
+remote fetch. An embedded LicenseRef uses its extracted_text as the full text.
 """
 
 from __future__ import annotations
@@ -27,7 +27,7 @@ class ResolveResult:
 
 
 class LicenseResolver:
-    """주입된 fetcher의 수명(httpx client close)은 호출자 책임이다(resolver는 닫지 않음)."""
+    """The injected fetcher's lifecycle (httpx client close) is the caller's responsibility (the resolver does not close it)."""
 
     def __init__(
         self,
@@ -99,7 +99,7 @@ class LicenseResolver:
                 text=ref_text[license_id],
                 used_by=used_by,
             )
-        # 카탈로그·동봉 어디에도 없음: 온라인이면 원격 보충, 아니면 unknown
+        # Found neither in the catalog nor embedded: supplement remotely if online, otherwise unknown
         text = self._lookup_remote(license_id, is_exception=False)
         if text:
             return License(license_id=license_id, name=license_id, text=text, used_by=used_by)

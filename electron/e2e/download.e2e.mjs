@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
-// 시나리오 1: html/text/markdown 다운로드가 실제 파일시스템까지 도달하는지.
-// 렌더러의 <a download> → Electron will-download → setSavePath로 tmp에 저장한 뒤 내용 단언.
-// (HTTP 응답 바이트 자체는 pytest가 검증하므로, 여기서는 "실제 저장"이라는 통합 경로만 본다.)
+// Scenario 1: verify that html/text/markdown downloads reach the actual filesystem.
+// Renderer's <a download> → Electron will-download → setSavePath saves to tmp, then assert the content.
+// (The HTTP response bytes themselves are verified by pytest, so here we only check the "actual save" integration path.)
 import { expect, test } from "@playwright/test";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -21,7 +21,7 @@ for (const { fmt, contains } of CASES) {
     const { app, window } = await launchApp();
     const dir = await fs.mkdtemp(path.join(os.tmpdir(), "onot-e2e-dl-"));
     try {
-      // will-download를 가로채 tmp에 저장(프로덕션 코드 무수정). win에서도 Electron이 "/"를 처리한다.
+      // Intercept will-download and save to tmp (no changes to production code). Electron handles "/" on win too.
       await app.evaluate(({ session }, saveDir) => {
         session.defaultSession.on("will-download", (_e, item) => {
           item.setSavePath(`${saveDir}/${item.getFilename()}`);
@@ -43,7 +43,7 @@ for (const { fmt, contains } of CASES) {
   });
 }
 
-// dir에 완성된(진행 중 .crdownload가 아닌, 크기>0) 파일이 나타날 때까지 폴링.
+// Poll until a completed file (not an in-progress .crdownload, size > 0) appears in dir.
 async function waitForDownloadedFile(dir, timeoutMs = 15000) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {

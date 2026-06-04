@@ -58,6 +58,8 @@ pass before a PR can be merged.
 - **Branch** off `main` (e.g. `feat/...`, `fix/...`, `chore/...`, `docs/...`).
 - **Keep changes focused.** One logical change per PR is easier to review.
 - **Add tests** for new behavior and keep coverage at or above 90%.
+- **Write in English.** Commit messages, PR titles, PR descriptions, code comments, and docs
+  are all written in English so the project stays accessible to a global audience.
 - **Commit messages** follow [Conventional Commits](https://www.conventionalcommits.org/),
   e.g. `feat(render): add Markdown table layout` or `fix(ingest): handle empty SPDX relationships`.
 - **Update docs** (`README.md`, `docs/USER_GUIDE.md`) when behavior changes, and add a

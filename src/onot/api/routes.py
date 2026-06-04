@@ -1,10 +1,10 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""API 라우트: healthz, formats, parse, render.
+"""API routes: healthz, formats, parse, render.
 
-업로드는 메모리에서 임시파일로 받아 처리 후 폐기(stateless). 경로는 사용자 입력에서
-받지 않는다. 업로드 크기를 제한한다.
+Uploads are received in memory as temporary files, processed, then discarded
+(stateless). Paths are never taken from user input. Upload size is capped.
 """
 
 from __future__ import annotations
@@ -30,7 +30,7 @@ from onot.rendering.registry import is_supported
 router = APIRouter()
 
 MAX_UPLOAD_BYTES = 25 * 1024 * 1024
-_LANGS = ("ko", "en")
+_LANGS = ("en",)
 _MEDIA_TYPES = {
     "html": "text/html; charset=utf-8",
     "text": "text/plain; charset=utf-8",
@@ -47,7 +47,7 @@ async def _read_upload(file: UploadFile) -> tuple[bytes, str]:
         raise HTTPException(status_code=413, detail="uploaded file too large")
     if not data:
         raise HTTPException(status_code=400, detail="empty upload")
-    suffix = Path(file.filename or "").suffix  # 디렉터리 성분 없이 확장자만(traversal 방지)
+    suffix = Path(file.filename or "").suffix  # extension only, no directory part (traversal guard)
     return data, suffix
 
 
@@ -111,7 +111,7 @@ async def render_notice(
 
     data, suffix = await _read_upload(file)
     settings = Settings(
-        default_lang=cast(Literal["ko", "en"], lang),
+        default_lang=cast(Literal["en"], lang),
         company=CompanyConfig(
             organization=organization,
             contact_email=contact_email,

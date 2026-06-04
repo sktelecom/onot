@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""CycloneDxAdapter: JSON/XML, id/expression/named 라이선스, purl, copyright, 오류."""
+"""CycloneDxAdapter: JSON/XML, id/expression/named licenses, purl, copyright, errors."""
 
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ def test_cdx_json_id_and_named_license():
     assert foo.purl == "pkg:pypi/foo@1.2.3"
     assert foo.copyright.text == "Copyright 2024 Foo Authors"
 
-    # named 라이선스(id 없음) → LicenseRef 등록 + 표현식이 그 id
+    # Named license (no id) -> registered as LicenseRef + the expression is that id
     bar = packages["bar"]
     assert bar.effective_expression.raw == "LicenseRef-Custom_Bar_License"
     refs = {r.identifier: r for r in doc.license_refs}
@@ -49,14 +49,14 @@ def test_cdx_malformed_raises_parse_error(tmp_path):
 
 
 def test_named_license_slug_collision_disambiguated():
-    # 서로 다른 이름이 같은 slug로 충돌해도 무음 덮어쓰기 없이 분리(L3 blocking 회귀)
+    # Distinct names colliding on the same slug are kept separate, no silent overwrite (L3 blocking regression)
     from onot.ingest.cyclonedx import _register_named_ref
 
     refs: dict = {}
     a = _register_named_ref("Foo & Bar", "TEXT A", refs)
-    b = _register_named_ref("Foo + Bar", "TEXT B", refs)  # 같은 slug "Foo_Bar"
+    b = _register_named_ref("Foo + Bar", "TEXT B", refs)  # same slug "Foo_Bar"
     assert a != b
     assert refs[a].extracted_text == "TEXT A"
     assert refs[b].extracted_text == "TEXT B"
-    # 동일 name+text는 같은 id 재사용(dedup)
+    # Same name+text reuses the same id (dedup)
     assert _register_named_ref("Foo & Bar", "TEXT A", refs) == a

@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""API 보안/입력 검증: XXE 업로드, 미지원/빈/대용량, 파일명 traversal."""
+"""API security/input validation: XXE upload, unsupported/empty/oversized, filename traversal."""
 
 from __future__ import annotations
 
@@ -22,12 +22,12 @@ def upload(path) -> dict:
 def test_malicious_xml_upload_rejected(client, name):
     resp = client.post("/api/parse", files=upload(FIX / name))
     assert resp.status_code == 400
-    # 단순 파싱 실패가 아니라 XXE 가드에 의한 거부임을 명시 단언
+    # Explicitly assert rejection by the XXE guard, not a plain parse failure
     assert "XXE" in resp.json()["detail"] or "unsafe" in resp.json()["detail"].lower()
 
 
 def test_render_path_rejects_malicious_xml(client):
-    # render 엔드포인트도 동일 XXE 가드를 거친다
+    # The render endpoint goes through the same XXE guard
     resp = client.post("/api/render", files=upload(FIX / "xxe.cdx.xml"), data={"format": "html"})
     assert resp.status_code == 400
 
@@ -60,7 +60,7 @@ def test_oversize_upload_413(client, monkeypatch):
 
 
 def test_filename_path_is_ignored(client):
-    # 업로드 파일명에 경로가 있어도 suffix만 사용(traversal 불가), 정상 파싱
+    # Even if the upload filename contains a path, only the suffix is used (no traversal), parses fine
     payload = (FIX / "example.spdx.json").read_bytes()
     resp = client.post("/api/parse", files={"file": ("../../../etc/passwd.json", payload)})
     assert resp.status_code == 200

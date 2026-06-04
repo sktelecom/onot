@@ -97,8 +97,8 @@ ignore = ["E501"]  # line length handled by formatter
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["B011"]
-"src/onot/cli/*" = ["B008"]  # Typer는 기본값에 Option() 호출이 공식 패턴
-"src/onot/api/*" = ["B008"]  # FastAPI는 기본값에 File()/Form() 호출이 공식 패턴
+"src/onot/cli/*" = ["B008"]  # Typer's official pattern calls Option() in default values
+"src/onot/api/*" = ["B008"]  # FastAPI's official pattern calls File()/Form() in default values
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -108,8 +108,8 @@ addopts = "-q"
 [tool.mypy]
 files = ["src/onot"]
 python_version = "3.11"
-# 다수의 의존성(spdx-tools/weasyprint/license-expression 등)이 타입 스텁을 제공하지
-# 않으므로, onot 자체 코드의 타입 정합성에 집중한다.
+# Many dependencies (spdx-tools/weasyprint/license-expression, etc.) do not provide
+# type stubs, so we focus on the type consistency of onot's own code.
 ignore_missing_imports = true
 
 [tool.coverage.run]

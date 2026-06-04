@@ -1,9 +1,9 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""Renderer ABC + 공유 Jinja 환경.
+"""Renderer ABC + shared Jinja environment.
 
-render()는 파일 I/O 없는 순수 함수다. 디스크 쓰기는 core.writer.OutputWriter가 담당한다.
+render() is a pure function with no file I/O. Disk writing is handled by core.writer.OutputWriter.
 """
 
 from __future__ import annotations
@@ -48,7 +48,7 @@ class Renderer(ABC):
 
 
 class TemplateRenderer(Renderer):
-    """Jinja 템플릿 기반 텍스트 렌더러의 공통 골격."""
+    """Common skeleton for Jinja-template-based text renderers."""
 
     template_name: str
     autoescape: list[str] = []

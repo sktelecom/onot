@@ -8,7 +8,7 @@ import { parseSbom, type ParseResult, renderNotice } from "./lib/api";
 import { t, type UiLang } from "./lib/i18n";
 
 export default function App() {
-  const [uiLang, setUiLang] = useState<UiLang>("en");
+  const uiLang: UiLang = "en";
   const [file, setFile] = useState<File | null>(null);
   const [parsed, setParsed] = useState<ParseResult | null>(null);
   const [settings, setSettings] = useState<NoticeSettings>({
@@ -57,7 +57,7 @@ export default function App() {
     if (!file) return;
     setError("");
     try {
-      // 설치형(Electron): PDF는 사이드카가 아니라 printToPDF로 생성(S5).
+      // Installed (Electron): generate PDF via printToPDF, not the sidecar (S5).
       if (format === "pdf" && window.onot?.exportPdf) {
         const { blob } = await renderNotice(file, {
           format: "html",
@@ -80,7 +80,7 @@ export default function App() {
       document.body.appendChild(a);
       a.click();
       a.remove();
-      // 다운로드가 시작되도록 URL 해제는 비동기로 미룬다(동기 해제 시 취소 위험)
+      // defer URL revocation asynchronously so the download can start (sync revoke risks cancelling it)
       setTimeout(() => URL.revokeObjectURL(url), 0);
     } catch (e) {
       setError((e as Error).message);
@@ -89,20 +89,9 @@ export default function App() {
 
   return (
     <div className="mx-auto max-w-6xl p-6">
-      <header className="mb-6 flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">{t(uiLang, "title")}</h1>
-          <p className="text-sm text-zinc-500">{t(uiLang, "subtitle")}</p>
-        </div>
-        <select
-          aria-label="UI language"
-          value={uiLang}
-          onChange={(e) => setUiLang(e.target.value as UiLang)}
-          className="rounded-md border border-zinc-300 bg-transparent px-2 py-1 text-sm dark:border-zinc-700"
-        >
-          <option value="en">EN</option>
-          <option value="ko">KO</option>
-        </select>
+      <header className="mb-6">
+        <h1 className="text-2xl font-bold">{t(uiLang, "title")}</h1>
+        <p className="text-sm text-zinc-500">{t(uiLang, "subtitle")}</p>
       </header>
 
       <main>

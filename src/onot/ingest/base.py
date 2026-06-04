@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""입력 어댑터 공통 인터페이스."""
+"""Common interface for input adapters."""
 
 from __future__ import annotations
 
@@ -25,9 +25,9 @@ class IngestAdapter(Protocol):
     format_id: str
 
     def sniff(self, path: Path, head: bytes) -> float:
-        """이 어댑터가 입력을 처리할 신뢰도(0.0~1.0)."""
+        """Confidence (0.0-1.0) that this adapter can handle the input."""
         ...
 
     def parse(self, path: Path) -> IngestResult:
-        """입력을 NoticeDocument로 정규화."""
+        """Normalize the input into a NoticeDocument."""
         ...

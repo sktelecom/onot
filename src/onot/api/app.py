@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""FastAPI 앱 팩토리."""
+"""FastAPI app factory."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ from onot.api.routes import router
 
 def create_app() -> FastAPI:
     app = FastAPI(title="onot", version=__version__)
-    # 로컬 프론트엔드(개발 서버 포함)에서의 호출 허용. 사이드카는 127.0.0.1 바인딩.
+    # Allow calls from the local frontend (including the dev server). The sidecar binds to 127.0.0.1.
     app.add_middleware(
         CORSMiddleware,
         allow_origin_regex=r"http://(localhost|127\.0\.0\.1)(:\d+)?",

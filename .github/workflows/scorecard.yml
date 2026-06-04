@@ -1,11 +1,11 @@
 name: scorecard
 
-# OpenSSF Scorecard — 공급망 보안 모범사례 점수를 측정해 코드 스캐닝(Security 탭)과
-# 공개 배지(api.securityscorecards.dev)로 노출한다.
+# OpenSSF Scorecard — measures supply-chain security best-practice scores and exposes
+# them via code scanning (Security tab) and a public badge (api.securityscorecards.dev).
 on:
   branch_protection_rule:
   schedule:
-    - cron: "0 3 * * 1" # 매주 월요일 03:00 UTC
+    - cron: "0 3 * * 1" # Every Monday 03:00 UTC
   push:
     branches: [main]
 
@@ -16,8 +16,8 @@ jobs:
     name: Scorecard analysis
     runs-on: ubuntu-latest
     permissions:
-      security-events: write # SARIF를 코드 스캐닝에 업로드
-      id-token: write # 공개 배지용 결과 게시(OIDC)
+      security-events: write # Upload SARIF to code scanning
+      id-token: write # Publish results for the public badge (OIDC)
     steps:
       - uses: actions/checkout@v6
         with:

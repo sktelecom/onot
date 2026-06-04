@@ -1,7 +1,7 @@
-"""S1 스파이크 — license-expression / spdx-tools 실제 API 형태 검증.
+"""S1 spike — verify the actual API shape of license-expression / spdx-tools.
 
-플랜 §3(license)·§2(ingest)가 가정하는 API가 실제로 동작하는지 확인한다.
-PASS/FAIL을 출력하고, 실패 시 비-0 종료.
+Confirms that the APIs assumed by plan §3 (license) and §2 (ingest) actually work.
+Prints PASS/FAIL and exits non-zero on failure.
 """
 
 from __future__ import annotations
@@ -40,7 +40,7 @@ def le_with_exception():
     lic = get_spdx_licensing()
     parsed = lic.parse("GPL-2.0-only WITH Classpath-exception-2.0")
     syms = [str(s) for s in lic.license_symbols(parsed, unique=True, decompose=True)]
-    # decompose는 license + exception 심볼을 분리해 노출
+    # decompose splits out and exposes the license + exception symbols separately
     return syms
 
 
@@ -57,7 +57,7 @@ def le_validate_unknown():
 
     lic = get_spdx_licensing()
     v = lic.validate("Apache-2.0 OR NoSuchLicense-9.9")
-    # ExpressionInfo: errors / unknown_licenses 등 필드 확인
+    # ExpressionInfo: check fields like errors / unknown_licenses
     return {
         "errors": getattr(v, "errors", None),
         "unknown": getattr(v, "unknown_license_keys", getattr(v, "unknown_licenses", None)),

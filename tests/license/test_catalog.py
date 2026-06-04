@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""번들 SPDX 카탈로그(R-LIC-2 일부): 전문 포함, 라이선스/예외 조회."""
+"""Bundled SPDX catalog (part of R-LIC-2): includes full text, license/exception lookup."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from onot.license.catalog import SpdxLicenseCatalog
 
 def test_bundled_has_common_licenses_with_text():
     cat = SpdxLicenseCatalog.bundled()
-    assert cat.version  # 예: 3.28.0
+    assert cat.version  # e.g. 3.28.0
     assert len(cat) > 700
     mit = cat.get("MIT")
     assert mit is not None

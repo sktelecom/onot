@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""디스크 캐시(R-LIC-3): hit/miss, 손상 내성."""
+"""Disk cache (R-LIC-3): hit/miss, corruption tolerance."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ def test_namespaces_isolated(tmp_path):
     a = DiskCache("v1", base_dir=tmp_path)
     b = DiskCache("v2", base_dir=tmp_path)
     a.set("MIT", "old")
-    assert b.get("MIT") is None  # 버전 네임스페이스로 격리(자연 무효화)
+    assert b.get("MIT") is None  # isolated by version namespace (natural invalidation)
 
 
 def test_missing_dir_returns_none(tmp_path):

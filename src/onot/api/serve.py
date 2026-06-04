@@ -1,10 +1,10 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""사이드카 서버 진입점. FastAPI 앱을 127.0.0.1:PORT에 띄운다(Electron이 spawn).
+"""Sidecar server entry point. Runs the FastAPI app on 127.0.0.1:PORT (spawned by Electron).
 
-uvicorn에 import string이 아니라 앱 인스턴스를 직접 넘겨 frozen(PyInstaller) 환경에서도
-동적 import 문제 없이 동작한다.
+The app instance is passed directly to uvicorn instead of an import string, so it works
+without dynamic-import issues even in a frozen (PyInstaller) environment.
 """
 
 from __future__ import annotations

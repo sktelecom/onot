@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""license resolver 결정성 테스트(R-DOM-2/R-LIC)."""
+"""License resolver determinism test (R-DOM-2/R-LIC)."""
 
 from __future__ import annotations
 
@@ -28,8 +28,8 @@ def test_resolve_deterministic_and_sorted():
     r2 = resolve(_doc())
     assert r1.licenses == r2.licenses
     ids = [lic.license_id for lic in r1.licenses]
-    assert ids == sorted(ids)  # 라이선스는 id 기준 정렬(결정적)
-    # used_by는 패키지 등장 순서를 보존(결정적)
+    assert ids == sorted(ids)  # licenses sorted by id (deterministic)
+    # used_by preserves package appearance order (deterministic)
     mit = next(lic for lic in r1.licenses if lic.license_id == "MIT")
     assert [r.display for r in mit.used_by] == ["z 1", "a 2"]
 

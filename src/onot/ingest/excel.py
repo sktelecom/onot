@@ -1,10 +1,11 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""ExcelAdapter — 1.x onot/SPDX 스프레드시트 템플릿 → NoticeDocument.
+"""ExcelAdapter — 1.x onot/SPDX spreadsheet template -> NoticeDocument.
 
-Document Info, Package Info, Extracted License Info 시트를 읽어 NoticeDocument로 매핑한다.
-ExcelAdapter로 registry에 통합된다. 컬럼 인덱스는 표준 SPDX 스프레드시트 스키마 기준이다.
+Reads the Document Info, Package Info, and Extracted License Info sheets and maps them into
+a NoticeDocument. Integrated into the registry as ExcelAdapter. Column indices follow the
+standard SPDX spreadsheet schema.
 """
 
 from __future__ import annotations
@@ -16,7 +17,7 @@ import openpyxl
 from onot.domain.models import Copyright, LicenseExpression, LicenseRef, NoticeDocument, Package
 from onot.ingest.base import IngestResult
 
-# 표준 SPDX 스프레드시트 컬럼 인덱스(0-base)
+# Standard SPDX spreadsheet column indices (0-based)
 _DOC_NAME_COL = 5
 _PKG_COLS = {
     "name": 0,
@@ -44,7 +45,7 @@ class ExcelAdapter:
 
 
 def _cell(row: tuple, index: int) -> object:
-    """짧은 행/빈 행에서도 안전한 셀 접근(없으면 None)."""
+    """Safe cell access even for short/empty rows (None if absent)."""
     if not row or index >= len(row):
         return None
     return row[index]

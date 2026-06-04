@@ -24,8 +24,9 @@ export function FileDropzone({
     [onFile],
   );
 
-  // 접근성: <label>이 클릭/포커스를 입력으로 위임하고, 입력은 sr-only(포커스 가능)로
-  // 키보드 활성화를 지원한다. role=button 중첩이 없어 nested-interactive 위반도 없다.
+  // Accessibility: the <label> delegates click/focus to the input, and the input is sr-only
+  // (still focusable) to support keyboard activation. No nested role=button, so no
+  // nested-interactive violation.
   return (
     <label
       data-testid="dropzone"

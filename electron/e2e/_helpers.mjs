@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
-// Playwright-electron E2E 공통 헬퍼. testMatch(**/*.e2e.mjs)에 안 걸리므로 테스트로 수집되지 않고 import만 된다.
+// Shared helpers for Playwright-electron E2E. Not matched by testMatch(**/*.e2e.mjs), so it is only imported and never collected as a test.
 import { _electron as electron, expect } from "@playwright/test";
 import http from "node:http";
 import path from "node:path";
@@ -12,7 +12,7 @@ export const electronRoot = path.resolve(here, "..");
 export const repoRoot = path.resolve(here, "..", "..");
 export const spdxFixture = path.join(repoRoot, "tests", "fixtures", "sbom", "example.spdx.json");
 
-// 앱 기동 + 첫 창이 렌더될 때까지 대기. 기존 app.e2e.mjs와 동일 패턴.
+// Launch the app and wait until the first window has rendered. Same pattern as the existing app.e2e.mjs.
 export async function launchApp() {
   const app = await electron.launch({ args: [electronRoot], cwd: electronRoot });
   const window = await app.firstWindow();
@@ -20,7 +20,7 @@ export async function launchApp() {
   return { app, window };
 }
 
-// 창 URL 쿼리(?apiBase=)에서 사이드카 베이스 URL(http://127.0.0.1:<port>)을 추출한다.
+// Extract the sidecar base URL (http://127.0.0.1:<port>) from the window URL query (?apiBase=).
 export async function getApiBase(window) {
   const search = await window.evaluate(() => window.location.search);
   const apiBase = new URLSearchParams(search).get("apiBase");
@@ -28,24 +28,19 @@ export async function getApiBase(window) {
   return apiBase;
 }
 
-// 파일 업로드 후 파싱 성공 신호(문서명)가 보일 때까지 대기.
+// After uploading a file, wait until the parse-success signal (the document name) becomes visible.
 export async function uploadAndWaitParse(window, fixture, expectText = "example-product") {
   await window.getByTestId("file-input").setInputFiles(fixture);
   await expect(window.getByText(expectText)).toBeVisible({ timeout: 30000 });
 }
 
-// 출력 포맷 체크박스 토글(미체크면 체크). Download 버튼은 체크된 포맷만 렌더된다.
+// Toggle the output-format checkbox (check it if unchecked). The Download button is rendered only for checked formats.
 export async function setFormat(window, fmt) {
   const box = window.getByRole("checkbox", { name: fmt, exact: true });
   if (!(await box.isChecked())) await box.check();
 }
 
-// 고지문 언어 select. label 텍스트는 en UI 기준 "Notice language".
-export async function setNoticeLang(window, lang) {
-  await window.getByLabel("Notice language").selectOption(lang);
-}
-
-// sidecar.mjs의 ping과 동일 로직: 200이면 true, 그 외/에러/타임아웃이면 false.
+// Same logic as ping in sidecar.mjs: true on 200, false otherwise/on error/on timeout.
 export function healthy(apiBase) {
   return new Promise((resolve) => {
     const req = http.get(`${apiBase}/healthz`, { timeout: 1000 }, (res) => {
@@ -60,7 +55,7 @@ export function healthy(apiBase) {
   });
 }
 
-// healthy()가 want와 같아질 때까지 폴링. 충족하면 true, 타임아웃이면 false.
+// Poll until healthy() equals want. Returns true when satisfied, false on timeout.
 export async function waitHealthy(apiBase, want, { timeoutMs = 10000, intervalMs = 250 } = {}) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {

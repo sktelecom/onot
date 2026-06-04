@@ -57,7 +57,7 @@ describe("api client", () => {
         }),
     );
     const { blob, filename } = await renderNotice(file, { format: "html", lang: "en" });
-    // size는 realm/Node 버전에 무관한 안정 속성(instanceof Blob은 realm 차이로 불안정)
+    // size is a stable property independent of realm/Node version (instanceof Blob is flaky across realms)
     expect(blob.size).toBeGreaterThan(0);
     expect(filename).toBe("OSS_Notice_demo.html");
   });

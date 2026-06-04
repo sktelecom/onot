@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""산출물 디스크 쓰기(render와 분리)."""
+"""Write outputs to disk (separated from rendering)."""
 
 from __future__ import annotations
 

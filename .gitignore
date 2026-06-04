@@ -26,7 +26,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-# Python 빌드 산출물 lib는 루트 한정(frontend/src/lib, electron/lib는 소스라 추적해야 함)
+# Python build artifact lib is root-only (frontend/src/lib and electron/lib are source and must be tracked)
 /lib/
 /lib64/
 parts/
@@ -67,7 +67,7 @@ htmlcov/
 # Node / frontend
 node_modules/
 
-# Playwright(E2E) 산출물
+# Playwright (E2E) artifacts
 electron/test-results/
 electron/playwright-report/
 
@@ -76,6 +76,6 @@ spikes/**/out/
 
 
 
-# 타입/린트 캐시
+# Type/lint cache
 .mypy_cache/
 .ruff_cache/

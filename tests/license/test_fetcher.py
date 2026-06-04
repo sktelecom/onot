@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""원격 fetcher: 성공/예외필드/404/재시도(respx mock, 네트워크 없음)."""
+"""Remote fetcher: success/exception field/404/retry (respx mock, no network)."""
 
 from __future__ import annotations
 
@@ -57,7 +57,7 @@ def test_fetch_exhausts_retries_returns_none():
 
 
 def test_invalid_id_returns_none_without_network():
-    # SPDX id 문자셋 밖(공백/개행/슬래시)은 URL 보간 전에 차단 → 네트워크 호출 없음
+    # Characters outside the SPDX id set (space/newline/slash) are blocked before URL interpolation -> no network call
     fetcher = RemoteLicenseFetcher(retries=1, backoff=0)
     assert fetcher.fetch_text("foo bar\nbaz") is None
     assert fetcher.fetch_text("../etc/passwd") is None

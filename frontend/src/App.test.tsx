@@ -37,9 +37,9 @@ describe("App", () => {
   it("renders the title and has no a11y violations", async () => {
     const { container } = render(<App />);
     expect(screen.getByText("OSS Notice Generator")).toBeInTheDocument();
-    // color-contrast는 jsdom에 실제 렌더링 색/canvas가 없어 신뢰할 수 없다.
-    // 이 룰을 끄지 않으면 getContext 미구현으로 incomplete 처리되며 조용히 누락된다.
-    // 명도 대비 검증은 실제 브라우저가 있는 Playwright-electron E2E의 책임으로 위임한다.
+    // color-contrast is unreliable in jsdom, which has no real rendered colors/canvas.
+    // Without disabling this rule, the unimplemented getContext makes it "incomplete" and silently skipped.
+    // Contrast verification is delegated to the Playwright-electron E2E, which runs in a real browser.
     const results = await axe.run(container, {
       rules: { "color-contrast": { enabled: false } },
     });
@@ -76,7 +76,7 @@ describe("App", () => {
     renderNotice.mockResolvedValue({ blob: new Blob(["x"]), filename: "OSS_Notice_demo.html" });
     const createUrl = vi.fn(() => "blob:mock");
     const revokeUrl = vi.fn();
-    // jsdom에는 createObjectURL/revokeObjectURL이 없으므로 직접 정의
+    // jsdom lacks createObjectURL/revokeObjectURL, so define them directly
     Object.defineProperty(URL, "createObjectURL", { value: createUrl, configurable: true });
     Object.defineProperty(URL, "revokeObjectURL", { value: revokeUrl, configurable: true });
     vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
@@ -104,7 +104,7 @@ describe("App", () => {
 
   it("uses the Electron printToPDF bridge for pdf when available", async () => {
     parseSbom.mockResolvedValue(parsed("demo", 1));
-    // jsdom Blob.text() 미지원 → text()를 제공하는 blob-유사 객체로 대체
+    // jsdom does not support Blob.text() -> replace with a blob-like object that provides text()
     const blob = { text: async () => "<html>notice</html>" } as unknown as Blob;
     renderNotice.mockResolvedValue({ blob, filename: "x.html" });
     const exportPdf = vi.fn().mockResolvedValue({ saved: true });
@@ -113,11 +113,11 @@ describe("App", () => {
     render(<App />);
     await userEvent.upload(screen.getByTestId("file-input"), new File(["x"], "demo.spdx.json"));
     await waitFor(() => screen.getByText("demo"));
-    await userEvent.click(screen.getByLabelText("pdf")); // 설정에서 pdf 포맷 추가
+    await userEvent.click(screen.getByLabelText("pdf")); // add pdf format in settings
     await userEvent.click(screen.getByRole("button", { name: /download pdf/i }));
 
     await waitFor(() => expect(exportPdf).toHaveBeenCalled());
-    // 사이드카 PDF가 아니라 HTML을 렌더해 printToPDF로 넘긴다
+    // renders HTML and hands it to printToPDF, not a sidecar PDF
     expect(renderNotice).toHaveBeenCalledWith(
       expect.any(File),
       expect.objectContaining({ format: "html" }),

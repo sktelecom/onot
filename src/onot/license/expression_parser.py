@@ -1,10 +1,10 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""SPDX 라이선스 표현식 파싱(license-expression 래퍼).
+"""SPDX license expression parsing (wrapper around license-expression).
 
-중첩 OR/AND/WITH와 + 연산자를 평탄화해 심볼을 추출한다. 파싱 실패는
-ExpressionParseError로 올린다(resolver가 폴백 처리).
+Flattens nested OR/AND/WITH and the + operator to extract symbols. Parse failures are
+raised as ExpressionParseError (the resolver handles the fallback).
 """
 
 from __future__ import annotations
@@ -22,10 +22,10 @@ def _licensing() -> Licensing:
 
 
 def symbols(expression: str) -> tuple[str, ...]:
-    """표현식의 모든 license/exception 심볼을 중복 없이 평탄화해 반환."""
+    """Return all license/exception symbols of the expression, flattened and deduplicated."""
     licensing = _licensing()
     try:
         parsed = licensing.parse(expression)
-    except Exception as exc:  # noqa: BLE001 — 라이브러리 예외를 도메인 예외로 래핑
+    except Exception as exc:  # noqa: BLE001 — wrap the library exception as a domain exception
         raise ExpressionParseError(f"invalid license expression: {expression!r}") from exc
     return tuple(str(s) for s in licensing.license_symbols(parsed, unique=True, decompose=True))

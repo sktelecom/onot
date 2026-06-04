@@ -1,9 +1,9 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""onot CLI 진입점 (Typer).
+"""onot CLI entry point (Typer).
 
-generate(다중 포맷·자동감지·언어·설정), formats, version.
+generate (multiple formats, auto-detection, language, settings), formats, version.
 """
 
 from __future__ import annotations
@@ -28,7 +28,7 @@ from onot.rendering.registry import is_supported
 
 app = typer.Typer(add_completion=False, help="onot — OSS notice generator")
 
-# 종료 코드: 2=입력, 3=라이선스, 4=설정, 1=기타
+# exit codes: 2=ingest, 3=license, 4=config, 1=other
 _EXIT_CODES = {IngestError: 2, LicenseError: 3, ConfigError: 4}
 
 
@@ -40,7 +40,7 @@ def _exit_code(err: OnotError) -> int:
 
 
 def _build_resolver(settings, *, strict: bool) -> LicenseResolver:
-    """오프라인이면 번들만, 온라인이면 원격 fetcher + 디스크 캐시를 주입."""
+    """Offline: bundled catalog only. Online: inject a remote fetcher + disk cache."""
     if settings.offline:
         return LicenseResolver(offline=True, strict=strict)
     version = SpdxLicenseCatalog.bundled().version
@@ -55,20 +55,24 @@ def _build_resolver(settings, *, strict: bool) -> LicenseResolver:
 @app.command()
 def generate(
     input: Path = typer.Option(  # noqa: A002
-        ..., "-i", "--input", exists=True, dir_okay=False, readable=True, help="입력 SBOM"
+        ..., "-i", "--input", exists=True, dir_okay=False, readable=True, help="input SBOM"
     ),
-    formats: list[str] = typer.Option(["html"], "-f", "--format", help="출력 포맷(반복 가능)"),
-    output_dir: Path = typer.Option(Path("output"), "-o", "--output-dir", help="출력 디렉터리"),
-    lang: str | None = typer.Option(None, "--lang", help="ko 또는 en"),
+    formats: list[str] = typer.Option(
+        ["html"], "-f", "--format", help="output format (repeatable)"
+    ),
+    output_dir: Path = typer.Option(Path("output"), "-o", "--output-dir", help="output directory"),
+    lang: str | None = typer.Option(None, "--lang", help="output language (en)"),
     config: Path | None = typer.Option(
-        None, "--config", exists=True, dir_okay=False, help="onot.yaml 설정"
+        None, "--config", exists=True, dir_okay=False, help="onot.yaml config"
     ),
-    offline: bool = typer.Option(True, "--offline/--online", help="라이선스 원격 보충 비활성"),
-    strict: bool = typer.Option(False, "--strict", help="unknown 라이선스를 오류로"),
-    stdout: bool = typer.Option(False, "--stdout", help="단일 텍스트 포맷을 표준출력으로"),
+    offline: bool = typer.Option(
+        True, "--offline/--online", help="disable remote license fetching"
+    ),
+    strict: bool = typer.Option(False, "--strict", help="treat unknown licenses as errors"),
+    stdout: bool = typer.Option(False, "--stdout", help="write a single text format to stdout"),
 ) -> None:
-    """SBOM에서 OSS 고지문을 생성한다."""
-    formats = list(dict.fromkeys(formats))  # 중복 제거(순서 보존)
+    """Generate an OSS notice from an SBOM."""
+    formats = list(dict.fromkeys(formats))  # de-duplicate (preserve order)
     unknown = [f for f in formats if not is_supported(f)]
     if unknown:
         typer.echo(
@@ -115,12 +119,12 @@ def generate(
 
 @app.command()
 def formats() -> None:
-    """지원하는 출력 포맷을 출력한다."""
+    """Print the supported output formats."""
     for fmt in available_formats():
         typer.echo(fmt)
 
 
 @app.command()
 def version() -> None:
-    """버전을 출력한다."""
+    """Print the version."""
     typer.echo(__version__)

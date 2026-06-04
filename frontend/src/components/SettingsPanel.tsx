@@ -56,20 +56,6 @@ export function SettingsPanel({
         </div>
       </fieldset>
 
-      <label className="mb-3 block text-sm">
-        <span className="mb-1 block text-xs font-medium text-zinc-500">
-          {t(uiLang, "language")}
-        </span>
-        <select
-          value={value.lang}
-          onChange={(e) => onChange({ ...value, lang: e.target.value as UiLang })}
-          className="w-full rounded-md border border-zinc-300 bg-transparent px-2 py-1.5 dark:border-zinc-700"
-        >
-          <option value="en">English</option>
-          <option value="ko">한국어</option>
-        </select>
-      </label>
-
       {COMPANY_FIELDS.map(({ key, label }) => (
         <label key={key} className="mb-2 block text-sm">
           <span className="mb-1 block text-xs font-medium text-zinc-500">{t(uiLang, label)}</span>

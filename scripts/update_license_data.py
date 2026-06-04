@@ -1,9 +1,10 @@
-"""SPDX license-list-data 스냅샷을 단일 번들(JSON)로 vendoring.
+"""Vendor an SPDX license-list-data snapshot into a single bundle (JSON).
 
-에어갭 1급 요건: 라이선스/예외 전문을 전부 번들해 네트워크 없이 완결 동작.
-릴리스마다 실행해 `src/onot/license/data/licenses.json`을 최신화한다.
+First-class air-gap requirement: bundle the full text of every license/exception so it works
+completely without network access. Run on each release to refresh
+`src/onot/license/data/licenses.json`.
 
-사용: python scripts/update_license_data.py
+Usage: python scripts/update_license_data.py
 """
 
 from __future__ import annotations

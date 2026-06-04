@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""M1 도메인 모델 단위 테스트: 검증 규칙, 값 객체, 중복 제거, 결정성."""
+"""M1 domain model unit tests: validation rules, value objects, deduplication, determinism."""
 
 from __future__ import annotations
 
@@ -116,9 +116,9 @@ def test_dedup_packages_preserves_first_and_order():
     b = Package(name="b", version="2")
     a2 = Package(name="a", version="2")
     doc = NoticeDocument(name="prod", packages=(a1, b, a1_dup, a2))
-    # a/1 중복 제거(첫 등장 보존), 순서 유지
+    # a/1 deduplicated (first occurrence kept), order preserved
     assert [(p.name, p.version) for p in doc.packages] == [("a", "1"), ("b", "2"), ("a", "2")]
-    assert doc.packages[0] is a1  # 첫 등장 보존
+    assert doc.packages[0] is a1  # first occurrence kept
 
 
 def test_document_requires_name():
@@ -138,12 +138,12 @@ def _sample_doc():
 
 
 def test_serialization_deterministic():
-    # 독립적으로 동일하게 구성한 두 문서의 직렬화가 일치(자기 자신 비교가 아님)
+    # Serialization of two independently but identically constructed documents matches (not self-comparison)
     assert _sample_doc().model_dump_json() == _sample_doc().model_dump_json()
 
 
 def test_dedup_runs_on_model_validate_roundtrip():
-    # model_validate 라운드트립에서도 dedup이 동작함을 고정(생성 시점 검증과 동일 계약)
+    # Pin that dedup also runs on a model_validate roundtrip (same contract as construction-time validation)
     a = Package(name="a", version="1")
     dup = Package(name="a", version="1", download_location="x")
     payload = NoticeDocument.model_construct(name="prod", packages=(a, dup)).model_dump()

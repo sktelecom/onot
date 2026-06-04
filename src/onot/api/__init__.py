@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""FastAPI 사이드카 (Electron 데스크톱 + 향후 정적 SaaS 백엔드 공용)."""
+"""FastAPI sidecar (shared by the Electron desktop and a future static SaaS backend)."""
 
 from onot.api.app import create_app
 

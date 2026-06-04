@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""spdx-tools Document → onot.domain 매핑 헬퍼."""
+"""Helpers for mapping a spdx-tools Document -> onot.domain."""
 
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ _MARKERS = {"NOASSERTION", "NONE", ""}
 
 
 def _opt(value: object) -> str | None:
-    """None/NOASSERTION/NONE은 None으로, 그 외는 문자열로."""
+    """Map None/NOASSERTION/NONE to None; everything else to a string."""
     if value is None:
         return None
     text = str(value).strip()

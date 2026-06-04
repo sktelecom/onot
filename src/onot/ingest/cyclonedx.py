@@ -1,11 +1,11 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""CycloneDxAdapter — cyclonedx-python-lib로 CycloneDX(JSON/XML) 파싱.
+"""CycloneDxAdapter — parses CycloneDX (JSON/XML) via cyclonedx-python-lib.
 
-CDX는 concluded/declared 구분이 없어 라이선스를 license_declared로 매핑한다(effective가
-declared로 폴백). 인라인 named 라이선스는 즉석 LicenseRef로 등록. XML은 defusedxml로
-XXE 안전 파싱한다.
+CDX has no concluded/declared distinction, so licenses are mapped to license_declared
+(effective falls back to declared). Inline named licenses are registered as ad-hoc
+LicenseRefs. XML is parsed XXE-safely via defusedxml.
 """
 
 from __future__ import annotations
@@ -37,7 +37,7 @@ class CycloneDxAdapter:
         try:
             bom = self._parse_xml(data) if is_xml else self._parse_json(data)
         except (ParseError, IngestValidationError):
-            raise  # XXE 거부·파싱 오류는 그대로 전파
+            raise  # propagate XXE rejection and parse errors as-is
         except Exception as exc:  # noqa: BLE001
             raise ParseError(f"failed to parse CycloneDX document: {path.name}") from exc
         return IngestResult(document=_bom_to_notice(bom))
@@ -46,7 +46,7 @@ class CycloneDxAdapter:
     def _parse_json(data: bytes):
         from cyclonedx.model.bom import Bom
 
-        return Bom.from_json(json.loads(data))  # type: ignore[attr-defined]  # py-serializable 동적 주입
+        return Bom.from_json(json.loads(data))  # type: ignore[attr-defined]  # py-serializable dynamic injection
 
     @staticmethod
     def _parse_xml(data: bytes):
@@ -57,17 +57,17 @@ class CycloneDxAdapter:
         reject_dangerous_xml(data)
         try:
             element = fromstring(data)
-        except DefusedXmlException as exc:  # 인코딩 우회 등 2차 방어
+        except DefusedXmlException as exc:  # secondary defense, e.g. encoding bypasses
             raise IngestValidationError(["unsafe XML rejected (XXE protection)"]) from exc
-        return Bom.from_xml(element)  # type: ignore[attr-defined]  # py-serializable 동적 주입
+        return Bom.from_xml(element)  # type: ignore[attr-defined]  # py-serializable dynamic injection
 
 
 def _register_named_ref(name: str, text: str, refs: dict[str, LicenseRef]) -> str:
-    """named 라이선스를 LicenseRef로 등록하고 id 반환. slug 충돌은 suffix로 분리(무음 덮어쓰기 방지)."""
+    """Register a named license as a LicenseRef and return its id. Slug collisions are separated by suffix (prevents silent overwrite)."""
     base = f"LicenseRef-{slugify(name)}"
     candidate = base
     suffix = 2
-    # 같은 name+text면 재사용(dedup), 다르면(slug 충돌) suffix로 분리
+    # Reuse if same name+text (dedup); separate by suffix if different (slug collision)
     while candidate in refs and (
         refs[candidate].name != name or refs[candidate].extracted_text != text
     ):

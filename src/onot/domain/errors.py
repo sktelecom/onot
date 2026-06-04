@@ -1,53 +1,53 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""onot 예외 계층. 사용자향 실패는 모두 OnotError 하위로 모은다."""
+"""onot exception hierarchy. All user-facing failures derive from OnotError."""
 
 from __future__ import annotations
 
 
 class OnotError(Exception):
-    """모든 onot 오류의 루트."""
+    """Root of all onot errors."""
 
 
-# --- 입력(ingest) -------------------------------------------------------------
+# --- ingest -------------------------------------------------------------------
 class IngestError(OnotError):
-    """입력 파싱/적재 단계 오류."""
+    """Error during the input parsing/loading stage."""
 
 
 class UnsupportedFormatError(IngestError):
-    """포맷을 감지하지 못했거나 지원하지 않음."""
+    """Format could not be detected or is not supported."""
 
 
 class ParseError(IngestError):
-    """외부 파서 예외를 감싼 파싱 실패(원인 chain 보존)."""
+    """Parse failure wrapping an external parser exception (preserves cause chain)."""
 
 
 class IngestValidationError(IngestError):
-    """문서 검증 실패. 필드별 메시지를 messages에 담는다."""
+    """Document validation failure. Per-field messages are stored in messages."""
 
     def __init__(self, messages: list[str]) -> None:
         self.messages = list(messages)
         super().__init__("; ".join(self.messages) or "ingest validation failed")
 
 
-# --- 라이선스 ----------------------------------------------------------------
+# --- license ------------------------------------------------------------------
 class LicenseError(OnotError):
-    """라이선스 해석/조회 오류."""
+    """License resolution/lookup error."""
 
 
 class ExpressionParseError(LicenseError):
-    """라이선스 표현식 파싱 실패."""
+    """License expression parse failure."""
 
 
 class UnknownLicenseError(LicenseError):
-    """카탈로그·동봉 어디에도 없는 라이선스."""
+    """License found neither in the catalog nor embedded in the document."""
 
 
 class LicenseTextUnavailableError(LicenseError):
-    """오프라인이고 캐시·번들에도 전문이 없음."""
+    """Offline and the full text is absent from both cache and bundle."""
 
 
-# --- 설정 --------------------------------------------------------------------
+# --- config -------------------------------------------------------------------
 class ConfigError(OnotError):
-    """잘못된 설정."""
+    """Invalid configuration."""

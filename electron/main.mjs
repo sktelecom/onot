@@ -1,5 +1,5 @@
-// Electron 메인 프로세스: 사이드카 기동 → 윈도우 로드 → printToPDF → graceful shutdown.
-// ESM(Electron >= 28). 실제 기동/E2E는 M9 CI(Playwright-electron)에서 검증.
+// Electron main process: start sidecar → load window → printToPDF → graceful shutdown.
+// ESM (Electron >= 28). Real startup/E2E is verified in M9 CI (Playwright-electron).
 import { app, BrowserWindow, dialog, ipcMain, session, shell } from "electron";
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -17,7 +17,7 @@ let appOrigin = "file://";
 
 function sidecarCommand() {
   if (isDev) {
-    // CI/대체 환경은 ONOT_SIDECAR_PYTHON으로 python 경로 재정의(기본: 로컬 .venv)
+    // CI/alternate environments override the python path via ONOT_SIDECAR_PYTHON (default: local .venv)
     const python =
       process.env.ONOT_SIDECAR_PYTHON ??
       path.resolve(here, "..", ".venv", "bin", isWin ? "python.exe" : "python");
@@ -35,7 +35,7 @@ async function startSidecar() {
   return port;
 }
 
-// 보안: 신규 창 차단, 외부 출처 네비게이션 차단(외부 링크는 시스템 브라우저로).
+// Security: block new windows and navigation to external origins (external links open in the system browser).
 function hardenWebContents(contents) {
   contents.setWindowOpenHandler(({ url }) => {
     if (url.startsWith("http:") || url.startsWith("https:")) shell.openExternal(url);
@@ -58,7 +58,7 @@ async function createWindow(apiBase) {
       preload: path.join(here, "preload.mjs"),
       contextIsolation: true,
       nodeIntegration: false,
-      sandbox: false, // ESM preload 사용
+      sandbox: false, // uses ESM preload
     },
   });
   if (isDev) {
@@ -72,7 +72,7 @@ async function createWindow(apiBase) {
   }
 }
 
-// 렌더러가 보낸 HTML을 격리된 오프스크린 창에서 PDF로 변환(S5: 데스크톱 PDF = printToPDF).
+// Convert HTML sent by the renderer into a PDF in an isolated offscreen window (S5: desktop PDF = printToPDF).
 ipcMain.handle("export-pdf", async (_event, html, suggestedName) => {
   if (typeof html !== "string" || html.length > MAX_PDF_HTML) {
     throw new Error("invalid PDF source");
@@ -84,7 +84,7 @@ ipcMain.handle("export-pdf", async (_event, html, suggestedName) => {
       nodeIntegration: false,
       contextIsolation: true,
       sandbox: true,
-      javascript: false, // PDF 렌더에 JS 불필요 — data-URL 내 스크립트 실행 원천 차단
+      javascript: false, // JS not needed for PDF rendering — entirely blocks script execution within the data URL
     },
   });
   try {
@@ -105,7 +105,7 @@ ipcMain.handle("export-pdf", async (_event, html, suggestedName) => {
   }
 });
 
-// 사이드카 정리: 멱등 promise로 단일화해 종료 경합에도 정확히 1회 수행.
+// Sidecar cleanup: unified into an idempotent promise so it runs exactly once even under shutdown races.
 let shutdownPromise = null;
 function shutdown() {
   if (!shutdownPromise) {
@@ -118,7 +118,7 @@ function shutdown() {
 
 app.whenReady().then(async () => {
   app.on("web-contents-created", (_e, contents) => hardenWebContents(contents));
-  // 보안: 모든 응답에 CSP 적용(연결은 로컬 사이드카로 한정).
+  // Security: apply CSP to all responses (connections limited to the local sidecar).
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     callback({
       responseHeaders: {

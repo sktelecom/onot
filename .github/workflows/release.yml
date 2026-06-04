@@ -1,12 +1,13 @@
 name: release
 
-# v* 태그를 밀면 윈도우/macOS 설치 파일을 빌드해 GitHub Releases에 게시하고,
-# 최종 릴리스 태그(하이픈 없는 v1.2.3)는 PyPI에도 게시한다.
-# 예: git tag v1.1.0 && git push origin v1.1.0
+# Pushing a v* tag builds the Windows/macOS installers and publishes them to GitHub
+# Releases, and final release tags (v1.2.3 without a hyphen) are also published to PyPI.
+# Example: git tag v1.1.0 && git push origin v1.1.0
 #
-# PyPI 게시는 토큰 없는 Trusted Publishing(OIDC)을 쓴다. 최초 1회 PyPI에서
-# 신뢰 게시자를 등록해야 한다(Owner: sktelecom, Repo: onot, Workflow: release.yml,
-# Environment: pypi). 등록 전까지 publish-pypi 잡은 실패하지만 일반 CI에는 영향이 없다.
+# PyPI publishing uses token-less Trusted Publishing (OIDC). The trusted publisher must
+# be registered once on PyPI (Owner: sktelecom, Repo: onot, Workflow: release.yml,
+# Environment: pypi). Until registration, the publish-pypi job fails, but this does not
+# affect regular CI.
 on:
   push:
     tags: ["v*"]
@@ -17,7 +18,7 @@ permissions:
 jobs:
   publish-desktop:
     permissions:
-      contents: write # GitHub Releases에 설치파일 업로드
+      contents: write # Upload installers to GitHub Releases
     strategy:
       fail-fast: false
       matrix:
@@ -40,10 +41,11 @@ jobs:
         shell: bash
         run: bash electron/build-sidecar.sh
       - run: pnpm -C electron install
-      # 미서명(D-016). electron-builder는 기본적으로 git 태그가 아닌 package.json 버전으로
-      # 릴리스를 만들므로, 푼 태그에서 버전을 뽑아 extraMetadata.version으로 주입해 릴리스
-      # 태그·파일명을 일치시킨다. 태그에 '-'가 있으면(rc/beta 등) prerelease로, 없으면 바로
-      # 공개되는 release로 게시한다.
+      # Unsigned (D-016). By default electron-builder creates a release from the
+      # package.json version rather than the git tag, so the version is extracted from
+      # the pushed tag and injected via extraMetadata.version to align the release tag
+      # and filenames. If the tag contains '-' (rc/beta, etc.) it is published as a
+      # prerelease; otherwise it is published as a public release.
       - name: build & publish to GitHub Releases
         shell: bash
         run: |
@@ -60,7 +62,7 @@ jobs:
   publish-pypi:
     name: Publish to PyPI
     runs-on: ubuntu-latest
-    # 최종 릴리스 태그만 게시한다(rc/beta 등 하이픈 포함 태그는 데스크톱만).
+    # Publish only final release tags (hyphenated tags like rc/beta are desktop-only).
     if: ${{ !contains(github.ref_name, '-') }}
     permissions:
       id-token: write # OIDC Trusted Publishing
@@ -74,7 +76,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Pin package version to the git tag
-        # 태그를 단일 진실로 삼아 sdist/wheel 버전을 일치시킨다(pyproject의 .dev0 무시).
+        # Treat the tag as the single source of truth to align sdist/wheel versions (ignore pyproject's .dev0).
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
           echo "Building onot $VERSION from tag $GITHUB_REF_NAME"
@@ -86,14 +88,14 @@ jobs:
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          attestations: true # PEP 740 provenance 첨부
+          attestations: true # Attach PEP 740 provenance
 
   publish-sbom:
     name: Attach SBOM to release
-    needs: publish-desktop # 릴리스가 생성된 뒤 자산을 첨부한다
+    needs: publish-desktop # Attach assets after the release is created
     runs-on: ubuntu-latest
     permissions:
-      contents: write # 릴리스에 자산 업로드
+      contents: write # Upload assets to the release
     steps:
       - uses: actions/checkout@v6
       - name: Generate CycloneDX SBOM
@@ -103,7 +105,7 @@ jobs:
           format: cyclonedx-json
           output-file: onot-${{ github.ref_name }}-sbom.cdx.json
       - name: Attach SBOM to the release
-        # github.ref_name을 셸에 직접 보간하지 않고 기본 제공 env로 받아 인젝션을 피한다.
+        # Avoid injection by taking github.ref_name from the built-in env instead of interpolating it directly into the shell.
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release upload "$GITHUB_REF_NAME" "onot-${GITHUB_REF_NAME}-sbom.cdx.json" --clobber

@@ -1,10 +1,10 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""PdfRenderer — HTML을 PDF로 변환(WeasyPrint, onot[pdf] extras).
+"""PdfRenderer — converts HTML to PDF (WeasyPrint, onot[pdf] extras).
 
-설치형 데스크톱은 Electron printToPDF를 쓰고, CLI 등 헤드리스 경로에서 이 렌더러를 쓴다.
-WeasyPrint 미설치 시 명확한 안내와 함께 실패한다(extras로 격리).
+The installable desktop uses Electron printToPDF; this renderer is used on headless paths
+such as the CLI. If WeasyPrint is not installed, it fails with a clear message (isolated via extras).
 """
 
 from __future__ import annotations
@@ -28,7 +28,7 @@ class PdfRenderer(Renderer):
 
     def render(self, doc: NoticeDocument, *, now: datetime | None = None) -> bytes:
         try:
-            from weasyprint import HTML  # noqa: PLC0415 — 선택 의존성 지연 로드
+            from weasyprint import HTML  # noqa: PLC0415 — lazy-load optional dependency
         except ImportError as exc:
             raise RuntimeError(
                 "PDF rendering requires WeasyPrint. Install with: pip install 'onot[pdf]'"

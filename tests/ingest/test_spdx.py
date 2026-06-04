@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""SpdxAdapter: 패키지 매핑, NOASSERTION 처리, organization/email, extracted license, 오류."""
+"""SpdxAdapter: package mapping, NOASSERTION handling, organization/email, extracted license, errors."""
 
 from __future__ import annotations
 
@@ -33,10 +33,10 @@ def test_spdx_json_maps_document_and_packages():
 def test_spdx_noassertion_normalized_to_none():
     doc = load_document(FIX / "example.spdx.json").document
     bar = next(p for p in doc.packages if p.name == "bar")
-    # licenseDeclared=NOASSERTION → None, concluded=Apache-2.0 → effective
+    # licenseDeclared=NOASSERTION -> None, concluded=Apache-2.0 -> effective
     assert bar.license_declared is None
     assert bar.effective_expression.raw == "Apache-2.0"
-    # copyrightText=NOASSERTION → Copyright(is_noassertion)로 구조화, 표시는 빈 문자열
+    # copyrightText=NOASSERTION -> structured as Copyright(is_noassertion), displays as empty string
     assert bar.copyright.is_noassertion is True
     assert bar.copyright_display == ""
     assert bar.download_location == ""  # NOASSERTION

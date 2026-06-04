@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""CLI: 다중 포맷, 자동감지, 언어, stdout, formats/version, 오류 종료 코드."""
+"""CLI: multiple formats, auto-detection, language, stdout, formats/version, error exit codes."""
 
 from __future__ import annotations
 
@@ -39,12 +39,12 @@ def test_generate_autodetects_spdx_json(tmp_path):
     assert "example-product" in md.read_text(encoding="utf-8")
 
 
-def test_generate_lang_ko_stdout():
+def test_generate_lang_en_stdout():
     result = runner.invoke(
-        app, ["generate", "-i", str(SPDX_JSON), "-f", "text", "--stdout", "--lang", "ko"]
+        app, ["generate", "-i", str(SPDX_JSON), "-f", "text", "--stdout", "--lang", "en"]
     )
     assert result.exit_code == 0, result.output
-    assert "오픈소스 고지" in result.output
+    assert "OSS Notice" in result.output
 
 
 def test_stdout_rejects_multiple_formats():
@@ -65,7 +65,7 @@ def test_unknown_format_clean_exit_2(tmp_path):
     )
     assert result.exit_code == 2
     assert "unknown output format" in result.output
-    assert "Traceback" not in result.output  # 트레이스백 노출 없이 깔끔히 종료
+    assert "Traceback" not in result.output  # exit cleanly without leaking a traceback
 
 
 def test_format_aliases_accepted(tmp_path):
@@ -123,7 +123,7 @@ def test_strict_unknown_license_exit_3(tmp_path):
 
 
 def test_online_mode_smoke(tmp_path):
-    # --online은 fetcher/cache를 주입하지만 번들 라이선스는 네트워크 없이 처리된다
+    # --online injects a fetcher/cache, but bundled licenses are handled without network access
     result = runner.invoke(
         app,
         ["generate", "-i", str(SPDX_JSON), "-f", "text", "--online", "--output-dir", str(tmp_path)],

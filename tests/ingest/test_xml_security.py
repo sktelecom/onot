@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""XML 입력 보안(R-ING-2): XXE·확장 폭탄 거부."""
+"""XML input security (R-ING-2): rejects XXE and expansion bombs."""
 
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ def test_malicious_xml_rejected(name):
 
 
 def test_guard_allows_clean_xml():
-    # 정상 XML은 통과(예외 없음)
+    # Clean XML passes (no exception)
     reject_dangerous_xml(b'<?xml version="1.0"?><bom><components/></bom>')
 
 
@@ -36,14 +36,14 @@ def test_guard_rejects_doctype_and_entity():
 
 @pytest.mark.parametrize("encoding", ["utf-16", "utf-16-le", "utf-16-be", "utf-32"])
 def test_encoding_bypass_blocked(encoding):
-    # ASCII regex를 우회하려 인코딩한 DTD/ENTITY도 차단(L3 #1 회귀)
+    # DTD/ENTITY encoded to bypass the ASCII regex is also blocked (L3 #1 regression)
     payload = '<?xml version="1.0"?><!DOCTYPE x [<!ENTITY e "v">]><bom/>'.encode(encoding)
     with pytest.raises(IngestValidationError):
         reject_dangerous_xml(payload)
 
 
 def test_spdx_rdf_xxe_rejected(tmp_path):
-    # SPDX RDF 경로(2차 방어 없음)도 가드로 거부(L3 #2 회귀)
+    # The SPDX RDF path (no secondary defense) is also rejected by the guard (L3 #2 regression)
     from onot.ingest.spdx import SpdxAdapter
 
     bad = tmp_path / "x.rdf"

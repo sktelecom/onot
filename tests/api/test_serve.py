@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""사이드카 진입점: uvicorn에 올바른 host/port로 위임하는지(실제 서버는 안 띄움)."""
+"""Sidecar entry point: delegates to uvicorn with the correct host/port (no real server started)."""
 
 from __future__ import annotations
 

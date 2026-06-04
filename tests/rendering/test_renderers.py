@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""렌더러 4종: 포맷별 산출, 메타데이터, 미지원 포맷, PDF(있으면)."""
+"""Four renderers: per-format output, metadata, unsupported format, PDF (if available)."""
 
 from __future__ import annotations
 
@@ -55,13 +55,13 @@ def test_pdf_renders_when_available(doc):
 def test_pdf_missing_weasyprint_raises(doc, monkeypatch):
     import sys
 
-    monkeypatch.setitem(sys.modules, "weasyprint", None)  # from weasyprint import → ImportError
+    monkeypatch.setitem(sys.modules, "weasyprint", None)  # from weasyprint import -> ImportError
     with pytest.raises(RuntimeError, match=r"onot\[pdf\]"):
         render(doc, "pdf")
 
 
 def test_full_render_all_langs_exercises_all_i18n_keys():
-    # source_url/closing/footer 등 플레이스홀더 키를 양 언어·전 포맷에서 KeyError 없이 렌더
+    # Render placeholder keys like source_url/closing/footer across both languages and all formats without KeyError
     from datetime import datetime
 
     from onot.core.config import CompanyConfig, Settings
@@ -89,7 +89,7 @@ def test_full_render_all_langs_exercises_all_i18n_keys():
             License(license_id="MIT", name="MIT", text="t", used_by=(PackageRef(name="p"),)),
         ),
     )
-    for lang in ("en", "ko"):
+    for lang in ("en",):
         for fmt in ("html", "text", "markdown"):
             out = render(doc, fmt, settings=settings, lang=lang, now=datetime(2024, 1, 1))
             assert "https://example.com/src" in out

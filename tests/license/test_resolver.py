@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""LicenseResolver: 에어갭 전문 채움, 동봉 ref, unknown, 캐시, 원격 fetch."""
+"""LicenseResolver: air-gapped full-text fill, embedded ref, unknown, cache, remote fetch."""
 
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ def _doc(expr=None, refs=()):
 
 
 def test_airgap_fills_text_from_bundle_offline():
-    # 네트워크 없이(offline, fetcher 없음) 번들에서 전문 채움
+    # Fill full text from the bundle without network (offline, no fetcher)
     res = LicenseResolver().resolve(_doc("MIT"))
     lic = res.document.licenses[0]
     assert lic.license_id == "MIT"
@@ -78,7 +78,7 @@ def test_online_fetch_for_uncatalogued(tmp_path):
     resolver = LicenseResolver(offline=False, cache=cache, fetcher=RemoteLicenseFetcher(backoff=0))
     res = resolver.resolve(_doc("Future-License-1.0"))
     assert res.document.licenses[0].text == "NET TEXT"
-    assert cache.get("Future-License-1.0") == "NET TEXT"  # 캐시에 기록
+    assert cache.get("Future-License-1.0") == "NET TEXT"  # written to cache
 
 
 def test_unparseable_expression_warns_and_keeps_raw():
@@ -87,8 +87,8 @@ def test_unparseable_expression_warns_and_keeps_raw():
 
 
 def test_deprecated_and_reference_propagated():
-    # is_deprecated/reference_url이 catalog→License로 전파되는지 직접 검증(M4 렌더러 의존).
-    # (실제 SPDX deprecated id는 license-expression이 canonical로 정규화하므로 커스텀 카탈로그 사용)
+    # Directly verify is_deprecated/reference_url propagate from catalog -> License (M4 renderer dependency).
+    # (Real SPDX deprecated ids get canonicalized by license-expression, so a custom catalog is used)
     catalog = SpdxLicenseCatalog(
         {
             "licenseListVersion": "x",
@@ -111,7 +111,7 @@ def test_deprecated_and_reference_propagated():
 
 
 def test_catalog_entry_empty_text_falls_back_to_cache(tmp_path):
-    # 카탈로그에 엔트리는 있으나 text가 비면 캐시/원격으로 폴백(resolver 방어 분기)
+    # When the catalog has an entry but its text is empty, fall back to cache/remote (resolver defensive branch)
     catalog = SpdxLicenseCatalog(
         {
             "licenseListVersion": "x",
@@ -129,7 +129,7 @@ def test_catalog_entry_empty_text_falls_back_to_cache(tmp_path):
 
 @respx.mock
 def test_offline_never_fetches_even_with_fetcher():
-    # respx.mock 활성 + 라우트 미등록: 실제 호출 시 에러. offline이면 호출이 0이라야 통과.
+    # respx.mock active + no route registered: a real call would error. With offline, zero calls is required to pass.
     resolver = LicenseResolver(offline=True, fetcher=RemoteLicenseFetcher(backoff=0))
     res = resolver.resolve(_doc("Definitely-Not-A-License-1.0"))
     assert any("unknown license" in w for w in res.warnings)

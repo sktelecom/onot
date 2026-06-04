@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""포맷 어댑터 레지스트리 + load_document 진입점."""
+"""Format adapter registry + load_document entry point."""
 
 from __future__ import annotations
 

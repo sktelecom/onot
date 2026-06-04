@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
-// Python FastAPI 사이드카 수명주기 관리(순수 Node — electron 비의존, 단위 테스트 가능).
+// Lifecycle management for the Python FastAPI sidecar (pure Node — no electron dependency, unit-testable).
 import { spawn } from "node:child_process";
 import http from "node:http";
 import net from "node:net";
@@ -78,7 +78,7 @@ export class Sidecar {
     return ping(this.port);
   }
 
-  // graceful SIGTERM 후 미종료 시 SIGKILL. 고아 프로세스 방지.
+  // Graceful SIGTERM, then SIGKILL if it does not exit. Prevents orphan processes.
   async stop() {
     const proc = this.proc;
     if (!proc) return;

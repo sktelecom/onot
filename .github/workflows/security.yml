@@ -1,19 +1,19 @@
 name: security
 
-# TrustedOSS DevSecOps 가이드(https://trustedoss.github.io/devsecops/intro)에서
-# 권장하는 보안 검사를 CI에 적용한다. Black Duck(상용 SCA)을 대체한다.
-#   - Secret 탐지: Gitleaks
+# Applies the security checks recommended by the TrustedOSS DevSecOps guide
+# (https://trustedoss.github.io/devsecops/intro) to CI. Replaces Black Duck (commercial SCA).
+#   - Secret detection: Gitleaks
 #   - SAST: CodeQL + Semgrep
-#   - SCA: SBOM(CycloneDX) 생성 + grype 취약점 스캔
-# 컨테이너(Trivy)·IaC(Checkov)·DAST(ZAP)는 이 저장소에 대상(Dockerfile/IaC/배포
-# 웹 엔드포인트)이 없어 제외했다.
+#   - SCA: SBOM (CycloneDX) generation + grype vulnerability scan
+# Containers (Trivy), IaC (Checkov), and DAST (ZAP) are excluded because this repository
+# has no targets (Dockerfile/IaC/deployed web endpoints).
 
 on:
   push:
     branches: [main, dev]
   pull_request:
   schedule:
-    - cron: "0 2 * * 1" # 매주 월요일 02:00 UTC — CodeQL 정기 전수 스캔
+    - cron: "0 2 * * 1" # Every Monday 02:00 UTC — CodeQL scheduled full scan
 
 permissions:
   contents: read
@@ -25,9 +25,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 0 # 커밋 히스토리 전체를 스캔
-      # gitleaks-action은 조직 계정에 유료 라이선스를 요구하므로,
-      # MIT 라이선스인 gitleaks CLI 바이너리를 직접 받아 실행한다.
+          fetch-depth: 0 # Scan the entire commit history
+      # gitleaks-action requires a paid license for organization accounts, so we
+      # download and run the MIT-licensed gitleaks CLI binary directly.
       - name: Install gitleaks
         run: |
           VERSION=8.18.4
@@ -86,7 +86,7 @@ jobs:
         with:
           sbom: sbom.cdx.json
           fail-build: true
-          severity-cutoff: high # High 이상 취약점에서 빌드 차단
+          severity-cutoff: high # Block the build on High and above vulnerabilities
       - name: Upload SBOM
         if: always()
         uses: actions/upload-artifact@v7

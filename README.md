@@ -17,7 +17,7 @@ SK telecom.
 
 ![onot app](docs/images/04-preview.png)
 
-> User guide: [English](docs/USER_GUIDE.en.md) · [한국어](docs/USER_GUIDE.md)
+> User guide: [English](docs/USER_GUIDE.md)
 
 ## Download (desktop app)
 
@@ -92,8 +92,8 @@ your environment, run the checks, and open a pull request. Please also read our
 
 | Name | Company | Email |
 |--|--|--|
-| [Rogers](https://github.com/HyunMinH) (한현민) | Kakao | um4825@gmail.com |
-| [Haksung](https://github.com/haksungjang) (장학성) | SK telecom | hakssung@gmail.com |
+| [Rogers](https://github.com/HyunMinH) | Kakao | um4825@gmail.com |
+| [Haksung](https://github.com/haksungjang) | SK telecom | hakssung@gmail.com |
 
 ## License
 

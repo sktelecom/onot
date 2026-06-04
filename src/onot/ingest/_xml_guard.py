@@ -1,13 +1,15 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""신뢰할 수 없는 XML 입력의 XXE·확장 폭탄(billion-laughs) 방어.
+"""Defense against XXE and expansion bombs (billion-laughs) in untrusted XML input.
 
-라이브러리 내부 파서에 의존하지 않고, 파싱 전에 DOCTYPE/ENTITY 선언을 거부한다.
-SBOM XML(CycloneDX/SPDX-RDF)에는 DTD가 필요 없으므로 발견 즉시 차단한다.
+Rather than relying on the library's internal parser, this rejects DOCTYPE/ENTITY
+declarations before parsing. SBOM XML (CycloneDX/SPDX-RDF) needs no DTD, so any occurrence
+is blocked immediately.
 
-UTF-16/UTF-32 등으로 인코딩해 ASCII regex를 우회하는 시도를 막기 위해, 원본 바이트뿐
-아니라 null 바이트 제거본과 여러 인코딩 디코딩본을 함께 검사한다.
+To prevent attempts to bypass the ASCII regex by encoding as UTF-16/UTF-32 etc., it inspects
+not only the original bytes but also a null-byte-stripped copy and copies decoded under
+several encodings.
 """
 
 from __future__ import annotations
@@ -32,7 +34,7 @@ def _candidates(data: bytes) -> list[bytes]:
 
 
 def reject_dangerous_xml(data: bytes) -> None:
-    """DTD/외부 엔티티가 보이면(인코딩 우회 포함) IngestValidationError로 거부."""
+    """Reject with IngestValidationError if a DTD/external entity is found (including encoding bypasses)."""
     for blob in _candidates(data):
         if _DOCTYPE.search(blob) or _ENTITY.search(blob):
             raise IngestValidationError(

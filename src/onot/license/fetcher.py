@@ -1,10 +1,10 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""원격 라이선스 전문 조회(httpx + 지수 백오프 재시도 + 프록시 존중).
+"""Remote license full-text fetch (httpx + exponential backoff retries + proxy-aware).
 
-번들에 없는 신규/희귀 라이선스를 온라인에서 보충하는 보조 경로. 에어갭/오프라인에서는
-호출하지 않는다. `trust_env=True`로 HTTP_PROXY/HTTPS_PROXY를 존중한다.
+A supplementary path that fetches new/rare licenses not in the bundle from online. Not
+called in air-gapped/offline mode. `trust_env=True` honors HTTP_PROXY/HTTPS_PROXY.
 """
 
 from __future__ import annotations
@@ -14,8 +14,8 @@ import time
 
 import httpx
 
-# SPDX license/exception id 문자셋. 이 외 문자(공백·개행·슬래시 등)는 절대 유효하지 않으므로
-# URL 보간 전에 차단한다(InvalidURL 크래시·인젝션 방지).
+# SPDX license/exception id character set. Any other character (whitespace, newline, slash, etc.)
+# is never valid, so block it before URL interpolation (prevents InvalidURL crashes/injection).
 _VALID_ID = re.compile(r"[A-Za-z0-9.+-]+")
 
 

@@ -1,9 +1,9 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""SpdxAdapter — spdx-tools로 SPDX 2.x(JSON/YAML/Tag-Value/RDF) 파싱.
+"""SpdxAdapter — parses SPDX 2.x (JSON/YAML/Tag-Value/RDF) via spdx-tools.
 
-SPDX 3.0 입력은 후속(D-005). RDF/XML은 파싱 전 XXE 가드를 적용한다.
+SPDX 3.0 input is deferred (D-005). For RDF/XML, an XXE guard is applied before parsing.
 """
 
 from __future__ import annotations
@@ -41,6 +41,6 @@ class SpdxAdapter:
 
         try:
             document = parse_file(str(path))
-        except Exception as exc:  # noqa: BLE001 — 라이브러리 예외를 도메인 예외로 래핑
+        except Exception as exc:  # noqa: BLE001 — wrap the library exception as a domain exception
             raise ParseError(f"failed to parse SPDX document: {path.name}") from exc
         return IngestResult(document=spdx_document_to_notice(document))

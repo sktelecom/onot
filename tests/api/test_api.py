@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""API 계약: healthz, formats, parse, render(포맷·언어·다운로드·회사)."""
+"""API contract: healthz, formats, parse, render (format, language, download, company)."""
 
 from __future__ import annotations
 
@@ -74,13 +74,13 @@ def test_render_download_disposition(client):
     assert ".html" in cd
 
 
-def test_render_lang_ko(client):
+def test_render_lang_en(client):
     resp = client.post(
         "/api/render",
         files=upload(FIX / "example.spdx.json"),
-        data={"format": "html", "lang": "ko"},
+        data={"format": "html", "lang": "en"},
     )
-    assert "오픈소스 고지" in resp.text
+    assert "OSS Notice for example-product" in resp.text
 
 
 def test_render_company_injected(client):

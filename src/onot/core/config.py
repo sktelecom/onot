@@ -1,9 +1,9 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""설정. 회사 정보·언어·테마·오프라인 모드. 우선순위: CLI/명시 인자 > yaml > 환경변수 > 기본값.
+"""Settings: company info, language, theme, offline mode. Precedence: CLI/explicit args > yaml > env vars > defaults.
 
-환경변수 예: ONOT_DEFAULT_LANG=ko, ONOT_COMPANY__ORGANIZATION="SK telecom".
+Env var example: ONOT_DEFAULT_LANG=en, ONOT_COMPANY__ORGANIZATION="Acme Inc".
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from onot.domain.errors import ConfigError
 
-Lang = Literal["ko", "en"]
+Lang = Literal["en"]
 
 
 class CompanyConfig(BaseModel):
@@ -43,9 +43,9 @@ def load_settings(
     lang: str | None = None,
     offline: bool | None = None,
 ) -> Settings:
-    """yaml 설정 + 환경변수 + CLI 오버라이드를 병합한 Settings를 만든다.
+    """Build Settings by merging yaml config + env vars + CLI overrides.
 
-    CLI 인자는 yaml 위에 병합되며, 잘못된 값(예: 미지원 lang)은 ConfigError로 보고한다.
+    CLI args are merged on top of yaml; invalid values (e.g. an unsupported lang) are reported as ConfigError.
     """
     data: dict = {}
     if config_path is not None:

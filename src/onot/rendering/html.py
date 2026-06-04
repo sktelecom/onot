@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Kakao Corp. and SK telecom Co., Ltd.
 # SPDX-License-Identifier: Apache-2.0
 
-"""HtmlRenderer — self-contained HTML(테마 CSS 인라인, autoescape, 라이선스 앵커)."""
+"""HtmlRenderer — self-contained HTML (inlined theme CSS, autoescape, license anchors)."""
 
 from __future__ import annotations
 
