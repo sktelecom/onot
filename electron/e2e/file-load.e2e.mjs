@@ -31,11 +31,6 @@ test("packaged file:// load renders the UI (no blank screen)", async () => {
     expect(await window.evaluate(() => window.location.protocol)).toBe("file:");
     // The blank-screen signature was ERR_FILE_NOT_FOUND on the bundled assets.
     expect(consoleErrors.filter((e) => /ERR_FILE_NOT_FOUND/i.test(e))).toEqual([]);
-
-    // The bundled sample must be usable over file:// (embedded in the JS bundle, not fetched):
-    // a first-time user clicks "Try a sample" and the sidecar parses it end to end.
-    await window.getByTestId("try-sample").click();
-    await expect(window.getByText("example-product")).toBeVisible({ timeout: 30000 });
   } finally {
     await app.close();
   }

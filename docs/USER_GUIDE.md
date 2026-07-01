@@ -24,9 +24,9 @@ and desktop.
 
 ## 3. Launch the app: first screen
 
-When you start onot, the screen below appears. The dashed area on the left is where
-you drop your SBOM file; the right side holds the output settings. The app is in
-English.
+When you start onot, the screen below appears. Use the `KO`/`EN` switch in the top
+right to change the interface language. The dashed area on the left is where you drop
+your SBOM file; the right side holds the output settings.
 
 ![onot first screen](images/01-home.png)
 
@@ -35,9 +35,6 @@ English.
 Drag an SBOM file onto the dashed area, or click the area to pick a file from the
 chooser. SPDX (JSON/YAML/Tag-Value/RDF), CycloneDX (JSON/XML), and Excel formats are
 accepted. The format is detected automatically, so you don't need to select it.
-
-Don't have an SBOM file yet? Click **Try a sample** below the drop area to load a
-small example that ships with the app, so you can see the whole flow right away.
 
 Once uploaded, the document name and component count are shown. In the screenshot
 below, `example.spdx.json` was uploaded and 2 components of `EXAMPLE-PRODUCT` were
@@ -48,8 +45,9 @@ recognized.
 ## 5. Choose output formats and details
 
 On the right, choose the output formats you want (you can select several of html,
-text, markdown, pdf). Optionally enter your organization name, contact email, and
-source code URL. This information is included in the generated notice.
+text, markdown, pdf). Set the notice language to Korean or English, and optionally
+enter your organization name, contact email, and source code URL. This information is
+included in the generated notice.
 
 After you pick formats, a download button appears for each one below. In the
 screenshot below, html and markdown were both selected, so two download buttons
@@ -74,20 +72,6 @@ where to save.
 A SmartScreen warning appears during installation.
 : This happens because the installer is not code-signed. Click **More info**, then
   **Run anyway** to install.
-
-My antivirus flagged or quarantined the installer.
-: Because the installer is unsigned and freshly built, some antivirus tools may flag it
-  by heuristic. If it is quarantined, restore it from the antivirus quarantine (or add an
-  exception) and run it again. The app runs entirely on your PC and makes no outbound
-  network calls.
-
-What do I need to run it?
-: A 64-bit Windows 10 or 11 PC. Nothing else — no Python, no separate runtime. Everything
-  the app needs is inside the one installer.
-
-How do I uninstall it?
-: In Windows Settings, open Apps and then Installed apps, find onot, and choose
-  **Uninstall**. You can also use the onot uninstaller in the Start menu.
 
 Can I use it in an environment without internet?
 : Yes. The full license texts are bundled with the app, so it works without a network.

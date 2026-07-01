@@ -1,0 +1,16 @@
+{
+  "enabledPlugins": {
+    "permissions-presets@hakssung-tools": true,
+    "code-review@hakssung-tools": true,
+    "migration-kit@hakssung-tools": true,
+    "env-kit@hakssung-tools": true,
+    "doc-qa@hakssung-tools": true,
+    "quality-gate@hakssung-tools": true,
+    "bd-kit@hakssung-tools": true,
+    "tde-confluence-publish@hakssung-tools": true,
+    "research-kit@hakssung-tools": true,
+    "ko-style-lint@hakssung-tools": true,
+    "common-hooks@hakssung-tools": true,
+    "playwright-qa@hakssung-tools": true
+  }
+}

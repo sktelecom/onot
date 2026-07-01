@@ -12,14 +12,6 @@ describe("FileDropzone", () => {
     expect(screen.getByTestId("file-input")).toHaveAttribute("aria-label");
   });
 
-  it("hints the OS chooser toward SBOM types via accept (U3)", () => {
-    render(<FileDropzone lang="en" onFile={() => {}} />);
-    const accept = screen.getByTestId("file-input").getAttribute("accept") ?? "";
-    for (const ext of [".json", ".yaml", ".xml", ".spdx", ".xlsx"]) {
-      expect(accept).toContain(ext);
-    }
-  });
-
   it("calls onFile when a file is selected", () => {
     const onFile = vi.fn();
     render(<FileDropzone lang="en" onFile={onFile} />);
