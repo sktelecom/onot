@@ -78,7 +78,7 @@ Upload → preview → download. All processing is local; the SBOM never leaves 
 ## Development
 
 ```bash
-bash .claude/gate.sh   # lint + pytest (cov ≥ 90) + frontend build/test + electron sidecar test
+bash scripts/gate.sh   # lint + pytest (cov ≥ 90) + frontend build/test + electron sidecar test
 ```
 
 Refresh license data with `python scripts/update_license_data.py` (bundles SPDX

@@ -37,7 +37,7 @@ pnpm -C electron install
 Before opening a pull request, run the full quality gate:
 
 ```bash
-bash .claude/gate.sh   # ruff + pytest (coverage ≥ 90) + frontend build/test + electron tests
+bash scripts/gate.sh   # ruff + pytest (coverage ≥ 90) + frontend build/test + electron tests
 ```
 
 Or run pieces individually:
