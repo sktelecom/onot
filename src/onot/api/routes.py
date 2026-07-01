@@ -47,18 +47,20 @@ async def _read_upload(file: UploadFile) -> tuple[bytes, str]:
         raise HTTPException(status_code=413, detail="uploaded file too large")
     if not data:
         raise HTTPException(status_code=400, detail="empty upload")
-    suffix = Path(file.filename or "").suffix  # extension only, no directory part (traversal guard)
-    return data, suffix
+    name = (
+        Path(file.filename or "").name or "upload"
+    )  # basename only, no directory part (traversal guard)
+    return data, name
 
 
-def _parse_bytes(data: bytes, suffix: str) -> IngestResult:
-    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
-        tmp.write(data)
-        path = tmp.name
-    try:
+def _parse_bytes(data: bytes, display_name: str) -> IngestResult:
+    # Write to a temp file under the upload's own basename so parse errors reference the
+    # user's filename rather than an internal tmpXXXX name. Format detection is content-based
+    # (see the ingest adapters), so a non-standard extension does not block parsing.
+    with tempfile.TemporaryDirectory() as tmpdir:
+        path = Path(tmpdir) / display_name
+        path.write_bytes(data)
         return load_document(path)
-    finally:
-        Path(path).unlink(missing_ok=True)
 
 
 def _http_error(err: OnotError) -> HTTPException:
@@ -81,9 +83,9 @@ def formats() -> dict:
 
 @router.post("/api/parse")
 async def parse(file: UploadFile = File(...)) -> dict:
-    data, suffix = await _read_upload(file)
+    data, display_name = await _read_upload(file)
     try:
-        ingest_result = _parse_bytes(data, suffix)
+        ingest_result = _parse_bytes(data, display_name)
         resolved = LicenseResolver().resolve(ingest_result.document)
     except OnotError as err:
         raise _http_error(err) from err
@@ -109,7 +111,7 @@ async def render_notice(
     if lang not in _LANGS:
         raise HTTPException(status_code=400, detail=f"unsupported lang: {lang}")
 
-    data, suffix = await _read_upload(file)
+    data, display_name = await _read_upload(file)
     settings = Settings(
         default_lang=cast(Literal["en"], lang),
         company=CompanyConfig(
@@ -120,7 +122,7 @@ async def render_notice(
         ),
     )
     try:
-        ingest_result = _parse_bytes(data, suffix)
+        ingest_result = _parse_bytes(data, display_name)
         resolved = LicenseResolver(offline=settings.offline).resolve(ingest_result.document)
     except OnotError as err:
         raise _http_error(err) from err

@@ -20,7 +20,7 @@ export function CardTitle({ className, ...props }: HTMLAttributes<HTMLHeadingEle
   return (
     <h2
       className={cn(
-        "mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500",
+        "mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-400",
         className,
       )}
       {...props}

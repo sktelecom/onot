@@ -30,6 +30,10 @@ The installers are unsigned. On first launch Windows SmartScreen may warn about 
 "unknown publisher" — choose **More info → Run anyway**. On macOS, right-click the app
 and choose **Open** to pass Gatekeeper.
 
+The desktop app is self-contained: it bundles everything it needs, so you do **not**
+need Python or `pip`. The sections below (CLI, API, source build) are for developers
+and automation only.
+
 ## CLI
 
 ```bash
@@ -39,7 +43,7 @@ pip install "onot[spdx,cyclonedx,excel,api]"   # from PyPI; add ,pdf for PDF out
 onot generate -i sbom.spdx.json -f html -f markdown --output-dir ./output
 
 #   -f/--format   html | text | markdown | pdf (repeatable)
-#   --lang        ko | en
+#   --lang        en
 #   --config      onot.yaml (company info, etc.)
 #   --online      fetch missing license texts remotely (offline by default)
 #   --stdout      write a single text format to stdout
@@ -74,7 +78,7 @@ Upload → preview → download. All processing is local; the SBOM never leaves 
 ## Development
 
 ```bash
-bash .claude/gate.sh   # lint + pytest (cov ≥ 90) + frontend build/test + electron sidecar test
+bash scripts/gate.sh   # lint + pytest (cov ≥ 90) + frontend build/test + electron sidecar test
 ```
 
 Refresh license data with `python scripts/update_license_data.py` (bundles SPDX

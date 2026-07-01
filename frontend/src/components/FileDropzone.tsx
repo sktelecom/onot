@@ -47,9 +47,11 @@ export function FileDropzone({
     >
       <UploadCloud className="h-8 w-8 text-zinc-400" aria-hidden />
       <p className="text-sm font-medium">{fileName ?? t(lang, "dropzone")}</p>
-      <p className="text-xs text-zinc-500">{t(lang, "dropzoneHint")}</p>
+      <p className="text-xs text-zinc-400">{t(lang, "dropzoneHint")}</p>
       <input
         type="file"
+        // Hint the OS chooser toward SBOM types (drag-drop stays unrestricted).
+        accept=".spdx,.json,.yaml,.yml,.xml,.rdf,.xlsx"
         aria-label={t(lang, "dropzone")}
         className="sr-only"
         data-testid="file-input"
