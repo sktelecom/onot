@@ -41,6 +41,25 @@ def test_parse_formats(client, name):
     assert body["document"]["name"]
 
 
+def test_parse_nonstandard_extension_still_parses(client):
+    # O-2: a valid SPDX JSON must parse even when the uploaded name has a non-standard extension.
+    resp = client.post(
+        "/api/parse",
+        files={"file": ("renamed.weirdext", (FIX / "example.spdx.json").read_bytes())},
+    )
+    assert resp.status_code == 200
+    assert resp.json()["document"]["name"] == "example-product"
+
+
+def test_parse_error_references_original_filename_not_temp(client):
+    # O-1: the error must name the user's file, never an internal tmpXXXX temp name.
+    resp = client.post("/api/parse", files={"file": ("broken.spdx.json", b"not a real sbom")})
+    assert resp.status_code == 400
+    detail = resp.json()["detail"]
+    assert "broken.spdx.json" in detail
+    assert "tmp" not in detail.lower()
+
+
 def test_parse_excel(client):
     resp = client.post("/api/parse", files=upload(SAMPLE))
     assert resp.status_code == 200
