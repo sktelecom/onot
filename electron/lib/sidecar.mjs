@@ -3,21 +3,10 @@
 
 // Lifecycle management for the Python FastAPI sidecar (pure Node — no electron dependency, unit-testable).
 import { spawn } from "node:child_process";
-import { closeSync, openSync } from "node:fs";
 import http from "node:http";
 import net from "node:net";
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-// Spawn options for the sidecar. windowsHide prevents the console-subsystem sidecar exe from
-// flashing a console window on Windows. When a log fd is given, stdout/stderr are captured so a
-// failed startup (e.g. blocked by antivirus) leaves diagnostics instead of a silent exit.
-export function spawnOptions(logFd = null) {
-  return {
-    stdio: logFd == null ? "ignore" : ["ignore", logFd, logFd],
-    windowsHide: true,
-  };
-}
 
 export function findFreePort() {
   return new Promise((resolve, reject) => {
@@ -57,34 +46,19 @@ function waitExit(proc, ms) {
 }
 
 export class Sidecar {
-  constructor({ command, args = [], port, logPath = null }) {
+  constructor({ command, args = [], port }) {
     this.command = command;
     this.args = args;
     this.port = port;
-    this.logPath = logPath;
-    this.logFd = null;
     this.proc = null;
   }
 
   async start({ timeoutMs = 30000 } = {}) {
-    if (this.logPath) {
-      try {
-        this.logFd = openSync(this.logPath, "a");
-      } catch {
-        this.logFd = null; // logging is best-effort; never block startup on it
-      }
-    }
-    this.proc = spawn(this.command, [...this.args, "--port", String(this.port)], spawnOptions(this.logFd));
+    this.proc = spawn(this.command, [...this.args, "--port", String(this.port)], {
+      stdio: "ignore",
+    });
     this.proc.once("exit", () => {
       this.proc = null;
-      if (this.logFd !== null) {
-        try {
-          closeSync(this.logFd);
-        } catch {
-          /* already closed */
-        }
-        this.logFd = null;
-      }
     });
     const deadline = Date.now() + timeoutMs;
     while (Date.now() < deadline) {

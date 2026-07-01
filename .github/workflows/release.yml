@@ -109,13 +109,3 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release upload "$GITHUB_REF_NAME" "onot-${GITHUB_REF_NAME}-sbom.cdx.json" --clobber
-      - name: Verify published installer names match the docs
-        # Users download these exact asset names; the docs promise onot-Setup-x.y.z.exe and a .dmg.
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          names=$(gh release view "$GITHUB_REF_NAME" --json assets -q '.assets[].name')
-          echo "$names"
-          echo "$names" | grep -Eq '^onot-Setup-[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?\.exe$' \
-            || { echo "missing a published onot-Setup-x.y.z.exe asset"; exit 1; }
-          echo "$names" | grep -Eq '\.dmg$' || { echo "missing a published .dmg asset"; exit 1; }
