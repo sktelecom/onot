@@ -27,11 +27,11 @@
 {{ t("offer.title") }}
 {{ t("offer.body") }}
 {% if ctx.source_url %}
-{{ t("offer.source_url", url=ctx.source_url) }}
+{{ t("offer.source_url", url=ctx.source_url | oneline) }}
 {% endif %}
 {% if ctx.email %}
-{{ t("closing", email=ctx.email) }}
+{{ t("closing", email=ctx.email | oneline) }}
 {% endif %}
 {% if ctx.copyright_holder %}
-{{ t("footer.copyright", year=ctx.copyright_year or "", holder=ctx.copyright_holder) }}
+{{ t("footer.copyright", year=ctx.copyright_year or "", holder=ctx.copyright_holder | oneline) }}
 {% endif %}

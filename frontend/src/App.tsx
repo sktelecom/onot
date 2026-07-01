@@ -91,7 +91,7 @@ export default function App() {
     <div className="mx-auto max-w-6xl p-6">
       <header className="mb-6">
         <h1 className="text-2xl font-bold">{t(uiLang, "title")}</h1>
-        <p className="text-sm text-zinc-500">{t(uiLang, "subtitle")}</p>
+        <p className="text-sm text-zinc-400">{t(uiLang, "subtitle")}</p>
       </header>
 
       <main>
@@ -108,15 +108,15 @@ export default function App() {
         <div className="space-y-4">
           <FileDropzone lang={uiLang} onFile={handleFile} fileName={file?.name} />
           {status === "parsing" && (
-            <p className="text-sm text-zinc-500">{t(uiLang, "parsing")}</p>
+            <p className="text-sm text-zinc-400">{t(uiLang, "parsing")}</p>
           )}
           {!file && status === "idle" && (
-            <p className="text-sm text-zinc-500">{t(uiLang, "noFile")}</p>
+            <p className="text-sm text-zinc-400">{t(uiLang, "noFile")}</p>
           )}
           {parsed && (
             <Card>
               <CardTitle>{parsed.document.name}</CardTitle>
-              <p className="text-sm text-zinc-500">
+              <p className="text-sm text-zinc-400">
                 {parsed.document.packages.length} {t(uiLang, "components")}
               </p>
               {parsed.warnings.length > 0 && (

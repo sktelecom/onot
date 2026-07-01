@@ -14,8 +14,11 @@ from pathlib import Path
 
 import openpyxl
 
+from onot.domain.errors import ParseError
 from onot.domain.models import Copyright, LicenseExpression, LicenseRef, NoticeDocument, Package
 from onot.ingest.base import IngestResult
+
+_REQUIRED_SHEETS = ("Document Info", "Package Info")
 
 # Standard SPDX spreadsheet column indices (0-based)
 _DOC_NAME_COL = 5
@@ -63,8 +66,16 @@ def _none_if_blank(value: object) -> str | None:
 
 
 def parse_excel(path: str | Path) -> NoticeDocument:
-    wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+    # A zip magic match (.zip/.docx/.jar) can reach this adapter, so openpyxl failures and
+    # missing-sheet errors are wrapped as ParseError (400) instead of surfacing as HTTP 500.
     try:
+        wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+    except Exception as exc:  # noqa: BLE001 — openpyxl raises BadZipFile/InvalidFileException/etc.
+        raise ParseError(f"failed to open Excel workbook: {Path(path).name}") from exc
+    try:
+        missing = [s for s in _REQUIRED_SHEETS if s not in wb.sheetnames]
+        if missing:
+            raise ParseError(f"Excel workbook is missing required sheet(s): {', '.join(missing)}")
         name = _document_name(wb)
         packages = _packages(wb)
         refs = _extracted_licenses(wb)
