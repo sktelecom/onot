@@ -109,16 +109,17 @@ jobs:
       # (push) and require GH_TOKEN. Actual publishing is handled only by release.yml
       # (--publish always), which has GH_TOKEN.
       - run: pnpm -C electron exec electron-builder --config electron-builder.yml --publish never
-      - name: Verify the installer asset name matches the docs
+      - name: Verify exactly one installer was produced
+        # electron-builder writes the local file with spaces ("onot Setup x.y.z.exe") and only
+        # sanitizes to the documented "onot-Setup-x.y.z.exe" when publishing to GitHub Releases,
+        # so the documented-name check lives in release.yml (against the published assets).
         shell: bash
         run: |
           cd electron/dist-electron
           if [ "$RUNNER_OS" = "Windows" ]; then
             echo "Windows installers:"; ls -1 *.exe || true
-            n=$(ls -1 onot-Setup-*.exe 2>/dev/null | wc -l | tr -d ' ')
-            [ "$n" = "1" ] || { echo "expected exactly one onot-Setup-*.exe, found $n"; exit 1; }
-            ls -1 | grep -Eq '^onot-Setup-[0-9]+\.[0-9]+\.[0-9]+\.exe$' \
-              || { echo "installer name must match the documented onot-Setup-x.y.z.exe"; exit 1; }
+            n=$(ls -1 *Setup*.exe 2>/dev/null | wc -l | tr -d ' ')
+            [ "$n" = "1" ] || { echo "expected exactly one *Setup*.exe, found $n"; exit 1; }
           else
             echo "macOS disk images:"; ls -1 *.dmg || true
             ls -1 *.dmg >/dev/null 2>&1 || { echo "expected a .dmg"; exit 1; }
