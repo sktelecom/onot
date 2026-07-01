@@ -50,6 +50,8 @@ export function FileDropzone({
       <p className="text-xs text-zinc-400">{t(lang, "dropzoneHint")}</p>
       <input
         type="file"
+        // Hint the OS chooser toward SBOM types (drag-drop stays unrestricted).
+        accept=".spdx,.json,.yaml,.yml,.xml,.rdf,.xlsx"
         aria-label={t(lang, "dropzone")}
         className="sr-only"
         data-testid="file-input"

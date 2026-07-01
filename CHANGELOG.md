@@ -6,6 +6,32 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-07-01
+
+### Fixed
+
+- Packaged desktop app showed a blank screen on Windows: the bundled frontend
+  referenced assets by absolute path, which fails over `file://`. Assets are now
+  emitted with relative paths so the renderer loads correctly (#68).
+- Parse errors now reference the uploaded file's own name instead of an internal
+  temporary name.
+- SPDX documents with a non-standard extension, and SPDX YAML, are now detected by
+  content and parsed instead of being rejected by extension.
+- Non-Excel zip uploads and Excel files missing required sheets now return a clear
+  400 error instead of crashing with HTTP 500.
+- Markdown notices now escape package names/versions and company fields, preventing
+  table breakage and link injection.
+- Missing or empty license information now raises a warning instead of passing
+  silently.
+- Cleared High/Critical dependency advisories (electron, undici, form-data).
+
+### Changed
+
+- The app and generated notices are English-only for the global release; the Korean
+  locale was removed.
+- Preview and download stay disabled until a file parses successfully.
+- Muted UI text was darkened to meet WCAG AA contrast.
+
 ## [1.1.0] - 2026-06-03
 
 This release is a full rewrite of onot as a type-safe Python core with a React UI,
@@ -39,6 +65,7 @@ generator.
 - Initial public release: PyQt-based desktop generator that produced OSS notices
   from SPDX documents.
 
-[Unreleased]: https://github.com/sktelecom/onot/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/sktelecom/onot/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/sktelecom/onot/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/sktelecom/onot/compare/1.0.0...v1.1.0
 [1.0.0]: https://github.com/sktelecom/onot/releases/tag/1.0.0
