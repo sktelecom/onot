@@ -82,3 +82,6 @@ spikes/**/out/
 # Type/lint cache
 .mypy_cache/
 .ruff_cache/
+
+# Local editor/agent tooling config (not part of the project)
+.claude/
