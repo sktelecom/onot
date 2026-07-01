@@ -30,6 +30,10 @@ The installers are unsigned. On first launch Windows SmartScreen may warn about 
 "unknown publisher" — choose **More info → Run anyway**. On macOS, right-click the app
 and choose **Open** to pass Gatekeeper.
 
+The desktop app is self-contained: it bundles everything it needs, so you do **not**
+need Python or `pip`. The sections below (CLI, API, source build) are for developers
+and automation only.
+
 ## CLI
 
 ```bash
