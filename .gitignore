@@ -71,6 +71,9 @@ node_modules/
 electron/test-results/
 electron/playwright-report/
 
+# electron-builder output (local installer builds)
+electron/dist-electron/
+
 # onot 2.0 spike outputs
 spikes/**/out/
 
