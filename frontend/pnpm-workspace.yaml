@@ -1,0 +1,6 @@
+# pnpm settings live here (pnpm >= 10.13 no longer reads the "pnpm" field in package.json).
+onlyBuiltDependencies:
+  - esbuild
+# Pin transitive devDependency away from High advisories (SCA gate).
+overrides:
+  undici@7: ^7.28.0

@@ -1,7 +1,8 @@
 {
   "name": "onot-frontend",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.1.1",
+  "packageManager": "pnpm@10.34.4",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -32,10 +33,5 @@
     "typescript": "^6.0.3",
     "vite": "^6.4.3",
     "vitest": "^4.1.8"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild"
-    ]
   }
 }
