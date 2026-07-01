@@ -1,7 +1,7 @@
-# Windows Test Handoff (for a Claude Code session on a Windows PC)
+# Windows Test Handoff (for an automated agent session on a Windows PC)
 
 This is a self-contained runbook. Run it on a clean Windows 10/11 x64 machine (a fresh
-VM is ideal) with Microsoft Defender real-time protection ON. A Claude Code session on
+VM is ideal) with Microsoft Defender real-time protection ON. An automated agent session on
 that machine can drive most of it; a human must do the parts marked "HUMAN ONLY"
 (SmartScreen dialog, watching for a console-window flash, install/uninstall).
 
@@ -34,7 +34,7 @@ are exactly what this pass verifies.
 ## Prerequisites
 
 - Clean Windows 10/11 x64, Defender on.
-- Claude Code installed and running in a working folder.
+- A terminal or automation agent available in a working folder.
 - Node.js 20+ (for the optional automated check).
 - Either the GitHub CLI `gh` authenticated to `sktelecom/onot`, or a browser to reach
   the repo Actions/Releases pages.
@@ -79,7 +79,7 @@ artifact and download path a real user hits.
    window flashes even briefly (it should not). This is the `windowsHide` check and it
    cannot be automated.
 
-## Step 3. Automated boot + flow check (Claude Code can run this)
+## Step 3. Automated boot + flow check (an agent can run this)
 
 This launches the REAL installed exe with Playwright-electron and checks the frozen app
 boots, renders, and completes the sample flow. It exercises the frozen sidecar and the
@@ -137,7 +137,7 @@ With the app open:
 - Upload a random `.json` that is not an SBOM: a readable error with a recovery hint
   appears.
 
-## Step 5. Diagnostics Claude Code can gather
+## Step 5. Diagnostics an agent can gather
 
 - Sidecar log (created on every start): search for it, then read the tail.
   ```
