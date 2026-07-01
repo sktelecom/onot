@@ -5,8 +5,8 @@
 
 from __future__ import annotations
 
-from onot.domain.models import LicenseExpression, NoticeDocument, Package
-from onot.license import resolve
+from onot.domain.models import LicenseExpression, LicenseRef, NoticeDocument, Package
+from onot.license import resolve, resolve_with_warnings
 
 
 def _doc():
@@ -37,3 +37,23 @@ def test_resolve_deterministic_and_sorted():
 def test_resolve_skips_packages_without_license():
     doc = NoticeDocument(name="p", packages=(Package(name="x"),))
     assert resolve(doc).licenses == ()
+
+
+def test_resolve_warns_on_missing_license_information():
+    # O-9: a package with no license info must surface a warning, not pass silently.
+    doc = NoticeDocument(name="p", packages=(Package(name="x", version="1"),))
+    warnings = resolve_with_warnings(doc).warnings
+    assert any("no license information for x 1" in w for w in warnings)
+
+
+def test_resolve_warns_on_empty_license_ref_text():
+    # O-9: a referenced LicenseRef with blank extracted text yields an empty section -> warn.
+    doc = NoticeDocument(
+        name="p",
+        packages=(
+            Package(name="x", version="1", license_concluded=LicenseExpression(raw="LicenseRef-1")),
+        ),
+        license_refs=(LicenseRef(identifier="LicenseRef-1", extracted_text=""),),
+    )
+    result = resolve_with_warnings(doc)
+    assert any("missing license text for LicenseRef-1" in w for w in result.warnings)

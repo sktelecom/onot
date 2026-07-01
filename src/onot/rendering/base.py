@@ -16,7 +16,7 @@ import jinja2
 from onot.core.config import Settings
 from onot.domain.models import NoticeDocument
 from onot.rendering.context import build_context
-from onot.rendering.filters import anchor, license_links, md_code_block
+from onot.rendering.filters import anchor, license_links, md_cell, md_code_block, md_inline, oneline
 from onot.rendering.i18n import Translator
 
 
@@ -31,6 +31,9 @@ def make_environment(autoescape_formats: list[str]) -> jinja2.Environment:
     env.filters["anchor"] = anchor
     env.filters["license_links"] = license_links
     env.filters["md_code_block"] = md_code_block
+    env.filters["md_cell"] = md_cell
+    env.filters["md_inline"] = md_inline
+    env.filters["oneline"] = oneline
     return env
 
 

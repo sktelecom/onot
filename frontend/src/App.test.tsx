@@ -71,6 +71,45 @@ describe("App", () => {
     await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent("bad sbom"));
   });
 
+  it("keeps action buttons disabled after a parse failure (no repeat errors)", async () => {
+    parseSbom.mockRejectedValue(new Error("bad sbom"));
+    render(<App />);
+    await userEvent.upload(screen.getByTestId("file-input"), new File(["x"], "x.json"));
+    await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent("bad sbom"));
+    // parsed === null after failure, so Generate/Download must stay disabled.
+    expect(screen.getByTestId("generate-preview")).toBeDisabled();
+    for (const btn of screen.getAllByRole("button", { name: /download/i })) {
+      expect(btn).toBeDisabled();
+    }
+  });
+
+  it("loads a bundled sample when 'Try a sample' is clicked (U1)", async () => {
+    parseSbom.mockResolvedValue(parsed("example-product", 2));
+    render(<App />);
+    await userEvent.click(screen.getByTestId("try-sample"));
+    await waitFor(() => expect(screen.getByText("example-product")).toBeInTheDocument());
+    const arg = parseSbom.mock.calls[0][0] as File;
+    expect(arg.name).toBe("example.spdx.json");
+  });
+
+  it("explains why downloads are unavailable when no format is selected (U4)", async () => {
+    parseSbom.mockResolvedValue(parsed("demo", 1));
+    render(<App />);
+    await userEvent.upload(screen.getByTestId("file-input"), new File(["x"], "x.json"));
+    await waitFor(() => screen.getByText("demo"));
+    await userEvent.click(screen.getByRole("checkbox", { name: "html" })); // uncheck the only default
+    expect(screen.getByText(/select at least one output format/i)).toBeInTheDocument();
+  });
+
+  it("adds a recovery hint for an unsupported-file error (U5)", async () => {
+    parseSbom.mockRejectedValue(new Error("unsupported or unrecognized SBOM format: x.json"));
+    render(<App />);
+    await userEvent.upload(screen.getByTestId("file-input"), new File(["x"], "x.json"));
+    await waitFor(() =>
+      expect(screen.getByRole("alert")).toHaveTextContent(/make sure the file is an sbom/i),
+    );
+  });
+
   it("downloads with the backend-provided filename and revokes the object URL", async () => {
     parseSbom.mockResolvedValue(parsed("demo", 1));
     renderNotice.mockResolvedValue({ blob: new Blob(["x"]), filename: "OSS_Notice_demo.html" });
@@ -122,5 +161,21 @@ describe("App", () => {
       expect.any(File),
       expect.objectContaining({ format: "html" }),
     );
+  });
+
+  it("tells the user when a PDF save is cancelled (U7)", async () => {
+    parseSbom.mockResolvedValue(parsed("demo", 1));
+    const blob = { text: async () => "<html>notice</html>" } as unknown as Blob;
+    renderNotice.mockResolvedValue({ blob, filename: "x.html" });
+    const exportPdf = vi.fn().mockResolvedValue({ saved: false });
+    (window as Window & { onot?: unknown }).onot = { exportPdf };
+
+    render(<App />);
+    await userEvent.upload(screen.getByTestId("file-input"), new File(["x"], "demo.spdx.json"));
+    await waitFor(() => screen.getByText("demo"));
+    await userEvent.click(screen.getByLabelText("pdf"));
+    await userEvent.click(screen.getByRole("button", { name: /download pdf/i }));
+
+    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent(/pdf save cancelled/i));
   });
 });

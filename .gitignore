@@ -71,6 +71,9 @@ node_modules/
 electron/test-results/
 electron/playwright-report/
 
+# electron-builder output (local installer builds)
+electron/dist-electron/
+
 # onot 2.0 spike outputs
 spikes/**/out/
 
@@ -79,3 +82,6 @@ spikes/**/out/
 # Type/lint cache
 .mypy_cache/
 .ruff_cache/
+
+# Local editor/agent tooling config (not part of the project)
+.claude/

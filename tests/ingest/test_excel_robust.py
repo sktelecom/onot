@@ -5,8 +5,12 @@
 
 from __future__ import annotations
 
-import openpyxl
+import zipfile
 
+import openpyxl
+import pytest
+
+from onot.domain.errors import ParseError
 from onot.ingest.excel import parse_excel
 
 
@@ -52,3 +56,22 @@ def test_blank_rows_skipped(tmp_path):
     _build(path, [[None], ["", None], ["keep"]])
     doc = parse_excel(path)
     assert [pk.name for pk in doc.packages] == ["keep"]
+
+
+def test_non_excel_zip_raises_parse_error(tmp_path):
+    # O-5: a zip that is not an xlsx (.zip/.docx/.jar) must be a 400-class ParseError, not a 500.
+    path = tmp_path / "fake.zip"
+    with zipfile.ZipFile(path, "w") as z:
+        z.writestr("a.txt", "hi")
+    with pytest.raises(ParseError):
+        parse_excel(path)
+
+
+def test_missing_required_sheet_raises_parse_error(tmp_path):
+    # O-6: a valid xlsx without the required sheets must be a ParseError, not a KeyError/500.
+    path = tmp_path / "nosheets.xlsx"
+    wb = openpyxl.Workbook()
+    wb.active.title = "Random"
+    wb.save(path)
+    with pytest.raises(ParseError, match="required sheet"):
+        parse_excel(path)

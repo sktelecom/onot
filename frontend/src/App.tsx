@@ -1,11 +1,22 @@
 import { useState } from "react";
+import sampleSpdx from "./assets/example.spdx.json?raw";
 import { FileDropzone } from "./components/FileDropzone";
 import { Preview } from "./components/Preview";
 import { type NoticeSettings, SettingsPanel } from "./components/SettingsPanel";
 import { Button } from "./components/ui/Button";
 import { Card, CardTitle } from "./components/ui/Card";
 import { parseSbom, type ParseResult, renderNotice } from "./lib/api";
-import { t, type UiLang } from "./lib/i18n";
+import { type MessageKey, t, type UiLang } from "./lib/i18n";
+
+// Map a raw backend error message to an actionable hint key (recovery guidance for novices).
+function errorHintKey(message: string): MessageKey | null {
+  if (/unsupported or unrecognized/i.test(message)) return "errFormat";
+  if (/failed to (parse|open)/i.test(message)) return "errParse";
+  if (/too large/i.test(message)) return "errTooLarge";
+  if (/empty upload/i.test(message)) return "errEmpty";
+  if (/failed to fetch|networkerror|load failed/i.test(message)) return "errEngine";
+  return null;
+}
 
 export default function App() {
   const uiLang: UiLang = "en";
@@ -19,12 +30,14 @@ export default function App() {
   const [previewHtml, setPreviewHtml] = useState("");
   const [status, setStatus] = useState<"idle" | "parsing" | "rendering">("idle");
   const [error, setError] = useState("");
+  const [info, setInfo] = useState("");
 
   async function handleFile(f: File) {
     setFile(f);
     setParsed(null);
     setPreviewHtml("");
     setError("");
+    setInfo("");
     setStatus("parsing");
     try {
       setParsed(await parseSbom(f));
@@ -35,10 +48,16 @@ export default function App() {
     }
   }
 
+  // Load a bundled example SBOM so first-time users can try the flow without their own file.
+  function handleTrySample() {
+    handleFile(new File([sampleSpdx], "example.spdx.json", { type: "application/json" }));
+  }
+
   async function handleGenerate() {
     if (!file) return;
     setStatus("rendering");
     setError("");
+    setInfo("");
     try {
       const { blob } = await renderNotice(file, {
         format: "html",
@@ -56,6 +75,7 @@ export default function App() {
   async function handleDownload(format: string) {
     if (!file) return;
     setError("");
+    setInfo("");
     try {
       // Installed (Electron): generate PDF via printToPDF, not the sidecar (S5).
       if (format === "pdf" && window.onot?.exportPdf) {
@@ -64,7 +84,9 @@ export default function App() {
           lang: settings.lang,
           company: settings.company,
         });
-        await window.onot.exportPdf(await blob.text(), "OSS_Notice.pdf");
+        const res = await window.onot.exportPdf(await blob.text(), "OSS_Notice.pdf");
+        // A cancelled Save dialog should not look like nothing happened.
+        if (res && res.saved === false) setInfo(t(uiLang, "pdfCancelled"));
         return;
       }
       const { blob, filename } = await renderNotice(file, {
@@ -91,7 +113,7 @@ export default function App() {
     <div className="mx-auto max-w-6xl p-6">
       <header className="mb-6">
         <h1 className="text-2xl font-bold">{t(uiLang, "title")}</h1>
-        <p className="text-sm text-zinc-500">{t(uiLang, "subtitle")}</p>
+        <p className="text-sm text-zinc-400">{t(uiLang, "subtitle")}</p>
       </header>
 
       <main>
@@ -100,7 +122,21 @@ export default function App() {
             role="alert"
             className="mb-4 rounded-md border border-red-300 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
           >
-            {t(uiLang, "error")}: {error}
+            <div>
+              {t(uiLang, "error")}: {error}
+            </div>
+            {errorHintKey(error) && (
+              <div className="mt-1 text-xs opacity-90">{t(uiLang, errorHintKey(error)!)}</div>
+            )}
+          </div>
+        )}
+
+        {info && (
+          <div
+            role="status"
+            className="mb-4 rounded-md border border-zinc-300 bg-zinc-50 p-3 text-sm text-zinc-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300"
+          >
+            {info}
           </div>
         )}
 
@@ -108,15 +144,24 @@ export default function App() {
         <div className="space-y-4">
           <FileDropzone lang={uiLang} onFile={handleFile} fileName={file?.name} />
           {status === "parsing" && (
-            <p className="text-sm text-zinc-500">{t(uiLang, "parsing")}</p>
+            <p className="text-sm text-zinc-400">{t(uiLang, "parsing")}</p>
           )}
           {!file && status === "idle" && (
-            <p className="text-sm text-zinc-500">{t(uiLang, "noFile")}</p>
+            <div className="flex items-center gap-3">
+              <p className="text-sm text-zinc-400">{t(uiLang, "noFile")}</p>
+              <Button
+                variant="secondary"
+                data-testid="try-sample"
+                onClick={handleTrySample}
+              >
+                {t(uiLang, "trySample")}
+              </Button>
+            </div>
           )}
           {parsed && (
             <Card>
               <CardTitle>{parsed.document.name}</CardTitle>
-              <p className="text-sm text-zinc-500">
+              <p className="text-sm text-zinc-400">
                 {parsed.document.packages.length} {t(uiLang, "components")}
               </p>
               {parsed.warnings.length > 0 && (
@@ -143,7 +188,7 @@ export default function App() {
               <Button
                 data-testid="generate-preview"
                 onClick={handleGenerate}
-                disabled={!file || status !== "idle"}
+                disabled={!parsed || status !== "idle"}
               >
                 {status === "rendering" ? t(uiLang, "rendering") : t(uiLang, "generate")}
               </Button>
@@ -153,12 +198,18 @@ export default function App() {
                     key={fmt}
                     variant="secondary"
                     onClick={() => handleDownload(fmt)}
-                    disabled={!file}
+                    disabled={!parsed}
                   >
                     {t(uiLang, "download")} {fmt}
                   </Button>
                 ))}
               </div>
+              {settings.formats.length === 0 && (
+                <p className="text-xs text-zinc-400">{t(uiLang, "noFormats")}</p>
+              )}
+              {!parsed && (
+                <p className="text-xs text-zinc-400">{t(uiLang, "uploadFirst")}</p>
+              )}
             </div>
           </Card>
         </div>

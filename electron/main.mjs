@@ -27,11 +27,16 @@ function sidecarCommand() {
   return { command: path.join(process.resourcesPath, "sidecar", "onot-sidecar", bin), args: [] };
 }
 
+const SIDECAR_LOG = path.join(app.getPath("userData"), "sidecar.log");
+// Windows Defender scans a freshly-built unsigned exe on first launch, which can push startup
+// past the macOS-tuned budget; give Windows a longer first-run window.
+const SIDECAR_TIMEOUT_MS = isWin ? 120000 : 40000;
+
 async function startSidecar() {
   const port = await findFreePort();
   const { command, args } = sidecarCommand();
-  sidecar = new Sidecar({ command, args, port });
-  await sidecar.start({ timeoutMs: 40000 });
+  sidecar = new Sidecar({ command, args, port, logPath: SIDECAR_LOG });
+  await sidecar.start({ timeoutMs: SIDECAR_TIMEOUT_MS });
   return port;
 }
 
@@ -61,14 +66,17 @@ async function createWindow(apiBase) {
       sandbox: false, // uses ESM preload
     },
   });
-  if (isDev) {
+  // ONOT_FRONTEND_DIR overrides the frontend location and forces the packaged-style file://
+  // load even when unpackaged. The file:// render E2E uses it to exercise the production path
+  // that dev-mode E2E (http://) cannot cover — the blank-screen class of bug (#68).
+  const frontendDir = process.env.ONOT_FRONTEND_DIR;
+  if (isDev && !frontendDir) {
     const base = process.env.VITE_DEV_SERVER ?? "http://localhost:5173";
     appOrigin = base;
     await mainWindow.loadURL(`${base}?apiBase=${encodeURIComponent(apiBase)}`);
   } else {
-    await mainWindow.loadFile(path.join(process.resourcesPath, "frontend", "index.html"), {
-      query: { apiBase },
-    });
+    const dir = frontendDir ?? path.join(process.resourcesPath, "frontend");
+    await mainWindow.loadFile(path.join(dir, "index.html"), { query: { apiBase } });
   }
 }
 
@@ -129,14 +137,40 @@ app.whenReady().then(async () => {
       },
     });
   });
-  try {
-    const port = await startSidecar();
-    await createWindow(`http://127.0.0.1:${port}`);
-  } catch (err) {
-    dialog.showErrorBox("onot", `Failed to start the local engine:\n${err.message}`);
-    app.quit();
-  }
+  await launchWithRetry();
 });
+
+// Start the sidecar and window; on failure show an actionable Retry/Quit dialog (with the log
+// path) instead of quitting silently, since a slow first-run antivirus scan is recoverable.
+async function launchWithRetry() {
+  for (;;) {
+    try {
+      const port = await startSidecar();
+      await createWindow(`http://127.0.0.1:${port}`);
+      return;
+    } catch (err) {
+      await shutdown(); // tear down any half-started sidecar before retrying
+      shutdownPromise = null; // re-arm so the next start is not short-circuited
+      const choice = dialog.showMessageBoxSync({
+        type: "error",
+        title: "onot",
+        message: "Couldn't start onot's local engine.",
+        detail:
+          `${err.message}\n\n` +
+          "On Windows, antivirus scanning a fresh unsigned build can make the first launch slow " +
+          "or block it. You can retry, or check the log for details:\n" +
+          SIDECAR_LOG,
+        buttons: ["Retry", "Quit"],
+        defaultId: 0,
+        cancelId: 1,
+      });
+      if (choice !== 0) {
+        app.quit();
+        return;
+      }
+    }
+  }
+}
 
 app.on("window-all-closed", () => {
   shutdown().finally(() => app.quit());

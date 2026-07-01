@@ -32,6 +32,41 @@ def license_links(expression: str, known_ids: Iterable[str]) -> Markup:
     return Markup("".join(parts))
 
 
+def md_cell(value: object) -> str:
+    """Escape untrusted SBOM/user text for a Markdown table cell.
+
+    Package names/versions come from third-party components, so pipes and newlines would break
+    the table and link syntax could inject active links. Escapes the structural characters.
+    """
+    return (
+        str(value)
+        .replace("\\", "\\\\")
+        .replace("|", "\\|")
+        .replace("[", "\\[")
+        .replace("]", "\\]")
+        .replace("\r\n", " ")
+        .replace("\n", " ")
+        .replace("\r", " ")
+    )
+
+
+def md_inline(value: object) -> str:
+    """Neutralize Markdown link syntax and newlines for untrusted values used inline (not a table cell)."""
+    return (
+        str(value)
+        .replace("[", "\\[")
+        .replace("]", "\\]")
+        .replace("\r\n", " ")
+        .replace("\n", " ")
+        .replace("\r", " ")
+    )
+
+
+def oneline(value: object) -> str:
+    """Flatten newlines so an untrusted value cannot forge structural lines in plain-text output."""
+    return str(value).replace("\r\n", " ").replace("\n", " ").replace("\r", " ")
+
+
 def md_code_block(text: str) -> str:
     """Wrap in a Markdown code fence. Uses a fence longer than any backtick run in the body to prevent fence escaping."""
     longest = max((len(run) for run in re.findall(r"`+", text)), default=0)
