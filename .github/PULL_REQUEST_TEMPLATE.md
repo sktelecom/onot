@@ -18,6 +18,6 @@
 
 - [ ] Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/)
 - [ ] Tests added/updated and coverage stays ≥ 90%
-- [ ] `bash .claude/gate.sh` passes locally (lint + tests + frontend/electron)
+- [ ] `bash scripts/gate.sh` passes locally (lint + tests + frontend/electron)
 - [ ] Docs updated (`README.md` / `docs/USER_GUIDE.md`) if behavior changed
 - [ ] `CHANGELOG.md` entry added under `[Unreleased]`
