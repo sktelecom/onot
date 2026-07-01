@@ -39,7 +39,7 @@ pip install "onot[spdx,cyclonedx,excel,api]"   # from PyPI; add ,pdf for PDF out
 onot generate -i sbom.spdx.json -f html -f markdown --output-dir ./output
 
 #   -f/--format   html | text | markdown | pdf (repeatable)
-#   --lang        ko | en
+#   --lang        en
 #   --config      onot.yaml (company info, etc.)
 #   --online      fetch missing license texts remotely (offline by default)
 #   --stdout      write a single text format to stdout

@@ -5,9 +5,11 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
+import yaml
 
 from onot.domain.errors import ParseError
 from onot.ingest import load_document
@@ -80,6 +82,16 @@ def test_spdx_json_parses_with_nonstandard_extension(tmp_path):
 def test_serialization_detects_format_from_content(data, expected):
     # O-2: serialization is chosen by content so a non-standard extension does not break parsing.
     assert _serialization(data) == expected
+
+
+def test_spdx_yaml_is_detected_by_content_and_parses(tmp_path):
+    # O-7: SPDX YAML uses an unquoted lowercase key (spdxVersion:); it must be recognized by
+    # content and parse even with a plain .yaml name (which file-name-based detection misses).
+    data = yaml.safe_dump(json.loads((FIX / "example.spdx.json").read_text()))
+    assert SpdxAdapter().sniff(Path("plain.yaml"), data.encode()[:8192]) > 0
+    p = tmp_path / "plain.yaml"
+    p.write_text(data)
+    assert load_document(p).document.name == "example-product"
 
 
 def test_spdx_parse_error_uses_the_given_filename(tmp_path):

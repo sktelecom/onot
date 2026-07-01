@@ -41,7 +41,7 @@ export function SettingsPanel({
       <CardTitle>{t(uiLang, "settings")}</CardTitle>
 
       <fieldset className="mb-4">
-        <legend className="mb-1 text-xs font-medium text-zinc-500">{t(uiLang, "formats")}</legend>
+        <legend className="mb-1 text-xs font-medium text-zinc-400">{t(uiLang, "formats")}</legend>
         <div className="flex flex-wrap gap-3">
           {ALL_FORMATS.map((fmt) => (
             <label key={fmt} className="flex items-center gap-1.5 text-sm">
@@ -58,7 +58,7 @@ export function SettingsPanel({
 
       {COMPANY_FIELDS.map(({ key, label }) => (
         <label key={key} className="mb-2 block text-sm">
-          <span className="mb-1 block text-xs font-medium text-zinc-500">{t(uiLang, label)}</span>
+          <span className="mb-1 block text-xs font-medium text-zinc-400">{t(uiLang, label)}</span>
           <input
             value={value.company[key] ?? ""}
             onChange={(e) =>

@@ -69,6 +69,10 @@ class SpdxAdapter:
         stripped = head.lstrip()
         if stripped.startswith(b"SPDXVersion:") or b"\nSPDXVersion:" in head:
             return 0.95
+        # YAML SPDX uses an unquoted lowercase key (spdxVersion:), which the JSON/tag-value
+        # checks above miss. Detect it by content so a .yaml/extensionless file is recognized.
+        if b"spdxversion:" in lowered:
+            return 0.9
         if b"spdx.org/rdf" in lowered or (b"<rdf:rdf" in lowered and b"spdx" in lowered):
             return 0.85
         if path.name.lower().endswith((".spdx", ".spdx.json", ".spdx.yaml", ".spdx.yml")):

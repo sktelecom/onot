@@ -53,6 +53,8 @@ class LicenseResolver:
         for pkg in doc.packages:
             expr = pkg.effective_expression
             if expr is None:
+                # A compliance notice must flag missing license info rather than pass silently.
+                warnings.append(f"no license information for {pkg.display}")
                 continue
             try:
                 syms = symbols(expr.raw)
@@ -93,10 +95,14 @@ class LicenseResolver:
                 used_by=used_by,
             )
         if license_id in ref_text:
+            text = ref_text[license_id]
+            if not text.strip():
+                # Defined but empty extracted text leaves a blank license section — flag it.
+                warnings.append(f"missing license text for {license_id}")
             return License(
                 license_id=license_id,
                 name=ref_name.get(license_id, license_id),
-                text=ref_text[license_id],
+                text=text,
                 used_by=used_by,
             )
         # Found neither in the catalog nor embedded: supplement remotely if online, otherwise unknown
