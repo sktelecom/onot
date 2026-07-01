@@ -143,7 +143,7 @@ export default function App() {
               <Button
                 data-testid="generate-preview"
                 onClick={handleGenerate}
-                disabled={!file || status !== "idle"}
+                disabled={!parsed || status !== "idle"}
               >
                 {status === "rendering" ? t(uiLang, "rendering") : t(uiLang, "generate")}
               </Button>
@@ -153,7 +153,7 @@ export default function App() {
                     key={fmt}
                     variant="secondary"
                     onClick={() => handleDownload(fmt)}
-                    disabled={!file}
+                    disabled={!parsed}
                   >
                     {t(uiLang, "download")} {fmt}
                   </Button>

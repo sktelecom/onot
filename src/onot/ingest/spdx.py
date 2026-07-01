@@ -18,6 +18,47 @@ from onot.ingest.base import IngestResult
 _XML_SUFFIXES = (".rdf", ".rdf.xml", ".xml")
 
 
+def _serialization(data: bytes) -> str:
+    """Detect the SPDX serialization from content so parsing does not depend on the file extension.
+
+    spdx-tools' parse_file selects its reader from the file name, so a valid document with a
+    non-standard extension would fail. Returns "json"/"yaml"/"tagvalue"/"xml", or "" if unknown
+    (falls back to the extension-based reader).
+    """
+    head = data[:8192]
+    stripped = head.lstrip()
+    lowered = head.lower()
+    if stripped.startswith(b"<") or b"<rdf:rdf" in lowered or b"spdx.org/rdf" in lowered:
+        return "xml"
+    if stripped.startswith(b"{") or b'"spdxversion"' in lowered:
+        return "json"
+    if stripped.startswith(b"SPDXVersion:") or b"\nSPDXVersion:" in head:
+        return "tagvalue"
+    if b"spdxversion:" in lowered:
+        return "yaml"
+    return ""
+
+
+def _parse_spdx(path: Path, serialization: str) -> object:
+    path_str = str(path)
+    if serialization == "json":
+        from spdx_tools.spdx.parser.json import json_parser
+
+        return json_parser.parse_from_file(path_str)
+    if serialization == "yaml":
+        from spdx_tools.spdx.parser.yaml import yaml_parser
+
+        return yaml_parser.parse_from_file(path_str)
+    if serialization == "tagvalue":
+        from spdx_tools.spdx.parser.tagvalue import tagvalue_parser
+
+        return tagvalue_parser.parse_from_file(path_str)
+    # xml/rdf or unknown: fall back to the extension-based dispatcher (unchanged behavior)
+    from spdx_tools.spdx.parser.parse_anything import parse_file
+
+    return parse_file(path_str)
+
+
 class SpdxAdapter:
     format_id = "spdx"
 
@@ -35,12 +76,12 @@ class SpdxAdapter:
         return 0.0
 
     def parse(self, path: Path) -> IngestResult:
-        if path.name.lower().endswith(_XML_SUFFIXES):
-            reject_dangerous_xml(path.read_bytes())
-        from spdx_tools.spdx.parser.parse_anything import parse_file
-
+        data = path.read_bytes()
+        serialization = _serialization(data)
+        if serialization == "xml" or path.name.lower().endswith(_XML_SUFFIXES):
+            reject_dangerous_xml(data)
         try:
-            document = parse_file(str(path))
+            document = _parse_spdx(path, serialization)
         except Exception as exc:  # noqa: BLE001 — wrap the library exception as a domain exception
             raise ParseError(f"failed to parse SPDX document: {path.name}") from exc
         return IngestResult(document=spdx_document_to_notice(document))

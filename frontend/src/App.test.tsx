@@ -71,6 +71,18 @@ describe("App", () => {
     await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent("bad sbom"));
   });
 
+  it("keeps action buttons disabled after a parse failure (no repeat errors)", async () => {
+    parseSbom.mockRejectedValue(new Error("bad sbom"));
+    render(<App />);
+    await userEvent.upload(screen.getByTestId("file-input"), new File(["x"], "x.json"));
+    await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent("bad sbom"));
+    // parsed === null after failure, so Generate/Download must stay disabled.
+    expect(screen.getByTestId("generate-preview")).toBeDisabled();
+    for (const btn of screen.getAllByRole("button", { name: /download/i })) {
+      expect(btn).toBeDisabled();
+    }
+  });
+
   it("downloads with the backend-provided filename and revokes the object URL", async () => {
     parseSbom.mockResolvedValue(parsed("demo", 1));
     renderNotice.mockResolvedValue({ blob: new Blob(["x"]), filename: "OSS_Notice_demo.html" });

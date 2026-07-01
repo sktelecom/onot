@@ -61,14 +61,17 @@ async function createWindow(apiBase) {
       sandbox: false, // uses ESM preload
     },
   });
-  if (isDev) {
+  // ONOT_FRONTEND_DIR overrides the frontend location and forces the packaged-style file://
+  // load even when unpackaged. The file:// render E2E uses it to exercise the production path
+  // that dev-mode E2E (http://) cannot cover — the blank-screen class of bug (#68).
+  const frontendDir = process.env.ONOT_FRONTEND_DIR;
+  if (isDev && !frontendDir) {
     const base = process.env.VITE_DEV_SERVER ?? "http://localhost:5173";
     appOrigin = base;
     await mainWindow.loadURL(`${base}?apiBase=${encodeURIComponent(apiBase)}`);
   } else {
-    await mainWindow.loadFile(path.join(process.resourcesPath, "frontend", "index.html"), {
-      query: { apiBase },
-    });
+    const dir = frontendDir ?? path.join(process.resourcesPath, "frontend");
+    await mainWindow.loadFile(path.join(dir, "index.html"), { query: { apiBase } });
   }
 }
 
