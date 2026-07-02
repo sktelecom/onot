@@ -27,7 +27,7 @@ Defender real-time protection on. Record the app version tested.
 - [ ] No console window flashes when the app starts.
 - [ ] The app becomes usable within a reasonable time even on the first launch (Defender
       scan). If startup fails, the error dialog offers **Retry**/**Quit** and names the log
-      file (`%APPDATA%\onot\sidecar.log` under the app's userData path).
+      file (`%APPDATA%\onot-desktop\sidecar.log` under the app's userData path).
 
 ## Generate a notice
 

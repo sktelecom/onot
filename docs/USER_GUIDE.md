@@ -66,8 +66,8 @@ license texts are included as well.
 ![Notice preview](images/04-preview.png)
 
 Once you've reviewed it, click the button for the format you want — such as
-**Download html** or **Download markdown** — to save the file. For PDF, a dialog asks
-where to save.
+**Download html**, **Download markdown**, or **Download pdf**. For every format a
+"Save as" dialog opens so you can choose where to save the file.
 
 ## Frequently asked questions
 
