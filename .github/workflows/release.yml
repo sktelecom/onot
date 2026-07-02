@@ -21,6 +21,11 @@ jobs:
       contents: write # Upload installers to GitHub Releases
     strategy:
       fail-fast: false
+      # Serialize the OS legs: both run `electron-builder --publish always`, and publishing
+      # concurrently let each leg create its own GitHub release for the same tag (a race that
+      # split the v1.1.2 assets across two releases). max-parallel: 1 makes the second leg find
+      # and upload to the release the first leg already created.
+      max-parallel: 1
       matrix:
         os: [windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
