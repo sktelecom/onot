@@ -1,6 +1,6 @@
 {
   "name": "onot-desktop",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "packageManager": "pnpm@10.34.4",
   "private": true,
   "type": "module",
