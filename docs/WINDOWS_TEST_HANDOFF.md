@@ -131,7 +131,8 @@ With the app open:
 - Uncheck every output format: the "select at least one output format" hint shows;
   re-check html.
 - Click "Generate preview"; then download WITHOUT previewing first (both should work).
-- Download html, text, markdown: files save with sensible names.
+- Download html, text, markdown: each opens a "Save as" dialog and saves with a sensible
+  default name.
 - Download pdf: a Save dialog appears; cancel it once (a "PDF save cancelled" note
   appears); save it once (a valid PDF is written).
 - Upload a random `.json` that is not an SBOM: a readable error with a recovery hint
@@ -143,7 +144,10 @@ With the app open:
   ```
   where /r "%APPDATA%" sidecar.log
   ```
-  (userData is typically `%APPDATA%\onot\sidecar.log`; do not assume, search for it.)
+  (userData is typically `%APPDATA%\onot-desktop\sidecar.log`; do not assume, search
+  for it.) An empty log after a successful launch is normal: the sidecar runs uvicorn at
+  `log_level="warning"`, so a clean startup writes nothing. The log fills only when the
+  sidecar emits a warning or error — exactly the failure case you would be diagnosing.
 - No orphan sidecar after quitting the app:
   ```
   tasklist | findstr /i "onot-sidecar onot.exe"
