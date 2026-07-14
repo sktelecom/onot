@@ -21,6 +21,9 @@ __pycache__/
 # Distribution / packaging
 .Python
 build/
+# electron-builder resources (app icons) are source, not a Python build artifact — keep them tracked
+!electron/build/
+!electron/build/**
 develop-eggs/
 dist/
 downloads/
