@@ -111,9 +111,12 @@ export default function App() {
 
   return (
     <div className="mx-auto max-w-6xl p-6">
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold">{t(uiLang, "title")}</h1>
-        <p className="text-sm text-zinc-400">{t(uiLang, "subtitle")}</p>
+      <header className="mb-6 flex items-center gap-3">
+        <img src="/logo-mark.svg" alt="onot" width={44} height={44} className="shrink-0" />
+        <div>
+          <h1 className="text-2xl font-bold">{t(uiLang, "title")}</h1>
+          <p className="text-sm text-zinc-400">{t(uiLang, "subtitle")}</p>
+        </div>
       </header>
 
       <main>

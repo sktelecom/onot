@@ -1,4 +1,6 @@
-# onot
+<p align="center">
+  <img src="docs/images/logo.svg" alt="onot — OSS Notice Generator" width="300" />
+</p>
 
 [![CI](https://github.com/sktelecom/onot/actions/workflows/ci.yml/badge.svg)](https://github.com/sktelecom/onot/actions/workflows/ci.yml)
 [![Security](https://github.com/sktelecom/onot/actions/workflows/security.yml/badge.svg)](https://github.com/sktelecom/onot/actions/workflows/security.yml)
