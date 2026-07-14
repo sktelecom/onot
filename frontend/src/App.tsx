@@ -1,4 +1,5 @@
 import { useState } from "react";
+import logoMark from "./assets/logo-mark.svg";
 import sampleSpdx from "./assets/example.spdx.json?raw";
 import { FileDropzone } from "./components/FileDropzone";
 import { Preview } from "./components/Preview";
@@ -112,7 +113,7 @@ export default function App() {
   return (
     <div className="mx-auto max-w-6xl p-6">
       <header className="mb-6 flex items-center gap-3">
-        <img src="/logo-mark.svg" alt="onot" width={44} height={44} className="shrink-0" />
+        <img src={logoMark} alt="onot" width={44} height={44} className="shrink-0" />
         <div>
           <h1 className="text-2xl font-bold">{t(uiLang, "title")}</h1>
           <p className="text-sm text-zinc-400">{t(uiLang, "subtitle")}</p>
