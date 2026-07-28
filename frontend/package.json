@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "clsx": "^2.1.1",
-    "lucide-react": "^1.26.0",
+    "lucide-react": "^1.27.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "tailwind-merge": "^3.6.0"
@@ -28,7 +28,7 @@
     "@vitejs/plugin-react": "^6.0.4",
     "axe-core": "^4.12.1",
     "jsdom": "^29.1.1",
-    "postcss": "^8.5.22",
+    "postcss": "^8.5.23",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
     "vite": "^8.1.5",
