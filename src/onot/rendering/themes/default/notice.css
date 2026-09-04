@@ -1,20 +1,55 @@
+/* Notice theme. The colours are named here and shared with the desktop app's tokens so a
+   notice looks the same in the in-app preview and in the saved file. */
+:root {
+  --notice-fg: #1a1a1a;
+  --notice-fg-muted: #555555; /* 7.4:1 on white */
+  --notice-fg-subtle: #6b7280; /* 4.8:1 on white, the lightest text used */
+  --notice-link: #4338ca; /* 7.9:1 on white, the app's accent */
+  --notice-rule: #dddddd;
+  --notice-rule-soft: #eeeeee;
+  --notice-fill: #f5f5f5;
+  --notice-fill-code: #f7f7f7;
+}
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   margin: 2rem auto;
   max-width: 60rem;
   padding: 0 1rem;
-  color: #1a1a1a;
+  color: var(--notice-fg);
   line-height: 1.5;
 }
 h1 { font-size: 1.7rem; }
-h2 { font-size: 1.3rem; margin-top: 2rem; border-bottom: 1px solid #eee; padding-bottom: .3rem; }
+h2 { font-size: 1.3rem; margin-top: 2rem; border-bottom: 1px solid var(--notice-rule-soft); padding-bottom: .3rem; }
 h3 { font-size: 1.05rem; margin-bottom: .2rem; }
-.generated, .intro { color: #555; }
+.generated, .intro { color: var(--notice-fg-muted); }
+a { color: var(--notice-link); }
 table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
-th, td { border: 1px solid #ddd; padding: .45rem .6rem; text-align: left; font-size: .9rem; vertical-align: top; }
-th { background: #f5f5f5; }
+th, td { border: 1px solid var(--notice-rule); padding: .45rem .6rem; text-align: left; font-size: .9rem; vertical-align: top; }
+th { background: var(--notice-fill); }
 .license { margin: 1.5rem 0; }
-.license .used-by { color: #666; font-size: .85rem; margin: .2rem 0 .5rem; }
-.license a { color: #0b6; text-decoration: none; }
-pre { background: #f7f7f7; padding: .8rem; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; font-size: .8rem; border-radius: 4px; }
-footer { margin-top: 2rem; color: #888; font-size: .85rem; }
+.license .used-by { color: var(--notice-fg-muted); font-size: .85rem; margin: .2rem 0 .5rem; }
+pre { background: var(--notice-fill-code); padding: .8rem; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; font-size: .8rem; border-radius: 4px; }
+footer { margin-top: 2rem; color: var(--notice-fg-subtle); font-size: .85rem; }
+
+/* Paged output. Both routes to a PDF read these rules: WeasyPrint on the CLI side, and
+   Chromium's printToPDF in the desktop app, which is why they live with the notice rather than
+   in the WeasyPrint-only stylesheet. */
+@media print {
+  body {
+    margin: 0;
+    max-width: none;
+    padding: 0;
+    color: #000000;
+  }
+  a { color: inherit; text-decoration: none; }
+  /* Keep a heading with the block it introduces, but never wrap a whole licence in a
+     keep-together: full texts run past one page, and asking to avoid a break inside them is
+     what pushed a licence to a fresh page and left the previous one half empty. */
+  h1, h2, h3 { page-break-after: avoid; break-after: avoid; }
+  .license .used-by { page-break-after: avoid; break-after: avoid; }
+  pre { orphans: 3; widows: 3; background: transparent; padding: 0; }
+  /* Repeat the column headers when the component table spans pages. */
+  thead { display: table-header-group; }
+  tr { page-break-inside: avoid; break-inside: avoid; }
+  footer { color: var(--notice-fg-subtle); }
+}

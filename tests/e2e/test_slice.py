@@ -32,8 +32,8 @@ def test_parse_counts():
     assert len(doc.licenses) == 10
 
 
-def test_render_matches_golden():
-    assert render_html(_document()) == GOLDEN.read_text(encoding="utf-8")
+def test_render_matches_golden(normalize_version):
+    assert normalize_version(render_html(_document())) == GOLDEN.read_text(encoding="utf-8")
 
 
 def test_pipeline_deterministic():
