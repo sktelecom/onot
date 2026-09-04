@@ -53,6 +53,21 @@ CI runs the same checks on Linux, macOS, and Windows across Python 3.11–3.13, 
 SAST (CodeQL, Semgrep), SCA (SBOM + grype), and secret scanning. All checks must
 pass before a PR can be merged.
 
+### While Actions is unavailable here
+
+GitHub Actions currently cannot start on this repository. Every workflow fails
+within seconds without running a single step, so a red check on your PR is not a
+verdict on your change. The branch protection rules that required those checks have
+been lifted for now and will be restored once Actions works again.
+
+Maintainers verify changes on a fork in the meantime — `haksungjang/onot`, which runs
+the same `ci` and `security` workflows on its own runners. Nothing in them depends on
+organization secrets, so the results carry over. If you are working on a fork of your
+own, enable Actions there and the checks will run on your branches.
+
+Please still run the checks above locally before opening a PR; that is what the
+review leans on right now.
+
 ## Pull request guidelines
 
 - **Branch** off `main` (e.g. `feat/...`, `fix/...`, `chore/...`, `docs/...`).
@@ -85,6 +100,37 @@ Releases are tag-driven. Pushing a `v*` tag triggers `.github/workflows/release.
 PyPI publishing uses **token-less Trusted Publishing (OIDC)**. One-time setup on
 PyPI: add a trusted publisher for this project with owner `sktelecom`, repository
 `onot`, workflow `release.yml`, and environment `pypi`.
+
+### Releasing while Actions is unavailable here
+
+A tag pushed to this repository currently builds nothing, so the release runs on the
+`haksungjang/onot` fork instead and uploads the assets back here. `release.yml`
+accepts a `workflow_call` for exactly this: `owner`/`repo` retarget the GitHub
+Release, `version` names the tag, `publish` gates the upload, and `PUBLISH_TOKEN`
+carries write access to this repository. The fork holds only a thin caller
+(`publish-upstream-release.yml` on its `ci/publish-dry-run` branch) that calls this
+workflow at `@main`, so there is no second copy of the build to drift.
+
+1. Bump the versions and add the `CHANGELOG.md` entry as above, and merge to `main`.
+2. Sync the fork's `main` with this repository.
+3. Run the caller from the fork, naming the tag:
+
+   ```bash
+   gh workflow run publish-upstream-release.yml --repo haksungjang/onot \
+     --ref ci/publish-dry-run -f version=v1.2.0 -f publish=true
+   ```
+
+Do not push a `v*` tag here while this lasts. It only leaves a failed run. The tag is
+created by the release itself.
+
+Pushing to the fork's `ci/publish-dry-run` branch rehearses the same build without
+uploading anything, which is the way to check a change to the release path.
+
+One thing does not carry over: Trusted Publishing identifies a workflow by its entry
+point, so an upload starting on the fork never matches the publisher registered here.
+That path authenticates with a PyPI API token and gives up the PEP 740 provenance
+that only a Trusted Publishing upload carries. Once Actions works here again, a tag
+pushed to this repository publishes token-lessly with provenance, as described above.
 
 ## License
 
