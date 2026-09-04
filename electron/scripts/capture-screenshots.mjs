@@ -24,6 +24,11 @@ try {
   const w = await app.firstWindow();
   // Wait for the first window to finish rendering.
   await w.getByText("OSS Notice Generator").waitFor({ state: "visible", timeout: 60000 });
+  // Pin the theme. The app follows the OS by default, so without this the captured images would
+  // depend on the settings of whichever machine ran the script.
+  await w.evaluate((theme) => localStorage.setItem("onot.theme", theme), process.env.ONOT_SHOT_THEME ?? "dark");
+  await w.reload({ waitUntil: "load" });
+  await w.getByText("OSS Notice Generator").waitFor({ state: "visible", timeout: 60000 });
   await w.waitForTimeout(400);
   await shot(w, "01-home.png");
 

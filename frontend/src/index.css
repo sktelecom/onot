@@ -1,10 +1,90 @@
 @import "tailwindcss";
 @config "../tailwind.config.js";
 
+/* Design tokens.
+   Utilities (bg-surface, text-fg-muted, border-border, …) resolve through the --onot-*
+   variables below, so a theme switch only rewrites those variables. Components never name a
+   raw palette colour, which is what keeps light and dark in step. */
+@theme {
+  --color-brand: var(--onot-brand);
+  --color-brand-hover: var(--onot-brand-hover);
+  --color-on-brand: var(--onot-on-brand);
+  --color-accent: var(--onot-accent);
+  --color-surface: var(--onot-surface);
+  --color-surface-raised: var(--onot-surface-raised);
+  --color-surface-sunken: var(--onot-surface-sunken);
+  --color-border: var(--onot-border);
+  --color-border-strong: var(--onot-border-strong);
+  --color-fg: var(--onot-fg);
+  --color-fg-muted: var(--onot-fg-muted);
+  --color-danger-fg: var(--onot-danger-fg);
+  --color-danger-bg: var(--onot-danger-bg);
+  --color-danger-border: var(--onot-danger-border);
+  --color-warning-fg: var(--onot-warning-fg);
+  --color-success-fg: var(--onot-success-fg);
+
+  --radius-control: 6px;
+  --radius-card: 12px;
+}
+
+/* color-scheme is the single switch. It decides which half of every light-dark() pair applies,
+   and it is also what makes the native controls (checkboxes, scrollbars) match the app instead
+   of following the OS on their own. With no attribute set the app follows the OS, so the
+   default needs no JavaScript at all and cannot flash the wrong theme on startup; the app only
+   writes data-theme when the user overrides that choice. */
 :root {
   color-scheme: light dark;
 }
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* Each token carries its light and its dark value together, so the two can never drift apart.
+   Ratios are against the surface the token is normally used on; the E2E axe run measures them
+   for real in both themes. */
+:root {
+  --onot-brand: #4f46e5; /* white text 6.3:1; the fill is the same in both themes */
+  /* Dark hover lightens, but only as far as white text still clears 4.5:1: indigo-500 (#6366f1)
+     is the obvious pick and lands at 4.46:1. */
+  --onot-brand-hover: light-dark(#4338ca, #5b57ee); /* white text 7.9:1 / 5.2:1 */
+  --onot-on-brand: #ffffff;
+  --onot-accent: light-dark(#4338ca, #a5b4fc); /* text, links and the focus ring: 7.9:1 / 8.9:1 */
+  --onot-surface: light-dark(#fafafa, #09090b);
+  --onot-surface-raised: light-dark(#ffffff, #18181b);
+  --onot-surface-sunken: light-dark(#f4f4f5, #27272a);
+  --onot-border: light-dark(#d4d4d8, #3f3f46); /* decorative dividers */
+  --onot-border-strong: light-dark(#71717a, #a1a1aa); /* control edges: 4.6:1 / 6.9:1 */
+  --onot-fg: light-dark(#18181b, #fafafa);
+  --onot-fg-muted: light-dark(#52525b, #a1a1aa); /* 7.4:1 / 7.8:1 */
+  --onot-danger-fg: light-dark(#b91c1c, #fca5a5);
+  --onot-danger-bg: light-dark(#fef2f2, #2a0d0d);
+  --onot-danger-border: light-dark(#fca5a5, #7f1d1d);
+  --onot-warning-fg: light-dark(#b45309, #fbbf24); /* 5.0:1 / 10.6:1 */
+  --onot-success-fg: light-dark(#047857, #34d399);
+}
 
 body {
-  @apply bg-zinc-50 text-zinc-900 antialiased dark:bg-zinc-950 dark:text-zinc-100;
+  @apply bg-surface text-fg antialiased;
+}
+
+/* One focus indicator for the whole app. Browser defaults vary per platform and disappear
+   entirely on the visually hidden file input, so the ring is defined once here. */
+:focus-visible {
+  outline: 2px solid var(--onot-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -7,7 +7,7 @@ export type UiLang = "en";
 export const messages = {
   en: {
     title: "OSS Notice Generator",
-    subtitle: "Generate open source notices from SBOM documents — offline.",
+    subtitle: "Generate open source notices from SBOM documents, offline.",
     dropzone: "Drop an SBOM file here, or click to browse",
     dropzoneHint: "SPDX (JSON/YAML/Tag-Value/RDF), CycloneDX (JSON/XML), Excel",
     trySample: "Try a sample",
@@ -33,6 +33,10 @@ export const messages = {
     parsing: "Parsing…",
     rendering: "Rendering…",
     error: "Error",
+    theme: "Theme",
+    themeSystem: "System",
+    themeLight: "Light",
+    themeDark: "Dark",
   },
 } as const;
 
