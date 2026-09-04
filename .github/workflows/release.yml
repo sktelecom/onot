@@ -19,9 +19,11 @@ name: release
 # Without it, and without `publish`, the installers are still built and their names
 # verified, and nothing reaches the release.
 #
-# A caller is a separate entry point for PyPI's OIDC check: the `workflow` claim names
-# the caller's file, not this one, so the calling repository needs its own trusted
-# publisher entry on PyPI.
+# PyPI is the one part a caller cannot inherit. Trusted Publishing identifies the
+# workflow by the entry point, so a call from elsewhere does not match the publisher
+# registered for this repository. A caller passes PYPI_TOKEN instead and gives up the
+# PEP 740 provenance that only a Trusted Publishing upload carries; a tag pushed here
+# still publishes token-lessly with provenance.
 on:
   push:
     tags: ["v*"]
@@ -50,6 +52,9 @@ on:
     secrets:
       PUBLISH_TOKEN:
         description: "Token with contents:write on the target repository (default: the run GITHUB_TOKEN)"
+        required: false
+      PYPI_TOKEN:
+        description: "PyPI API token; leave unset to authenticate through Trusted Publishing instead"
         required: false
 
 permissions:
@@ -164,7 +169,13 @@ jobs:
         if: ${{ env.PUBLISH_ENABLED == 'true' }}
         uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # release/v1
         with:
-          attestations: true # Attach PEP 740 provenance
+          # An empty password makes the action fall back to Trusted Publishing, which
+          # is how a tag pushed to this repository authenticates. A caller running
+          # elsewhere cannot use that identity and passes a token instead.
+          password: ${{ secrets.PYPI_TOKEN }}
+          # PEP 740 provenance is only issued for a Trusted Publishing upload, so it
+          # follows whichever way this run authenticated.
+          attestations: ${{ secrets.PYPI_TOKEN == '' }}
 
   publish-sbom:
     name: Attach SBOM to release
