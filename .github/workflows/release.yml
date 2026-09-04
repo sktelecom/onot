@@ -58,8 +58,10 @@ permissions:
 env:
   PUBLISH_OWNER: ${{ inputs.owner || github.repository_owner }}
   PUBLISH_REPO: ${{ inputs.repo || github.event.repository.name }}
-  # A tag pushed here publishes on its own; a caller has to ask for it.
-  PUBLISH_ENABLED: ${{ github.event_name == 'push' || inputs.publish }}
+  # A tag pushed here publishes on its own; a caller has to ask for it. The test
+  # is the ref, not the event name: a called workflow inherits the caller's event,
+  # so a dry run off a branch also arrives as a push.
+  PUBLISH_ENABLED: ${{ startsWith(github.ref, 'refs/tags/') || inputs.publish }}
   # The tag names the version. A dry run triggered off a branch has no tag in
   # its ref, so a caller passes the version it means to rehearse.
   RELEASE_TAG: ${{ inputs.version || github.ref_name }}
@@ -168,7 +170,7 @@ jobs:
     name: Attach SBOM to release
     needs: publish-desktop # Attach assets after the release is created
     # Nothing to attach to on a dry run, which creates no release.
-    if: ${{ github.event_name == 'push' || inputs.publish }}
+    if: ${{ startsWith(github.ref, 'refs/tags/') || inputs.publish }}
     runs-on: ubuntu-latest
     permissions:
       contents: write # Upload assets to the release
