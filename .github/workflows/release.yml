@@ -107,6 +107,26 @@ jobs:
       # the pushed tag and injected via extraMetadata.version to align the release tag
       # and filenames. If the tag contains '-' (rc/beta, etc.) it is published as a
       # prerelease; otherwise it is published as a public release.
+      - name: Ensure the release exists before uploading
+        # electron-builder uploads the artifacts of one leg in parallel, and each
+        # upload creates the release when it finds none, so two of them race and the
+        # loser gets a 422 already_exists. (max-parallel above only serializes the OS
+        # legs, which is a different race.) Creating it up front leaves nothing to
+        # race over, and an existing release is left as it is so the second leg and a
+        # re-run both just add their assets.
+        if: ${{ env.PUBLISH_ENABLED == 'true' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.PUBLISH_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          target="$PUBLISH_OWNER/$PUBLISH_REPO"
+          if gh release view "$RELEASE_TAG" --repo "$target" >/dev/null 2>&1; then
+            echo "release $RELEASE_TAG already exists on $target"
+            exit 0
+          fi
+          if [[ "$RELEASE_TAG" == *-* ]]; then pre=(--prerelease); else pre=(); fi
+          gh release create "$RELEASE_TAG" --repo "$target" \
+            --title "${RELEASE_TAG#v}" --generate-notes "${pre[@]}"
       - name: build & publish to GitHub Releases
         shell: bash
         run: |
