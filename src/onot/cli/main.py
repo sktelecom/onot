@@ -26,9 +26,51 @@ from onot.license.resolver import LicenseResolver
 from onot.rendering import available_formats, get_renderer, render
 from onot.rendering.registry import is_supported
 
-app = typer.Typer(add_completion=False, help="onot — OSS notice generator")
+# \b keeps click from reflowing the block that follows it, so the examples and the exit-code
+# table survive --help with their line breaks intact.
+_EPILOG = """\b
+Examples:
+  onot generate -i sbom.spdx.json
+  onot generate -i sbom.cdx.json -f html -f pdf -o ./notices
+  onot generate -i sbom.xlsx -f text --stdout > NOTICE.txt
 
-# exit codes: 2=ingest, 3=license, 4=config, 1=other
+\b
+Exit codes:
+  0  success
+  1  other failure
+  2  input could not be read or parsed
+  3  license resolution failed
+  4  invalid configuration
+"""
+
+app = typer.Typer(
+    add_completion=False,
+    help="onot - generate OSS notices from SBOM documents.",
+    epilog=_EPILOG,
+)
+
+
+def _version_callback(value: bool) -> None:
+    if value:
+        typer.echo(__version__)
+        raise typer.Exit
+
+
+@app.callback()
+def main(
+    version: bool = typer.Option(  # noqa: ARG001 — consumed by the eager callback
+        False,
+        "--version",
+        "-V",
+        callback=_version_callback,
+        is_eager=True,
+        help="Print the version and exit.",
+    ),
+) -> None:
+    """onot - generate OSS notices from SBOM documents."""
+
+
+# exit codes: 2=ingest, 3=license, 4=config, 1=other (documented in _EPILOG and the README)
 _EXIT_CODES = {IngestError: 2, LicenseError: 3, ConfigError: 4}
 
 
@@ -55,21 +97,45 @@ def _build_resolver(settings, *, strict: bool) -> LicenseResolver:
 @app.command()
 def generate(
     input: Path = typer.Option(  # noqa: A002
-        ..., "-i", "--input", exists=True, dir_okay=False, readable=True, help="input SBOM"
+        ...,
+        "-i",
+        "--input",
+        exists=True,
+        dir_okay=False,
+        readable=True,
+        help="Path to the SBOM file. The format is detected from the extension and contents.",
     ),
     formats: list[str] = typer.Option(
-        ["html"], "-f", "--format", help="output format (repeatable)"
+        ["html"],
+        "-f",
+        "--format",
+        help="Output format: html, text (txt), markdown (md), pdf. Repeat for several.",
     ),
-    output_dir: Path = typer.Option(Path("output"), "-o", "--output-dir", help="output directory"),
-    lang: str | None = typer.Option(None, "--lang", help="output language (en)"),
+    output_dir: Path = typer.Option(
+        Path("output"), "-o", "--output-dir", help="Directory to write the notices into."
+    ),
+    lang: str | None = typer.Option(
+        None, "--lang", help="Output language. Only en is available at present."
+    ),
     config: Path | None = typer.Option(
-        None, "--config", exists=True, dir_okay=False, help="onot.yaml config"
+        None,
+        "--config",
+        exists=True,
+        dir_okay=False,
+        help=(
+            "Path to onot.yaml, holding organization, contact_email, copyright_holder, "
+            "copyright_year and source_download_url."
+        ),
     ),
     offline: bool = typer.Option(
-        True, "--offline/--online", help="disable remote license fetching"
+        True,
+        "--offline/--online",
+        help="Look up missing license texts remotely instead of using bundled texts only.",
     ),
-    strict: bool = typer.Option(False, "--strict", help="treat unknown licenses as errors"),
-    stdout: bool = typer.Option(False, "--stdout", help="write a single text format to stdout"),
+    strict: bool = typer.Option(False, "--strict", help="Treat unknown licenses as errors."),
+    stdout: bool = typer.Option(
+        False, "--stdout", help="Write a single non-binary format to stdout instead of a file."
+    ),
 ) -> None:
     """Generate an OSS notice from an SBOM."""
     formats = list(dict.fromkeys(formats))  # de-duplicate (preserve order)
