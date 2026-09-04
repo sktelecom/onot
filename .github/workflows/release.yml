@@ -8,12 +8,53 @@ name: release
 # be registered once on PyPI (Owner: sktelecom, Repo: onot, Workflow: release.yml,
 # Environment: pypi). Until registration, the publish-pypi job fails, but this does not
 # affect regular CI.
+#
+# The workflow is also callable from another repository, so a release can be built on
+# that repository's runners while the assets land here. The build definition is called
+# rather than copied, so the two never drift. `owner`/`repo` retarget the GitHub
+# Release; leaving them empty keeps the current behaviour, so a fork that calls this
+# without them releases under its own account.
+#
+# Uploading needs PUBLISH_TOKEN, a token with contents:write on the target repository.
+# Without it, and without `publish`, the installers are still built and their names
+# verified, and nothing reaches the release.
+#
+# A caller is a separate entry point for PyPI's OIDC check: the `workflow` claim names
+# the caller's file, not this one, so the calling repository needs its own trusted
+# publisher entry on PyPI.
 on:
   push:
     tags: ["v*"]
+  workflow_call:
+    inputs:
+      owner:
+        description: "Repository owner to publish the release under (default: this repository's owner)"
+        required: false
+        type: string
+        default: ""
+      repo:
+        description: "Repository name to publish the release under (default: this repository)"
+        required: false
+        type: string
+        default: ""
+      publish:
+        description: "Upload the built assets (off = build and verify only)"
+        required: false
+        type: boolean
+        default: false
+    secrets:
+      PUBLISH_TOKEN:
+        description: "Token with contents:write on the target repository (default: the run GITHUB_TOKEN)"
+        required: false
 
 permissions:
   contents: read
+
+env:
+  PUBLISH_OWNER: ${{ inputs.owner || github.repository_owner }}
+  PUBLISH_REPO: ${{ inputs.repo || github.event.repository.name }}
+  # A tag pushed here publishes on its own; a caller has to ask for it.
+  PUBLISH_ENABLED: ${{ github.event_name == 'push' || inputs.publish }}
 
 jobs:
   publish-desktop:
@@ -56,13 +97,30 @@ jobs:
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
           if [[ "$VERSION" == *-* ]]; then RELEASE_TYPE=prerelease; else RELEASE_TYPE=release; fi
+          if [ "$PUBLISH_ENABLED" = "true" ]; then PUBLISH_MODE=always; else PUBLISH_MODE=never; fi
           echo "tag=$GITHUB_REF_NAME version=$VERSION releaseType=$RELEASE_TYPE"
+          echo "target=$PUBLISH_OWNER/$PUBLISH_REPO publish=$PUBLISH_MODE"
           pnpm -C electron exec electron-builder --config electron-builder.yml \
             -c.extraMetadata.version="$VERSION" \
             -c.publish.releaseType="$RELEASE_TYPE" \
-            --publish always
+            -c.publish.owner="$PUBLISH_OWNER" \
+            -c.publish.repo="$PUBLISH_REPO" \
+            --publish "$PUBLISH_MODE"
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PUBLISH_TOKEN || secrets.GITHUB_TOKEN }}
+      - name: Verify the built installer names match the docs
+        # On a dry run nothing is uploaded, so check the local build output instead;
+        # publish-sbom repeats this against the published assets when there are any.
+        if: ${{ env.PUBLISH_ENABLED != 'true' }}
+        shell: bash
+        run: |
+          cd electron/dist-electron
+          ls -1
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            ls -1 ./*Setup*.exe >/dev/null 2>&1 || { echo "no Setup .exe was built"; exit 1; }
+          else
+            ls -1 ./*.dmg >/dev/null 2>&1 || { echo "no .dmg was built"; exit 1; }
+          fi
 
   publish-pypi:
     name: Publish to PyPI
@@ -91,6 +149,9 @@ jobs:
           python -m pip install --require-hashes -r .github/requirements/build.txt
           python -m build
       - name: Publish to PyPI
+        # A dry run stops here: the sdist and wheel are built and kept as proof the
+        # packaging still works, and nothing is uploaded.
+        if: ${{ env.PUBLISH_ENABLED == 'true' }}
         uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # release/v1
         with:
           attestations: true # Attach PEP 740 provenance
@@ -98,6 +159,8 @@ jobs:
   publish-sbom:
     name: Attach SBOM to release
     needs: publish-desktop # Attach assets after the release is created
+    # Nothing to attach to on a dry run, which creates no release.
+    if: ${{ github.event_name == 'push' || inputs.publish }}
     runs-on: ubuntu-latest
     permissions:
       contents: write # Upload assets to the release
@@ -112,14 +175,16 @@ jobs:
       - name: Attach SBOM to the release
         # Avoid injection by taking github.ref_name from the built-in env instead of interpolating it directly into the shell.
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload "$GITHUB_REF_NAME" "onot-${GITHUB_REF_NAME}-sbom.cdx.json" --clobber
+          GH_TOKEN: ${{ secrets.PUBLISH_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "$GITHUB_REF_NAME" "onot-${GITHUB_REF_NAME}-sbom.cdx.json" \
+            --repo "$PUBLISH_OWNER/$PUBLISH_REPO" --clobber
       - name: Verify published installer names match the docs
         # Users download these exact asset names; the docs promise onot-Setup-x.y.z.exe and a .dmg.
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PUBLISH_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
-          names=$(gh release view "$GITHUB_REF_NAME" --json assets -q '.assets[].name')
+          names=$(gh release view "$GITHUB_REF_NAME" --repo "$PUBLISH_OWNER/$PUBLISH_REPO" --json assets -q '.assets[].name')
           echo "$names"
           echo "$names" | grep -Eq '^onot-Setup-[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?\.exe$' \
             || { echo "missing a published onot-Setup-x.y.z.exe asset"; exit 1; }
