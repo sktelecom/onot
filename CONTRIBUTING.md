@@ -123,6 +123,12 @@ workflow at `@main`, so there is no second copy of the build to drift.
 Do not push a `v*` tag here while this lasts. It only leaves a failed run. The tag is
 created by the release itself.
 
+**A security fix does not take this path until its advisory is published.** Step 2
+syncs a public fork, and that is the moment the patch becomes readable by anyone.
+Develop the fix in the temporary private fork GitHub creates alongside the draft
+advisory, merge it here when the advisory goes public, and sync and release only
+after that. The order is what keeps the fix private, not the repository it sits in.
+
 Pushing to the fork's `ci/publish-dry-run` branch rehearses the same build without
 uploading anything, which is the way to check a change to the release path.
 
