@@ -42,6 +42,11 @@ on:
         required: false
         type: boolean
         default: false
+      version:
+        description: "Tag to build, e.g. v1.2.3 (default: the pushed ref, which a dry run off a branch cannot supply)"
+        required: false
+        type: string
+        default: ""
     secrets:
       PUBLISH_TOKEN:
         description: "Token with contents:write on the target repository (default: the run GITHUB_TOKEN)"
@@ -55,6 +60,9 @@ env:
   PUBLISH_REPO: ${{ inputs.repo || github.event.repository.name }}
   # A tag pushed here publishes on its own; a caller has to ask for it.
   PUBLISH_ENABLED: ${{ github.event_name == 'push' || inputs.publish }}
+  # The tag names the version. A dry run triggered off a branch has no tag in
+  # its ref, so a caller passes the version it means to rehearse.
+  RELEASE_TAG: ${{ inputs.version || github.ref_name }}
 
 jobs:
   publish-desktop:
@@ -95,10 +103,10 @@ jobs:
       - name: build & publish to GitHub Releases
         shell: bash
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
+          VERSION="${RELEASE_TAG#v}"
           if [[ "$VERSION" == *-* ]]; then RELEASE_TYPE=prerelease; else RELEASE_TYPE=release; fi
           if [ "$PUBLISH_ENABLED" = "true" ]; then PUBLISH_MODE=always; else PUBLISH_MODE=never; fi
-          echo "tag=$GITHUB_REF_NAME version=$VERSION releaseType=$RELEASE_TYPE"
+          echo "tag=$RELEASE_TAG version=$VERSION releaseType=$RELEASE_TYPE"
           echo "target=$PUBLISH_OWNER/$PUBLISH_REPO publish=$PUBLISH_MODE"
           pnpm -C electron exec electron-builder --config electron-builder.yml \
             -c.extraMetadata.version="$VERSION" \
@@ -126,7 +134,7 @@ jobs:
     name: Publish to PyPI
     runs-on: ubuntu-latest
     # Publish only final release tags (hyphenated tags like rc/beta are desktop-only).
-    if: ${{ !contains(github.ref_name, '-') }}
+    if: ${{ !contains(inputs.version || github.ref_name, '-') }}
     permissions:
       id-token: write # OIDC Trusted Publishing
       contents: read
@@ -141,8 +149,8 @@ jobs:
       - name: Pin package version to the git tag
         # Treat the tag as the single source of truth to align sdist/wheel versions (ignore pyproject's .dev0).
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
-          echo "Building onot $VERSION from tag $GITHUB_REF_NAME"
+          VERSION="${RELEASE_TAG#v}"
+          echo "Building onot $VERSION from tag $RELEASE_TAG"
           sed -i -E "s/^version = \".*\"/version = \"$VERSION\"/" pyproject.toml
       - name: Build sdist and wheel
         run: |
@@ -171,20 +179,20 @@ jobs:
         with:
           path: .
           format: cyclonedx-json
-          output-file: onot-${{ github.ref_name }}-sbom.cdx.json
+          output-file: onot-${{ inputs.version || github.ref_name }}-sbom.cdx.json
       - name: Attach SBOM to the release
         # Avoid injection by taking github.ref_name from the built-in env instead of interpolating it directly into the shell.
         env:
           GH_TOKEN: ${{ secrets.PUBLISH_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "$GITHUB_REF_NAME" "onot-${GITHUB_REF_NAME}-sbom.cdx.json" \
+          gh release upload "$RELEASE_TAG" "onot-${RELEASE_TAG}-sbom.cdx.json" \
             --repo "$PUBLISH_OWNER/$PUBLISH_REPO" --clobber
       - name: Verify published installer names match the docs
         # Users download these exact asset names; the docs promise onot-Setup-x.y.z.exe and a .dmg.
         env:
           GH_TOKEN: ${{ secrets.PUBLISH_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
-          names=$(gh release view "$GITHUB_REF_NAME" --repo "$PUBLISH_OWNER/$PUBLISH_REPO" --json assets -q '.assets[].name')
+          names=$(gh release view "$RELEASE_TAG" --repo "$PUBLISH_OWNER/$PUBLISH_REPO" --json assets -q '.assets[].name')
           echo "$names"
           echo "$names" | grep -Eq '^onot-Setup-[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?\.exe$' \
             || { echo "missing a published onot-Setup-x.y.z.exe asset"; exit 1; }
