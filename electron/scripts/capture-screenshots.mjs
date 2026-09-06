@@ -38,8 +38,8 @@ try {
   await w.waitForTimeout(400);
   await shot(w, "02-uploaded.png");
 
-  // Enable one more output format (markdown).
-  const md = w.getByRole("checkbox", { name: "markdown", exact: true });
+  // Enable one more output format (Markdown).
+  const md = w.getByRole("checkbox", { name: "Markdown", exact: true });
   if (!(await md.isChecked())) await md.check();
   await w.waitForTimeout(300);
   await shot(w, "03-settings.png");

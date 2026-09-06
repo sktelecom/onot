@@ -4,17 +4,18 @@
 
 [![CI](https://github.com/sktelecom/onot/actions/workflows/ci.yml/badge.svg)](https://github.com/sktelecom/onot/actions/workflows/ci.yml)
 [![Security](https://github.com/sktelecom/onot/actions/workflows/security.yml/badge.svg)](https://github.com/sktelecom/onot/actions/workflows/security.yml)
-[![License](https://img.shields.io/github/license/sktelecom/onot)](LICENSE)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/sktelecom/onot/badge)](https://scorecard.dev/viewer/?uri=github.com/sktelecom/onot)
-[![PyPI](https://img.shields.io/pypi/v/onot)](https://pypi.org/project/onot/)
+[![License](https://img.shields.io/github/license/sktelecom/onot)](LICENSE)
+
 [![Latest release](https://img.shields.io/github/v/release/sktelecom/onot?sort=semver)](https://github.com/sktelecom/onot/releases/latest)
+[![PyPI](https://img.shields.io/pypi/v/onot)](https://pypi.org/project/onot/)
 [![Download for Windows](https://img.shields.io/badge/Download-Windows%20installer-0078D6?logo=windows&logoColor=white)](https://github.com/sktelecom/onot/releases/latest)
 
 `onot` generates open source software notices (OSS Notice) from SBOM documents.
 It reads [SPDX](https://spdx.dev) 2.x (JSON/YAML/Tag-Value/RDF),
 [CycloneDX](https://cyclonedx.org) (JSON/XML), and Excel, and produces HTML, Text,
 Markdown, and PDF notices. License texts are bundled, so it runs fully offline
-(air-gapped) — your SBOM never leaves the machine. Jointly developed by Kakao and
+(air-gapped), so your SBOM never leaves the machine. Jointly developed by Kakao and
 SK telecom.
 
 ![onot app](docs/images/04-preview.png)
@@ -25,16 +26,32 @@ SK telecom.
 
 No setup required. Grab the latest installer from
 [Releases](https://github.com/sktelecom/onot/releases), open the app, and drop in an
-SBOM file to preview and download a notice — Windows (`onot-Setup-x.y.z.exe`) and
-macOS (`.dmg`).
+SBOM file to preview and save a notice.
 
-The installers are unsigned. On first launch Windows SmartScreen may warn about an
-"unknown publisher" — choose **More info → Run anyway**. On macOS, right-click the app
-and choose **Open** to pass Gatekeeper.
+| System | File |
+|--|--|
+| Windows 10 or 11, 64-bit | `onot-Setup-x.y.z.exe` |
+| macOS 12 or later | `onot-x.y.z.dmg` |
+
+Releases cover Windows and macOS. Linux is not published, but `pnpm -C electron run dist`
+on a Linux machine builds an AppImage from the same configuration.
+
+The installers are unsigned, so each system asks you to confirm the first launch. On
+Windows, SmartScreen may warn about an "unknown publisher": choose **More info** then
+**Run anyway**. On macOS, right-click the app and choose **Open** to pass Gatekeeper.
 
 The desktop app is self-contained: it bundles everything it needs, so you do **not**
 need Python or `pip`. The sections below (CLI, API, source build) are for developers
 and automation only.
+
+### Accessibility
+
+The app is usable from the keyboard throughout, with a visible focus indicator on every
+control. Colours meet the WCAG 2.2 AA contrast bar in both themes, which an axe-core
+check enforces against the running app on every CI run. It ships light and dark themes
+and follows the system setting by default, and it honours `prefers-reduced-motion`.
+Screen reader support rests on the semantics of standard controls; it has not been
+tested with VoiceOver or NVDA, so reports are welcome.
 
 ## CLI
 

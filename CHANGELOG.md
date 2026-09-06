@@ -8,6 +8,30 @@ All notable changes to this project are documented here. The format is based on
 
 ### Added
 
+- The window now opens straight away and says the local engine is starting, instead of
+  leaving nothing on screen for up to 40 seconds on macOS and two minutes on Windows
+  while the sidecar came up.
+- An application menu, replacing Electron's default. It carries Open SBOM and Save
+  Notice with their usual shortcuts, About, and links to the user guide, the release
+  notes and the issue tracker. Reload and the developer tools appear only in a
+  development build.
+- The window remembers its size, position and maximised state, has a minimum size, and
+  takes the name of the open file as its title.
+- Saving reports where the file went, with Show in folder.
+- The notice details can be remembered between runs, and the copyright holder, which the
+  API already accepted, is now on screen.
+- The parse summary breaks components down by license, and each warning is shown with a
+  line saying what it means for the notice.
+- The preview can be expanded to the height of the window.
+
+### Changed
+
+- Saving a notice is the primary action. The primary button used to be Generate preview,
+  which is a step on the way rather than the thing anyone came for.
+- Output formats read as HTML, Text, Markdown and PDF rather than as API identifiers.
+- The three parts of the screen are numbered, and Settings is now Notice details.
+- The user guide covers macOS as well as Windows, having been Windows-only.
+
 - The desktop app follows the system theme and offers an explicit Light or Dark
   choice, which it remembers. Light mode was written but unreachable before, because
   the app pinned dark mode on the document element.
@@ -39,6 +63,13 @@ All notable changes to this project are documented here. The format is based on
   3.54:1. The drop zone shows a focus indicator when reached by keyboard, having
   shown none at all. Checkboxes follow the app's theme rather than the system's.
   `prefers-reduced-motion` is honoured.
+- Saved notices carry the product name and a timestamp on every route. The desktop app
+  could not read the filename the API chose, because a cross-origin response hides
+  `Content-Disposition` unless the server exposes it, so every desktop save fell back to
+  a generic name.
+- The desktop PDF matches the one the CLI produces: same page size, margins and numbered
+  footer. It previously ignored the print stylesheet entirely.
+- Quitting while the engine is still starting no longer hangs the app on a retry dialog.
 
 ## [1.1.3]
 
