@@ -75,6 +75,10 @@ GHSA-qcgh-vq3j-cm8w the merge landed at 03:10:12Z and the advisory published at
 03:12:39Z, a gap of two and a half minutes. The window cannot be removed, only kept
 short, so publish as soon as the merge completes rather than moving on to other work.
 
+Settle the credits before you publish, not after. [SECURITY.md](../SECURITY.md)
+promises the reporter credit unless they asked to stay anonymous, and asking them
+which name to use takes a round trip you do not want to discover mid-merge.
+
 ## 5. Release
 
 From here the ordinary release process applies. Bump the versions, add the
