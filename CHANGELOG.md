@@ -6,6 +6,14 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-09-06
+
+### Security
+
+- The XLSX resource-exhaustion fix described under 1.1.3 reaches users here. The 1.1.3
+  artifacts were built from a source tree that predated it, so this is the first release
+  that actually carries it (GHSA-qcgh-vq3j-cm8w).
+
 ### Added
 
 - The desktop app follows the system theme and offers an explicit Light or Dark choice,
@@ -92,6 +100,11 @@ All notable changes to this project are documented here. The format is based on
   rows scanned, and deduplicates packages during the scan so repeated rows do not
   accumulate. Reported and reproduced against 1.1.0 through 1.1.2 (GHSA-qcgh-vq3j-cm8w).
 
+The published 1.1.3 artifacts do not contain that fix. The release was built from a
+source tree that predated the merge, so the package on PyPI and the installers attached
+to the release are still vulnerable despite carrying the version number. Upgrade to
+1.2.0 instead.
+
 ## [1.1.2] - 2026-07-02
 
 ### Fixed
@@ -171,7 +184,9 @@ generator.
 - Initial public release: PyQt-based desktop generator that produced OSS notices
   from SPDX documents.
 
-[Unreleased]: https://github.com/sktelecom/onot/compare/v1.1.2...HEAD
+[Unreleased]: https://github.com/sktelecom/onot/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/sktelecom/onot/compare/v1.1.3...v1.2.0
+[1.1.3]: https://github.com/sktelecom/onot/compare/v1.1.2...v1.1.3
 [1.1.2]: https://github.com/sktelecom/onot/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/sktelecom/onot/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/sktelecom/onot/compare/1.0.0...v1.1.0
