@@ -49,6 +49,11 @@ on:
         required: false
         type: string
         default: ""
+      source_ref:
+        description: "Commit or branch in the target repository to build (default: its default branch)"
+        required: false
+        type: string
+        default: ""
     secrets:
       PUBLISH_TOKEN:
         description: "Token with contents:write on the target repository (default: the run GITHUB_TOKEN)"
@@ -86,7 +91,31 @@ jobs:
         os: [windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
+      # A caller's checkout would bring that repository's branch, which is a copy of this
+      # one only by coincidence. v1.1.3 shipped from a caller branch that predated the
+      # fix it was named after. Always take the source from the repository being
+      # released, so the caller supplies only the workflow, never the code.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ${{ inputs.owner && format('{0}/{1}', inputs.owner, inputs.repo) || github.repository }}
+          ref: ${{ inputs.owner && inputs.source_ref || github.ref }}
+      - name: Check the source carries the version being released
+        # The tag names the version, but nothing forces the checked-out tree to agree.
+        # v1.1.3 was built from a tree still saying 1.1.2 and shipped anyway, carrying
+        # none of the fix the tag promised. Compare the two before anything is built.
+        shell: bash
+        run: |
+          VERSION="${RELEASE_TAG#v}"
+          declared=$(grep -E '^version = ' pyproject.toml | head -1 | sed -E 's/^version = "(.*)"$/\1/')
+          echo "tag says $VERSION, pyproject.toml says $declared"
+          # A .devN suffix on the same version is fine: publish-pypi strips it deliberately.
+          case "$declared" in
+            "$VERSION" | "$VERSION".dev*) ;;
+            *)
+              echo "the source tree is not the one this release names; bump the version and merge it first"
+              exit 1
+              ;;
+          esac
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
@@ -169,7 +198,31 @@ jobs:
       name: pypi
       url: https://pypi.org/project/onot/
     steps:
+      # A caller's checkout would bring that repository's branch, which is a copy of this
+      # one only by coincidence. v1.1.3 shipped from a caller branch that predated the
+      # fix it was named after. Always take the source from the repository being
+      # released, so the caller supplies only the workflow, never the code.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ${{ inputs.owner && format('{0}/{1}', inputs.owner, inputs.repo) || github.repository }}
+          ref: ${{ inputs.owner && inputs.source_ref || github.ref }}
+      - name: Check the source carries the version being released
+        # The tag names the version, but nothing forces the checked-out tree to agree.
+        # v1.1.3 was built from a tree still saying 1.1.2 and shipped anyway, carrying
+        # none of the fix the tag promised. Compare the two before anything is built.
+        shell: bash
+        run: |
+          VERSION="${RELEASE_TAG#v}"
+          declared=$(grep -E '^version = ' pyproject.toml | head -1 | sed -E 's/^version = "(.*)"$/\1/')
+          echo "tag says $VERSION, pyproject.toml says $declared"
+          # A .devN suffix on the same version is fine: publish-pypi strips it deliberately.
+          case "$declared" in
+            "$VERSION" | "$VERSION".dev*) ;;
+            *)
+              echo "the source tree is not the one this release names; bump the version and merge it first"
+              exit 1
+              ;;
+          esac
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
@@ -206,7 +259,14 @@ jobs:
     permissions:
       contents: write # Upload assets to the release
     steps:
+      # A caller's checkout would bring that repository's branch, which is a copy of this
+      # one only by coincidence. v1.1.3 shipped from a caller branch that predated the
+      # fix it was named after. Always take the source from the repository being
+      # released, so the caller supplies only the workflow, never the code.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ${{ inputs.owner && format('{0}/{1}', inputs.owner, inputs.repo) || github.repository }}
+          ref: ${{ inputs.owner && inputs.source_ref || github.ref }}
       - name: Generate CycloneDX SBOM
         uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0
         with:
