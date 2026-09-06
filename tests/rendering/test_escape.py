@@ -57,3 +57,24 @@ def test_markdown_escapes_company_field_link():
     md = render(doc, "markdown", settings=settings)
     line = next(line for line in md.splitlines() if "javascript" in line)
     assert "\\[x\\]" in line
+
+
+def test_theme_css_is_not_html_escaped():
+    """<style> is a raw-text element, so an escaped quote there stays literal.
+
+    Autoescaping the stylesheet turned every quoted font name into &#34;...&#34;, which made
+    the whole font-family declaration invalid and left notices in the default serif.
+    """
+    html = render(NoticeDocument(name="prod"), "html")
+    style = html[html.index("<style>") : html.index("</style>")]
+    assert '"Segoe UI"' in style
+    assert "&#34;" not in style
+    assert "&amp;" not in style
+
+
+def test_document_content_is_still_escaped():
+    """The stylesheet is trusted package data; nothing else in the notice is."""
+    doc = NoticeDocument(name='prod<script>alert("x")</script>')
+    html = render(doc, "html")
+    assert "<script>" not in html
+    assert "&lt;script&gt;" in html

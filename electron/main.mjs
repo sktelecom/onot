@@ -64,7 +64,11 @@ function hardenWebContents(contents) {
     if (url.startsWith("http:") || url.startsWith("https:")) shell.openExternal(url);
     return { action: "deny" };
   });
-  contents.on("will-navigate", (event, url) => {
+  contents.on("will-navigate", (event, url, _isInPlace, isMainFrame) => {
+    // The notice preview is a blob: document in a sandboxed subframe, built by the renderer
+    // itself. Its own anchor links are navigations within that frame, and blocking them left
+    // the table of contents inert with no error to show for it.
+    if (!isMainFrame && url.startsWith("blob:")) return;
     if (!url.startsWith(appOrigin)) {
       event.preventDefault();
       if (url.startsWith("http:") || url.startsWith("https:")) shell.openExternal(url);
@@ -231,7 +235,11 @@ app.whenReady().then(async () => {
       responseHeaders: {
         ...details.responseHeaders,
         "Content-Security-Policy": [
-          "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' http://127.0.0.1:* http://localhost:*; frame-src 'self'",
+          // frame-src allows blob: for the notice preview, which the renderer builds itself
+          // from the sidecar's response and loads into a sandbox="" frame. srcdoc cannot be
+          // used there: it takes its base URL from the parent, so the notice's own anchor
+          // links would navigate the frame to the app.
+          "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' http://127.0.0.1:* http://localhost:*; frame-src 'self' blob:",
         ],
       },
     });

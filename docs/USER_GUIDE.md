@@ -125,5 +125,10 @@ Can I use it in an environment without internet?
 Is my SBOM file sent anywhere?
 : No. Parsing and notice generation all happen on your machine.
 
+How do I know when there is a newer version?
+: The app never contacts anything on its own, so it cannot tell you. Help then
+  **Check for Updates** opens the releases page in your browser, and Help then **About onot**
+  names the version you have, so you can compare the two.
+
 Can I use the command line (CLI) or build from source?
 : Yes. See the CLI and developer sections in the [README](../README.md).

@@ -66,9 +66,24 @@ onot generate -i sbom.spdx.json -f html -f markdown --output-dir ./output
 #   --config      onot.yaml (company info, etc.)
 #   --online      fetch missing license texts remotely (offline by default)
 #   --stdout      write a single text format to stdout
+#   -q/--quiet    suppress warnings
+#   --json        report the written files and warnings as JSON
 
+onot init        # a commented onot.yaml to start from
 onot formats     # supported output formats
 onot --version   # or: onot version
+```
+
+Warnings go to stderr, each on its own line, followed by a count by kind. A large SBOM
+can produce hundreds, so `--quiet` drops them and `--json` puts the same information on
+stdout for a caller that has to act on it:
+
+```json
+{
+  "product": "example-product",
+  "written": [{ "format": "html", "path": "output/OSS_Notice_example-product_20260101_120000.html" }],
+  "warnings": ["no license information for foo 1.2.3"]
+}
 ```
 
 Input format is auto-detected by extension and content (including SPDX JSON vs.

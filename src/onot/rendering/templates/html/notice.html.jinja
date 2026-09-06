@@ -3,18 +3,40 @@
 <head>
 <meta charset="utf-8">
 <title>{{ t("notice.title", product=ctx.product) }}</title>
+{# The theme stylesheet is package data, not user input, and <style> is a raw-text element:
+   an escaped quote stays literal there rather than being decoded, which invalidated the
+   declaration it appeared in. Autoescaping it broke the font stack in every notice. #}
 <style>
-{{ css }}
+{{ css | safe }}
 </style>
 </head>
-<body>
+<body id="top">
 <h1>{{ t("notice.title", product=ctx.product) }}</h1>
 {% if ctx.generated %}
 <p class="generated">{{ t("notice.generated", date=ctx.generated) }}</p>
 {% endif %}
 <p class="intro">{{ t("notice.intro") }}</p>
 
-<h2>{{ t("section.components") }}</h2>
+{# A real notice runs to hundreds of components and dozens of full licence texts, which is
+   more than anyone can navigate by scrolling. #}
+<nav class="toc" aria-label="{{ t('toc.title') }}">
+<h2>{{ t("toc.title") }}</h2>
+<ul>
+<li><a href="#components">{{ t("section.components") }}</a></li>
+<li><a href="#licenses">{{ t("section.licenses") }}</a>
+{% if doc.licenses %}
+<ul class="toc-licenses">
+{% for lic in doc.licenses %}
+<li><a href="#{{ lic.license_id | anchor }}">{{ lic.name }}</a></li>
+{% endfor %}
+</ul>
+{% endif %}
+</li>
+<li><a href="#offer">{{ t("offer.title") }}</a></li>
+</ul>
+</nav>
+
+<h2 id="components">{{ t("section.components") }}</h2>
 <table>
 <thead><tr><th>{{ t("table.name") }}</th><th>{{ t("table.version") }}</th><th>{{ t("table.license") }}</th><th>{{ t("table.copyright") }}</th></tr></thead>
 <tbody>
@@ -29,18 +51,23 @@
 </tbody>
 </table>
 
-<h2>{{ t("section.licenses") }}</h2>
+<h2 id="licenses">{{ t("section.licenses") }}</h2>
 {% for lic in doc.licenses %}
 <div class="license" id="{{ lic.license_id | anchor }}">
 <h3>{{ lic.name }} ({{ lic.license_id }}){% if lic.is_deprecated %} ({{ t("license.deprecated") }}){% endif %}</h3>
-<p class="used-by">{{ t("license.used_by") }}: {{ lic.used_by | map(attribute="display") | join(", ") }}</p>
+{# Each user links back to its table row, so a reader who arrived from the table can go back
+   to any of the other components under the same licence. #}
+<p class="used-by">{{ t("license.used_by") }}: {% for ref in lic.used_by %}<a href="#pkg-{{ ref.name | anchor }}">{{ ref.display }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</p>
 {% if lic.text %}
 <pre>{{ lic.text }}</pre>
+{% endif %}
+{% if doc.licenses | length > 10 %}
+<p class="back-to-top"><a href="#top">{{ t("back_to_top") }}</a></p>
 {% endif %}
 </div>
 {% endfor %}
 
-<h2>{{ t("offer.title") }}</h2>
+<h2 id="offer">{{ t("offer.title") }}</h2>
 <p>{{ t("offer.body") }}</p>
 {% if ctx.source_url %}
 <p>{{ t("offer.source_url", url=ctx.source_url) }}</p>
