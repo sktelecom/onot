@@ -133,7 +133,8 @@ release.
 
 So the patch does sit on a public branch for the few minutes between the merge and
 the publication, and GitHub's flow offers no way around it. Publish as soon as the
-merge lands and keep that window short.
+merge lands and keep that window short. The full procedure, with the commands, is in
+[docs/SECURITY_ADVISORY_PROCESS.md](docs/SECURITY_ADVISORY_PROCESS.md).
 
 Pushing to the fork's `ci/publish-dry-run` branch rehearses the same build without
 uploading anything, which is the way to check a change to the release path.
