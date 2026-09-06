@@ -37,8 +37,22 @@ describe("FileDropzone", () => {
     expect(onFile).toHaveBeenCalledWith(file);
   });
 
-  it("shows the selected file name", () => {
-    render(<FileDropzone lang="en" onFile={() => {}} fileName="chosen.xlsx" />);
+  it("shows the selected file with its size and a way to replace it", () => {
+    const chosen = new File(["0123456789"], "chosen.xlsx");
+    render(<FileDropzone lang="en" onFile={() => {}} file={chosen} />);
     expect(screen.getByText("chosen.xlsx")).toBeInTheDocument();
+    expect(screen.getByText("10 B")).toBeInTheDocument();
+    expect(screen.getByText("Replace")).toBeInTheDocument();
+  });
+
+  it("offers Remove only when the caller can clear the file", () => {
+    const onClear = vi.fn();
+    const chosen = new File(["x"], "chosen.xlsx");
+    const { rerender } = render(<FileDropzone lang="en" onFile={() => {}} file={chosen} />);
+    expect(screen.queryByTestId("clear-file")).not.toBeInTheDocument();
+
+    rerender(<FileDropzone lang="en" onFile={() => {}} file={chosen} onClear={onClear} />);
+    fireEvent.click(screen.getByTestId("clear-file"));
+    expect(onClear).toHaveBeenCalled();
   });
 });

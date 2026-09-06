@@ -20,11 +20,11 @@ export async function launchApp() {
   return { app, window };
 }
 
-// Extract the sidecar base URL (http://127.0.0.1:<port>) from the window URL query (?apiBase=).
+// The sidecar base URL (http://127.0.0.1:<port>). The window is created before the sidecar has
+// a port, so it is no longer in the URL; the preload bridge answers once the port exists.
 export async function getApiBase(window) {
-  const search = await window.evaluate(() => window.location.search);
-  const apiBase = new URLSearchParams(search).get("apiBase");
-  if (!apiBase) throw new Error(`apiBase not found in window URL search: ${search}`);
+  const apiBase = await window.evaluate(() => window.onot.getApiBase());
+  if (!apiBase) throw new Error("the bridge returned no apiBase");
   return apiBase;
 }
 
@@ -34,10 +34,20 @@ export async function uploadAndWaitParse(window, fixture, expectText = "example-
   await expect(window.getByText(expectText)).toBeVisible({ timeout: 30000 });
 }
 
-// Toggle the output-format checkbox (check it if unchecked). The Download button is rendered only for checked formats.
+// Output formats are labelled the way a reader spells them, not by their API identifier.
+const FORMAT_LABELS = { html: "HTML", text: "Text", markdown: "Markdown", pdf: "PDF" };
+
+// Check the given format, and uncheck every other one so a save produces exactly this file.
 export async function setFormat(window, fmt) {
-  const box = window.getByRole("checkbox", { name: fmt, exact: true });
-  if (!(await box.isChecked())) await box.check();
+  for (const [id, label] of Object.entries(FORMAT_LABELS)) {
+    const box = window.getByRole("checkbox", { name: label, exact: true });
+    if ((await box.isChecked()) !== (id === fmt)) await box.setChecked(id === fmt);
+  }
+}
+
+// The primary action. Its label names the format, so match on the test id instead.
+export function saveButton(window) {
+  return window.getByTestId("save-notice");
 }
 
 // Same logic as ping in sidecar.mjs: true on 200, false otherwise/on error/on timeout.

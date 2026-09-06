@@ -93,6 +93,18 @@ def test_render_download_disposition(client):
     assert ".html" in cd
 
 
+def test_render_disposition_is_readable_cross_origin(client):
+    """The desktop app runs on another origin, where an unexposed header is invisible to it."""
+    resp = client.post(
+        "/api/render",
+        files=upload(FIX / "example.spdx.json"),
+        data={"format": "html", "download": "true"},
+        headers={"Origin": "http://localhost:4173"},
+    )
+    exposed = resp.headers["access-control-expose-headers"]
+    assert "Content-Disposition" in exposed
+
+
 def test_render_lang_en(client):
     resp = client.post(
         "/api/render",

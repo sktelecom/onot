@@ -11,7 +11,25 @@ export function resolveApiBase(): string {
   return import.meta.env.VITE_API_BASE ?? "";
 }
 
-const API_BASE: string = resolveApiBase();
+// In the desktop app the window opens before the sidecar has a port, so the base URL is not
+// knowable at load time and the bridge supplies it later. Everything else (browser, dev server,
+// tests) resolves synchronously and this just wraps the value in a settled promise.
+let basePromise: Promise<string> | null = null;
+
+export function apiBase(): Promise<string> {
+  if (!basePromise) {
+    const immediate = resolveApiBase();
+    basePromise = immediate
+      ? Promise.resolve(immediate)
+      : (window.onot?.getApiBase?.() ?? Promise.resolve(""));
+  }
+  return basePromise;
+}
+
+/** Resolves once the local engine is reachable. The app shows a starting state until then. */
+export function waitForApi(): Promise<string> {
+  return apiBase();
+}
 
 export interface CompanyConfig {
   organization?: string;
@@ -61,7 +79,7 @@ function filenameFrom(contentDisposition: string | null, format: string): string
 }
 
 export async function fetchFormats(): Promise<Formats> {
-  const resp = await fetch(`${API_BASE}/api/formats`);
+  const resp = await fetch(`${await apiBase()}/api/formats`);
   if (!resp.ok) throw new Error(await detail(resp));
   return resp.json();
 }
@@ -69,7 +87,7 @@ export async function fetchFormats(): Promise<Formats> {
 export async function parseSbom(file: File): Promise<ParseResult> {
   const form = new FormData();
   form.append("file", file);
-  const resp = await fetch(`${API_BASE}/api/parse`, { method: "POST", body: form });
+  const resp = await fetch(`${await apiBase()}/api/parse`, { method: "POST", body: form });
   if (!resp.ok) throw new Error(await detail(resp));
   return resp.json();
 }
@@ -101,7 +119,7 @@ export interface RenderedNotice {
 }
 
 export async function renderNotice(file: File, opts: RenderOptions): Promise<RenderedNotice> {
-  const resp = await fetch(`${API_BASE}/api/render`, {
+  const resp = await fetch(`${await apiBase()}/api/render`, {
     method: "POST",
     body: renderForm(file, opts),
   });
