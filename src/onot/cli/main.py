@@ -8,12 +8,14 @@ generate (multiple formats, auto-detection, language, settings), formats, versio
 
 from __future__ import annotations
 
+import json
 from datetime import datetime
 from pathlib import Path
 
 import typer
 
 from onot import __version__
+from onot.cli.warnings import summarize
 from onot.core.config import load_settings
 from onot.core.naming import output_filename
 from onot.core.writer import OutputWriter
@@ -33,6 +35,8 @@ Examples:
   onot generate -i sbom.spdx.json
   onot generate -i sbom.cdx.json -f html -f pdf -o ./notices
   onot generate -i sbom.xlsx -f text --stdout > NOTICE.txt
+  onot init                                  # a commented onot.yaml to start from
+  onot generate -i sbom.spdx.json --json     # machine-readable result and warnings
 
 \b
 Exit codes:
@@ -136,6 +140,12 @@ def generate(
     stdout: bool = typer.Option(
         False, "--stdout", help="Write a single non-binary format to stdout instead of a file."
     ),
+    quiet: bool = typer.Option(
+        False, "--quiet", "-q", help="Suppress warnings. Errors still print."
+    ),
+    as_json: bool = typer.Option(
+        False, "--json", help="Report the written files and the warnings as JSON on stdout."
+    ),
 ) -> None:
     """Generate an OSS notice from an SBOM."""
     formats = list(dict.fromkeys(formats))  # de-duplicate (preserve order)
@@ -157,13 +167,24 @@ def generate(
         typer.echo(f"error: {err}", err=True)
         raise typer.Exit(_exit_code(err)) from err
 
-    for warning in (*ingest_result.warnings, *resolve_result.warnings):
-        typer.echo(f"warning: {warning}", err=True)
+    warnings = [*ingest_result.warnings, *resolve_result.warnings]
+    # Warnings go to stderr as before. A large SBOM can emit hundreds of them, so a count by
+    # kind follows, which is what tells you whether they matter. --json carries the same
+    # information on stdout instead, for a caller that has to act on it.
+    if not quiet and not as_json:
+        for warning in warnings:
+            typer.secho(f"warning: {warning}", err=True, fg="yellow")
+        summary = summarize(warnings)
+        if summary:
+            typer.secho(summary, err=True, fg="yellow")
 
     doc = resolve_result.document
     now = datetime.now()
 
     if stdout:
+        if as_json:
+            typer.echo("error: --stdout and --json both write to stdout", err=True)
+            raise typer.Exit(1)
         if len(formats) != 1:
             typer.echo("error: --stdout requires exactly one --format", err=True)
             raise typer.Exit(1)
@@ -175,12 +196,65 @@ def generate(
         return
 
     writer = OutputWriter()
+    written: list[dict[str, str]] = []
     for fmt in formats:
         renderer = get_renderer(fmt, settings=settings)
         content = render(doc, fmt, settings=settings, now=now)
         filename = output_filename(doc.name, renderer.file_extension, now)
         path = writer.write(content, output_dir / filename)
-        typer.echo(f"wrote {path}")
+        written.append({"format": fmt, "path": str(path)})
+        if not as_json:
+            typer.echo(f"wrote {path}")
+
+    if as_json:
+        typer.echo(
+            json.dumps(
+                {"product": doc.name, "written": written, "warnings": warnings},
+                indent=2,
+            )
+        )
+
+
+# Every key is optional and every value here is a placeholder: the point is that a reader can
+# see the whole schema at once rather than going to read config.py for the field names.
+_CONFIG_TEMPLATE = """\
+# onot configuration. Pass it with: onot generate -i sbom.spdx.json --config onot.yaml
+# Every field is optional. Anything left out falls back to the SBOM's own creation info.
+
+company:
+  # Shown as the publisher of the notice.
+  organization: ""
+  # Where a reader should write with open source compliance questions.
+  contact_email: ""
+  # Named in the copyright footer. Defaults to the organization.
+  copyright_holder: ""
+  # Four-digit year for that footer. Defaults to the SBOM creation year.
+  copyright_year:
+  # Where the corresponding source code can be obtained.
+  source_download_url: ""
+
+# Output language. en is the only one at present.
+default_lang: en
+# Notice theme, matching a directory under onot/rendering/themes.
+theme: default
+# Keep to the bundled license texts instead of fetching missing ones.
+offline: true
+"""
+
+
+@app.command()
+def init(
+    path: Path = typer.Option(
+        Path("onot.yaml"), "-o", "--output", help="Where to write the configuration file."
+    ),
+    force: bool = typer.Option(False, "--force", help="Overwrite the file if it already exists."),
+) -> None:
+    """Write a commented onot.yaml to start from."""
+    if path.exists() and not force:
+        typer.echo(f"error: {path} already exists. Pass --force to overwrite it.", err=True)
+        raise typer.Exit(1)
+    path.write_text(_CONFIG_TEMPLATE, encoding="utf-8")
+    typer.echo(f"wrote {path}")
 
 
 @app.command()
