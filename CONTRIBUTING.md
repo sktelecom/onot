@@ -115,24 +115,32 @@ carries write access to this repository. The fork holds only a thin caller
 workflow at `@main`, so there is no second copy of the build to drift.
 
 1. Bump the versions and add the `CHANGELOG.md` entry as above, and merge to `main`.
-2. Sync the fork's `main` with this repository.
-3. Run the caller from the fork, naming the tag:
+2. Run the caller from the fork, naming the tag:
 
    ```bash
    gh workflow run publish-upstream-release.yml --repo haksungjang/onot \
      --ref ci/publish-dry-run -f version=v1.2.0 -f publish=true
    ```
 
+Nothing on the fork needs syncing first. The build takes its source from this
+repository, not from the branch the caller sits on, and refuses to run when the tag
+disagrees with the version in the checked-out `pyproject.toml`.
+
+Both of those guards exist because v1.1.3 shipped without the security fix it was
+named for. A called workflow inherits the caller's `github` context, so the default
+checkout followed the caller's branch, which predated the fix; the version matched
+only because it came from the dispatch input. Nothing compared the two until after
+the artifacts were public.
+
 Do not push a `v*` tag here while this lasts. It only leaves a failed run. The tag is
 created by the release itself.
 
-**A security fix does not take this path until its advisory is published.** Step 2
-syncs a public fork, which would hand the patch to everyone watching it. Develop the
-fix in the temporary private fork GitHub creates alongside the draft advisory and
+**A security fix does not take this path until its advisory is published.** Releasing
+puts the patch on PyPI and in the release assets, where anyone can read it. Develop
+the fix in the temporary private fork GitHub creates alongside the draft advisory and
 merge that fork's PR when the fix is ready. That merge lands the patch on `main`
 here, and it is a precondition for publishing: GitHub will not publish an advisory
-while a PR is still open on the temporary fork. Publish, then sync the fork and
-release.
+while a PR is still open on the temporary fork. Publish, then release.
 
 So the patch does sit on a public branch for the few minutes between the merge and
 the publication, and GitHub's flow offers no way around it. Publish as soon as the
