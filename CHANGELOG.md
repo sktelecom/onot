@@ -8,6 +8,16 @@ All notable changes to this project are documented here. The format is based on
 
 ### Added
 
+- HTML notices open with a table of contents and link both ways between a component and
+  the licence it falls under, with a way back to the top in a long notice. A notice with
+  hundreds of components could previously only be read by scrolling.
+- `onot init` writes a commented `onot.yaml`. The configuration schema existed only as
+  fields in the source.
+- `onot generate --json` reports the written files and the warnings as JSON, and
+  `--quiet` suppresses the warnings.
+- `docs/DESIGN.md` records the design tokens, the contrast bar CI enforces, and the traps
+  in the notice stylesheet and the preview frame that have already cost a fix each.
+
 - The window now opens straight away and says the local engine is starting, instead of
   leaving nothing on screen for up to 40 seconds on macOS and two minutes on Windows
   while the sidecar came up.
@@ -70,6 +80,11 @@ All notable changes to this project are documented here. The format is based on
 - The desktop PDF matches the one the CLI produces: same page size, margins and numbered
   footer. It previously ignored the print stylesheet entirely.
 - Quitting while the engine is still starting no longer hangs the app on a retry dialog.
+- Notices render in the intended sans-serif face. The theme stylesheet was HTML-escaped
+  into the document, and since `<style>` never decodes an entity, the quoted font names
+  broke the whole declaration and every notice fell back to the default serif.
+- Warnings now end with a count by kind, so a run over a large SBOM says what the hundreds
+  of lines amount to.
 
 ## [1.1.3]
 

@@ -14,7 +14,7 @@ onot is a Python core with a React UI packaged as an installable desktop app.
 - `frontend/` — React + Vite UI (Vitest tests)
 - `electron/` — Electron desktop shell (Playwright E2E)
 - `tests/` — Python test suite
-- `docs/` — user guide and design/decision records (`docs/2.0/`)
+- `docs/` — user guide, design notes (`DESIGN.md`), and decision records (`docs/2.0/`)
 
 ## Development setup
 
@@ -79,6 +79,9 @@ review leans on right now.
   e.g. `feat(render): add Markdown table layout` or `fix(ingest): handle empty SPDX relationships`.
 - **Update docs** (`README.md`, `docs/USER_GUIDE.md`) when behavior changes, and add a
   `CHANGELOG.md` entry under `[Unreleased]`.
+- **Touching the UI or the notice theme?** Read [`docs/DESIGN.md`](docs/DESIGN.md) first. It
+  covers the design tokens, the contrast bar the CI enforces, and two traps in the notice
+  stylesheet that have already cost a release each.
 
 ## Reporting bugs and requesting features
 
