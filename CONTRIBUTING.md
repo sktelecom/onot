@@ -124,10 +124,16 @@ Do not push a `v*` tag here while this lasts. It only leaves a failed run. The t
 created by the release itself.
 
 **A security fix does not take this path until its advisory is published.** Step 2
-syncs a public fork, and that is the moment the patch becomes readable by anyone.
-Develop the fix in the temporary private fork GitHub creates alongside the draft
-advisory, merge it here when the advisory goes public, and sync and release only
-after that. The order is what keeps the fix private, not the repository it sits in.
+syncs a public fork, which would hand the patch to everyone watching it. Develop the
+fix in the temporary private fork GitHub creates alongside the draft advisory and
+merge that fork's PR when the fix is ready. That merge lands the patch on `main`
+here, and it is a precondition for publishing: GitHub will not publish an advisory
+while a PR is still open on the temporary fork. Publish, then sync the fork and
+release.
+
+So the patch does sit on a public branch for the few minutes between the merge and
+the publication, and GitHub's flow offers no way around it. Publish as soon as the
+merge lands and keep that window short.
 
 Pushing to the fork's `ci/publish-dry-run` branch rehearses the same build without
 uploading anything, which is the way to check a change to the release path.
