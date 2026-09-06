@@ -3,6 +3,8 @@ notice.intro: "This product includes open source software components listed belo
 notice.generated: "Generated: {date}"
 section.components: "Components"
 section.licenses: "Licenses"
+toc.title: "Contents"
+back_to_top: "Back to top"
 table.name: "Name"
 table.version: "Version"
 table.license: "License"
