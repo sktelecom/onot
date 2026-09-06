@@ -50,10 +50,12 @@ on:
         type: string
         default: ""
       source_ref:
-        description: "Commit or branch in the target repository to build (default: its default branch)"
+        description: "Commit or branch in the target repository to build"
         required: false
         type: string
-        default: ""
+        # Not empty: an empty ref falls through the || below to the caller's own ref,
+        # which names a branch that exists on the caller and not on the target.
+        default: "main"
     secrets:
       PUBLISH_TOKEN:
         description: "Token with contents:write on the target repository (default: the run GITHUB_TOKEN)"
