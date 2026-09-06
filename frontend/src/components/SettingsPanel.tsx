@@ -2,22 +2,27 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { CompanyConfig } from "../lib/api";
-import { t, type UiLang } from "../lib/i18n";
+import { t, type MessageKey, type UiLang } from "../lib/i18n";
 import { Card, CardTitle } from "./ui/Card";
 
 export interface NoticeSettings {
   formats: string[];
   lang: UiLang;
   company: CompanyConfig;
+  remember: boolean;
 }
 
-const ALL_FORMATS = ["html", "text", "markdown", "pdf"];
-
 const COMPANY_FIELDS = [
-  { key: "organization", label: "organization" },
-  { key: "contact_email", label: "contactEmail" },
-  { key: "source_download_url", label: "sourceUrl" },
-] as const;
+  { key: "organization", label: "organization", hint: "organizationHint", type: "text" },
+  { key: "contact_email", label: "contactEmail", hint: "contactEmailHint", type: "email" },
+  { key: "source_download_url", label: "sourceUrl", hint: "sourceUrlHint", type: "url" },
+  { key: "copyright_holder", label: "copyrightHolder", hint: "copyrightHolderHint", type: "text" },
+] as const satisfies readonly {
+  key: keyof CompanyConfig;
+  label: MessageKey;
+  hint: MessageKey;
+  type: string;
+}[];
 
 export function SettingsPanel({
   uiLang,
@@ -28,49 +33,35 @@ export function SettingsPanel({
   value: NoticeSettings;
   onChange: (settings: NoticeSettings) => void;
 }) {
-  const toggleFormat = (fmt: string) => {
-    const has = value.formats.includes(fmt);
-    onChange({
-      ...value,
-      formats: has ? value.formats.filter((f) => f !== fmt) : [...value.formats, fmt],
-    });
-  };
-
   return (
     <Card>
-      <CardTitle>{t(uiLang, "settings")}</CardTitle>
+      <CardTitle>{t(uiLang, "stepDetails")}</CardTitle>
+      <p className="-mt-2 mb-3 text-xs text-fg-muted">{t(uiLang, "settingsHint")}</p>
 
-      <fieldset className="mb-4">
-        <legend className="mb-1 text-xs font-medium text-fg-muted">{t(uiLang, "formats")}</legend>
-        <div className="flex flex-wrap gap-3">
-          {ALL_FORMATS.map((fmt) => (
-            <label key={fmt} className="flex items-center gap-1.5 text-sm">
-              <input
-                type="checkbox"
-                // accent-color keeps the native control on the app's brand instead of the OS
-                // default, which used to disagree with the app whenever the two themes differed.
-                className="accent-brand"
-                checked={value.formats.includes(fmt)}
-                onChange={() => toggleFormat(fmt)}
-              />
-              {fmt}
-            </label>
-          ))}
-        </div>
-      </fieldset>
-
-      {COMPANY_FIELDS.map(({ key, label }) => (
+      {COMPANY_FIELDS.map(({ key, label, hint, type }) => (
         <label key={key} className="mb-2 block text-sm">
           <span className="mb-1 block text-xs font-medium text-fg-muted">{t(uiLang, label)}</span>
           <input
+            type={type}
+            placeholder={t(uiLang, hint)}
             value={value.company[key] ?? ""}
             onChange={(e) =>
               onChange({ ...value, company: { ...value.company, [key]: e.target.value } })
             }
-            className="w-full rounded-control border border-border-strong bg-transparent px-2 py-1.5"
+            className="w-full rounded-control border border-border-strong bg-transparent px-2 py-1.5 placeholder:text-fg-muted"
           />
         </label>
       ))}
+
+      <label className="mt-3 flex items-center gap-1.5 text-xs text-fg-muted">
+        <input
+          type="checkbox"
+          className="accent-brand"
+          checked={value.remember}
+          onChange={(e) => onChange({ ...value, remember: e.target.checked })}
+        />
+        {t(uiLang, "rememberDetails")}
+      </label>
     </Card>
   );
 }
