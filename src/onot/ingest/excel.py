@@ -147,9 +147,7 @@ def _packages(wb: openpyxl.Workbook) -> list[Package]:
             continue
         scanned += 1
         if scanned > _MAX_PACKAGE_ROWS:
-            raise ParseError(
-                f"Package Info sheet has too many rows (> {_MAX_PACKAGE_ROWS})"
-            )
+            raise ParseError(f"Package Info sheet has too many rows (> {_MAX_PACKAGE_ROWS})")
         version = _clean(_cell(row, _PKG_COLS["version"]))
         key = (name, version)
         if key in seen:
