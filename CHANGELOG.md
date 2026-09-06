@@ -6,6 +6,17 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [1.1.3]
+
+### Security
+
+- The XLSX parser now rejects decompression-bomb workbooks before parsing, guarding
+  against a crafted upload that exhausts memory while the request still returns 200. It
+  checks the ZIP central directory (entry count, total uncompressed size, and overall
+  compression ratio) before openpyxl reads any payload, caps the number of Package Info
+  rows scanned, and deduplicates packages during the scan so repeated rows do not
+  accumulate. Reported and reproduced against 1.1.0 through 1.1.2 (GHSA-qcgh-vq3j-cm8w).
+
 ## [1.1.2] - 2026-07-02
 
 ### Fixed
