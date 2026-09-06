@@ -38,6 +38,8 @@ Please include:
   draft advisory, out of public view. Merging that fork is what lets the advisory be
   published, so the patch reaches the public default branch a few minutes ahead of
   the advisory itself. We publish as soon as the merge lands to keep that gap short.
+  The steps we follow are written down in
+  [docs/SECURITY_ADVISORY_PROCESS.md](docs/SECURITY_ADVISORY_PROCESS.md).
 - Once a fix is released, we will credit you in the advisory unless you prefer to
   remain anonymous.
 
