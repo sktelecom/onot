@@ -8,83 +8,78 @@ All notable changes to this project are documented here. The format is based on
 
 ### Added
 
-- HTML notices open with a table of contents and link both ways between a component and
-  the licence it falls under, with a way back to the top in a long notice. A notice with
-  hundreds of components could previously only be read by scrolling.
-- `onot init` writes a commented `onot.yaml`. The configuration schema existed only as
-  fields in the source.
-- `onot generate --json` reports the written files and the warnings as JSON, and
-  `--quiet` suppresses the warnings.
-- `docs/DESIGN.md` records the design tokens, the contrast bar CI enforces, and the traps
-  in the notice stylesheet and the preview frame that have already cost a fix each.
-
-- The window now opens straight away and says the local engine is starting, instead of
-  leaving nothing on screen for up to 40 seconds on macOS and two minutes on Windows
-  while the sidecar came up.
-- An application menu, replacing Electron's default. It carries Open SBOM and Save
-  Notice with their usual shortcuts, About, and links to the user guide, the release
-  notes and the issue tracker. Reload and the developer tools appear only in a
-  development build.
+- The desktop app follows the system theme and offers an explicit Light or Dark choice,
+  which it remembers. Light mode was written but unreachable before, because the app
+  pinned dark mode on the document element.
+- The window opens straight away and says the local engine is starting, instead of leaving
+  nothing on screen for up to 40 seconds on macOS and two minutes on Windows while the
+  sidecar came up.
+- An application menu, replacing Electron's default. It carries Open SBOM and Save Notice
+  with their usual shortcuts, About, and links to the user guide, the release notes, the
+  releases page and the issue tracker. Reload and the developer tools appear only in a
+  development build. Checking for updates opens a page: the app still contacts nothing on
+  its own.
 - The window remembers its size, position and maximised state, has a minimum size, and
   takes the name of the open file as its title.
 - Saving reports where the file went, with Show in folder.
-- The notice details can be remembered between runs, and the copyright holder, which the
-  API already accepted, is now on screen.
 - The parse summary breaks components down by license, and each warning is shown with a
   line saying what it means for the notice.
+- The notice details can be remembered between runs, and the copyright holder, which the
+  API already accepted, is now on screen.
 - The preview can be expanded to the height of the window.
+- HTML notices open with a table of contents and link both ways between a component and
+  the license it falls under, with a way back to the top in a long notice. A notice with
+  hundreds of components could previously only be read by scrolling.
+- `onot --version`, alongside the existing `onot version` subcommand.
+- `onot init` writes a commented `onot.yaml`. The configuration schema existed only as
+  fields in the source.
+- `onot generate --json` reports the written files and the warnings as JSON, and `--quiet`
+  suppresses the warnings.
+- Exit codes and worked examples in `onot --help` and the README, so the CLI can be wired
+  into a pipeline without reading the source.
+- `docs/DESIGN.md` records the design tokens, the contrast bar CI enforces, and the traps
+  in the notice stylesheet and the preview frame that have already cost a fix each.
 
 ### Changed
 
+- The brand colour moves from green to the indigo of the logo, so the logo, the app and the
+  generated notice share one colour. Colours, radii and spacing are now design tokens
+  rather than values repeated across components.
 - Saving a notice is the primary action. The primary button used to be Generate preview,
   which is a step on the way rather than the thing anyone came for.
 - Output formats read as HTML, Text, Markdown and PDF rather than as API identifiers.
 - The three parts of the screen are numbered, and Settings is now Notice details.
-- The user guide covers macOS as well as Windows, having been Windows-only.
-
-- The desktop app follows the system theme and offers an explicit Light or Dark
-  choice, which it remembers. Light mode was written but unreachable before, because
-  the app pinned dark mode on the document element.
-- `onot --version`, alongside the existing `onot version` subcommand.
-- Exit codes and worked examples in `onot --help` and the README, so the CLI can be
-  wired into a pipeline without reading the source.
-
-### Changed
-
-- The brand colour moves from green to the indigo of the logo, so the logo, the app
-  and the generated notice share one colour. Colours, radii and spacing are now
-  design tokens rather than values repeated across components.
-- All three text formats head a license with `Name (SPDX-Id)` and mark deprecated
-  ids. Previously the id appeared only in Markdown and the marker only in HTML.
+- All three text formats head a license with `Name (SPDX-Id)` and mark deprecated ids.
+  Previously the id appeared only in Markdown and the marker only in HTML.
 - Notices record the version of onot that produced them.
+- Warnings end with a count by kind, so a run over a large SBOM says what the hundreds of
+  lines amount to.
+- The user guide covers macOS as well as Windows, having been Windows-only.
 
 ### Fixed
 
 - The text notice now lists each component's copyright. It carried only the name and
-  license, while HTML and Markdown both carried a Copyright column, so a product
-  shipping the text notice alone omitted a notice that MIT and BSD style licenses
-  require to be retained.
-- Generated PDFs no longer waste pages. A keep-together rule was applied to license
-  blocks that run past a page, pushing each to a fresh page; on the SPDX sample this
-  cost two of seven pages.
-- The desktop app and the CLI now apply the same page rules when producing a PDF.
-- Accessibility: the primary button, the drop zone border, and the notice footer and
-  page numbers all meet WCAG AA contrast, where they measured 3.46:1, 1.9:1 and
-  3.54:1. The drop zone shows a focus indicator when reached by keyboard, having
-  shown none at all. Checkboxes follow the app's theme rather than the system's.
-  `prefers-reduced-motion` is honoured.
-- Saved notices carry the product name and a timestamp on every route. The desktop app
-  could not read the filename the API chose, because a cross-origin response hides
-  `Content-Disposition` unless the server exposes it, so every desktop save fell back to
-  a generic name.
-- The desktop PDF matches the one the CLI produces: same page size, margins and numbered
-  footer. It previously ignored the print stylesheet entirely.
-- Quitting while the engine is still starting no longer hangs the app on a retry dialog.
+  license, while HTML and Markdown both carried a Copyright column, so a product shipping
+  the text notice alone omitted a notice that MIT and BSD style licenses require to be
+  retained.
 - Notices render in the intended sans-serif face. The theme stylesheet was HTML-escaped
   into the document, and since `<style>` never decodes an entity, the quoted font names
   broke the whole declaration and every notice fell back to the default serif.
-- Warnings now end with a count by kind, so a run over a large SBOM says what the hundreds
-  of lines amount to.
+- Generated PDFs no longer waste pages. A keep-together rule was applied to license blocks
+  that run past a page, pushing each to a fresh page; on the SPDX sample this cost two of
+  seven pages.
+- The desktop PDF matches the one the CLI produces: same page size, margins and numbered
+  footer. It previously ignored the print stylesheet entirely.
+- Saved notices carry the product name and a timestamp on every route. The desktop app
+  could not read the filename the API chose, because a cross-origin response hides
+  `Content-Disposition` unless the server exposes it, so every desktop save fell back to a
+  generic name.
+- Accessibility: the primary button, the drop zone border, and the notice footer and page
+  numbers all meet WCAG AA contrast, where they measured 3.46:1, 1.9:1 and 3.54:1. The drop
+  zone shows a focus indicator when reached by keyboard, having shown none at all.
+  Checkboxes follow the app's theme rather than the system's. `prefers-reduced-motion` is
+  honoured.
+- Quitting while the engine is still starting no longer hangs the app on a retry dialog.
 
 ## [1.1.3]
 

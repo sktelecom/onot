@@ -53,12 +53,27 @@ test("File offers the two actions the app is for, with accelerators", () => {
 
 test("Help points at the documentation the app used to offer no route to", () => {
   const help = findSubmenu(buildMenuTemplate(options), "help");
-  assert.deepEqual(flatLabels(help).slice(0, 3), [
+  assert.deepEqual(flatLabels(help).slice(0, 4), [
     "User Guide",
     "Release Notes",
+    "Check for Updates...",
     "Report an Issue",
   ]);
   assert.match(LINKS.userGuide, /USER_GUIDE\.md$/);
+  assert.match(LINKS.changelog, /CHANGELOG\.md$/);
+});
+
+
+test("checking for updates opens a page rather than reaching out on its own", () => {
+  // The app advertises that it works offline and contacts nothing; a version check is not
+  // worth spending that, so the menu item hands the question to the browser.
+  const opened = [];
+  const template = buildMenuTemplate({ ...options, openExternal: (url) => opened.push(url) });
+  findSubmenu(template, "help")
+    .find((item) => item.label === "Check for Updates...")
+    .click();
+  assert.deepEqual(opened, [LINKS.latestRelease]);
+  assert.match(LINKS.latestRelease, /releases\/latest$/);
 });
 
 test("About sits in the app menu on macOS and under Help elsewhere", () => {

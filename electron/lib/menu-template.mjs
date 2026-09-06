@@ -8,7 +8,9 @@ const REPO = "https://github.com/sktelecom/onot";
 export const LINKS = {
   userGuide: `${REPO}/blob/main/docs/USER_GUIDE.md`,
   issues: `${REPO}/issues/new`,
-  releases: `${REPO}/releases/latest`,
+  // The newest release, for comparing against the version in About.
+  latestRelease: `${REPO}/releases/latest`,
+  changelog: `${REPO}/blob/main/CHANGELOG.md`,
 };
 
 /**
@@ -33,8 +35,12 @@ export function buildMenuTemplate({
     role: "help",
     submenu: [
       { label: "User Guide", click: () => openExternal(LINKS.userGuide) },
-      { label: "Release Notes", click: () => openExternal(LINKS.releases) },
+      { label: "Release Notes", click: () => openExternal(LINKS.changelog) },
       { type: "separator" },
+      // Opens the releases page in a browser rather than querying an API. onot's promise is
+      // that it works offline and reaches nothing on its own, and a version check is not
+      // worth spending that; About names the version installed, for comparison.
+      { label: "Check for Updates...", click: () => openExternal(LINKS.latestRelease) },
       { label: "Report an Issue", click: () => openExternal(LINKS.issues) },
       ...(isMac ? [] : [{ type: "separator" }, about]),
     ],
