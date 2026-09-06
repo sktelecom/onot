@@ -4,7 +4,7 @@
 /* Design tokens.
    Utilities (bg-surface, text-fg-muted, border-border, …) resolve through the --onot-*
    variables below, so a theme switch only rewrites those variables. Components never name a
-   raw palette colour, which is what keeps light and dark in step. */
+   raw palette colour, which is what keeps light and dark in step. See docs/DESIGN.md. */
 @theme {
   --color-brand: var(--onot-brand);
   --color-brand-hover: var(--onot-brand-hover);

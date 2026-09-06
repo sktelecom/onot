@@ -4,20 +4,23 @@
 <meta charset="utf-8">
 <title>OSS Notice for SPDX-Tools-v2.0</title>
 <style>
-/* Notice theme. The colours are named here and shared with the desktop app&#39;s tokens so a
-   notice looks the same in the in-app preview and in the saved file. */
+/* Notice theme. The colours are named here and shared with the desktop app's tokens so a
+   notice looks the same in the in-app preview and in the saved file. See docs/DESIGN.md. */
 :root {
+  /* Named once so the paged stylesheet can reuse it: an @page margin box does not inherit
+     from body, and without this the page numbers came out in the default serif. */
+  --notice-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   --notice-fg: #1a1a1a;
   --notice-fg-muted: #555555; /* 7.4:1 on white */
   --notice-fg-subtle: #6b7280; /* 4.8:1 on white, the lightest text used */
-  --notice-link: #4338ca; /* 7.9:1 on white, the app&#39;s accent */
+  --notice-link: #4338ca; /* 7.9:1 on white, the app's accent */
   --notice-rule: #dddddd;
   --notice-rule-soft: #eeeeee;
   --notice-fill: #f5f5f5;
   --notice-fill-code: #f7f7f7;
 }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, &#34;Segoe UI&#34;, Helvetica, Arial, sans-serif;
+  font-family: var(--notice-font);
   margin: 2rem auto;
   max-width: 60rem;
   padding: 0 1rem;
@@ -32,13 +35,19 @@ a { color: var(--notice-link); }
 table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
 th, td { border: 1px solid var(--notice-rule); padding: .45rem .6rem; text-align: left; font-size: .9rem; vertical-align: top; }
 th { background: var(--notice-fill); }
+.toc { margin: 1.5rem 0; }
+.toc h2 { font-size: 1.05rem; margin: 0 0 .4rem; border: 0; padding: 0; }
+.toc ul { margin: .2rem 0; padding-left: 1.2rem; }
+.toc-licenses { columns: 2; column-gap: 2rem; font-size: .9rem; }
+.toc-licenses li { break-inside: avoid; }
 .license { margin: 1.5rem 0; }
+.back-to-top { font-size: .8rem; margin: .4rem 0 0; }
 .license .used-by { color: var(--notice-fg-muted); font-size: .85rem; margin: .2rem 0 .5rem; }
-pre { background: var(--notice-fill-code); padding: .8rem; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; font-size: .8rem; border-radius: 4px; }
+pre { background: var(--notice-fill-code); padding: .8rem; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; font-size: .85rem; border-radius: 4px; }
 footer { margin-top: 2rem; color: var(--notice-fg-subtle); font-size: .85rem; }
 
 /* Paged output. Both routes to a PDF read these rules: WeasyPrint on the CLI side, and
-   Chromium&#39;s printToPDF in the desktop app, which is why they live with the notice rather than
+   Chromium's printToPDF in the desktop app, which is why they live with the notice rather than
    in the WeasyPrint-only stylesheet. */
 @media print {
   body {
@@ -54,6 +63,7 @@ footer { margin-top: 2rem; color: var(--notice-fg-subtle); font-size: .85rem; }
   h1, h2, h3 { page-break-after: avoid; break-after: avoid; }
   .license .used-by { page-break-after: avoid; break-after: avoid; }
   pre { orphans: 3; widows: 3; background: transparent; padding: 0; }
+  .back-to-top { display: none; }
   /* Repeat the column headers when the component table spans pages. */
   thead { display: table-header-group; }
   tr { page-break-inside: avoid; break-inside: avoid; }
@@ -62,11 +72,33 @@ footer { margin-top: 2rem; color: var(--notice-fg-subtle); font-size: .85rem; }
 
 </style>
 </head>
-<body>
+<body id="top">
 <h1>OSS Notice for SPDX-Tools-v2.0</h1>
 <p class="intro">This product includes open source software components listed below. The full license texts are reproduced in the Licenses section.</p>
 
-<h2>Components</h2>
+<nav class="toc" aria-label="Contents">
+<h2>Contents</h2>
+<ul>
+<li><a href="#components">Components</a></li>
+<li><a href="#licenses">Licenses</a>
+<ul class="toc-licenses">
+<li><a href="#Autoconf-exception-2.0">Autoconf exception 2.0</a></li>
+<li><a href="#BSD-3-Clause">BSD 3-Clause &#34;New&#34; or &#34;Revised&#34; License</a></li>
+<li><a href="#Bison-exception-2.2">Bison exception 2.2</a></li>
+<li><a href="#GPL-2.0-only">GNU General Public License v2.0 only</a></li>
+<li><a href="#GPL-2.0-or-later">GNU General Public License v2.0 or later</a></li>
+<li><a href="#LGPL-2.0-only">GNU Library General Public License v2 only</a></li>
+<li><a href="#LGPL-2.0-or-later">GNU Library General Public License v2 or later</a></li>
+<li><a href="#LGPL-2.1-only">GNU Lesser General Public License v2.1 only</a></li>
+<li><a href="#LicenseRef-3">CyberNeko License</a></li>
+<li><a href="#MIT">MIT License</a></li>
+</ul>
+</li>
+<li><a href="#offer">Offer of Source Code</a></li>
+</ul>
+</nav>
+
+<h2 id="components">Components</h2>
 <table>
 <thead><tr><th>Name</th><th>Version</th><th>License</th><th>Copyright</th></tr></thead>
 <tbody>
@@ -97,10 +129,10 @@ footer { margin-top: 2rem; color: var(--notice-fg-subtle); font-size: .85rem; }
 </tbody>
 </table>
 
-<h2>Licenses</h2>
+<h2 id="licenses">Licenses</h2>
 <div class="license" id="Autoconf-exception-2.0">
 <h3>Autoconf exception 2.0 (Autoconf-exception-2.0)</h3>
-<p class="used-by">Used by: Saxon 8.8</p>
+<p class="used-by">Used by: <a href="#pkg-Saxon">Saxon 8.8</a></p>
 <pre>As a special exception, the Free Software Foundation gives unlimited permission to copy, distribute and modify the configure scripts that are the output of Autoconf. You need not follow the terms of the GNU General Public License when using or distributing such scripts, even though portions of the text of Autoconf appear in them. The GNU General Public License (GPL) does govern all other use of the material that constitutes the Autoconf program.
 
 Certain portions of the Autoconf source text are designed to be copied (in certain cases, depending on the input) into the output of Autoconf. We call these the &#34;data&#34; portions. The rest of the Autoconf source text consists of comments plus executable code that decides which of the data portions to output in any given case. We call these comments and executable code the &#34;non-data&#34; portions. Autoconf never copies any of the non-data portions into its output.
@@ -110,7 +142,7 @@ This special exception to the GPL applies to versions of Autoconf released by th
 </div>
 <div class="license" id="BSD-3-Clause">
 <h3>BSD 3-Clause &#34;New&#34; or &#34;Revised&#34; License (BSD-3-Clause)</h3>
-<p class="used-by">Used by: Jena 3.12.0</p>
+<p class="used-by">Used by: <a href="#pkg-Jena">Jena 3.12.0</a></p>
 <pre>Copyright (c) &lt;year&gt; &lt;owner&gt;. 
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -126,7 +158,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &#34;AS IS&#
 </div>
 <div class="license" id="Bison-exception-2.2">
 <h3>Bison exception 2.2 (Bison-exception-2.2)</h3>
-<p class="used-by">Used by: glibc 2.11.1</p>
+<p class="used-by">Used by: <a href="#pkg-glibc">glibc 2.11.1</a></p>
 <pre>Bison Exception
 
 As a special exception, you may create a larger work that contains part or all of the Bison parser skeleton and distribute that work under terms of your choice, so long as that work isn&#39;t itself a parser generator using the skeleton or a modified version thereof as a parser skeleton. Alternatively, if you modify or redistribute the parser skeleton itself, you may (at your option) remove this special exception, which will cause the skeleton and the resulting Bison output files to be licensed under the GNU General Public License without this special exception.
@@ -136,7 +168,7 @@ This special exception was added by the Free Software Foundation in version 2.2 
 </div>
 <div class="license" id="GPL-2.0-only">
 <h3>GNU General Public License v2.0 only (GPL-2.0-only)</h3>
-<p class="used-by">Used by: Saxon 8.8</p>
+<p class="used-by">Used by: <a href="#pkg-Saxon">Saxon 8.8</a></p>
 <pre>GNU GENERAL PUBLIC LICENSE
 Version 2, June 1991
 
@@ -258,7 +290,7 @@ signature of Ty Coon, 1 April 1989 Ty Coon, President of Vice
 </div>
 <div class="license" id="GPL-2.0-or-later">
 <h3>GNU General Public License v2.0 or later (GPL-2.0-or-later)</h3>
-<p class="used-by">Used by: glibc 2.11.1</p>
+<p class="used-by">Used by: <a href="#pkg-glibc">glibc 2.11.1</a></p>
 <pre>GNU GENERAL PUBLIC LICENSE
 Version 2, June 1991
 
@@ -380,7 +412,7 @@ signature of Ty Coon, 1 April 1989 Ty Coon, President of Vice
 </div>
 <div class="license" id="LGPL-2.0-only">
 <h3>GNU Library General Public License v2 only (LGPL-2.0-only)</h3>
-<p class="used-by">Used by: glibc 2.11.1</p>
+<p class="used-by">Used by: <a href="#pkg-glibc">glibc 2.11.1</a></p>
 <pre>GNU LIBRARY GENERAL PUBLIC LICENSE
 
 Version 2, June 1991
@@ -560,7 +592,7 @@ That&#39;s all there is to it!
 </div>
 <div class="license" id="LGPL-2.0-or-later">
 <h3>GNU Library General Public License v2 or later (LGPL-2.0-or-later)</h3>
-<p class="used-by">Used by: Apache Commons Lang 1.1</p>
+<p class="used-by">Used by: <a href="#pkg-Apache_Commons_Lang">Apache Commons Lang 1.1</a></p>
 <pre>GNU LIBRARY GENERAL PUBLIC LICENSE
 
 Version 2, June 1991
@@ -740,7 +772,7 @@ That&#39;s all there is to it!
 </div>
 <div class="license" id="LGPL-2.1-only">
 <h3>GNU Lesser General Public License v2.1 only (LGPL-2.1-only)</h3>
-<p class="used-by">Used by: Jena 3.12.0</p>
+<p class="used-by">Used by: <a href="#pkg-Jena">Jena 3.12.0</a></p>
 <pre>GNU LESSER GENERAL PUBLIC LICENSE
 
 Version 2.1, February 1999
@@ -921,7 +953,7 @@ That&#39;s all there is to it!
 </div>
 <div class="license" id="LicenseRef-3">
 <h3>CyberNeko License (LicenseRef-3)</h3>
-<p class="used-by">Used by: Apache Commons Lang 1.1, glibc 2.11.1</p>
+<p class="used-by">Used by: <a href="#pkg-Apache_Commons_Lang">Apache Commons Lang 1.1</a>, <a href="#pkg-glibc">glibc 2.11.1</a></p>
 <pre>The CyberNeko Software License, Version 1.0
 
  
@@ -968,7 +1000,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</pre>
 </div>
 <div class="license" id="MIT">
 <h3>MIT License (MIT)</h3>
-<p class="used-by">Used by: Jena 3.12.0, Saxon 8.8</p>
+<p class="used-by">Used by: <a href="#pkg-Jena">Jena 3.12.0</a>, <a href="#pkg-Saxon">Saxon 8.8</a></p>
 <pre>MIT License
 
 Copyright (c) &lt;year&gt; &lt;copyright holders&gt;
@@ -990,7 +1022,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 </pre>
 </div>
 
-<h2>Offer of Source Code</h2>
+<h2 id="offer">Offer of Source Code</h2>
 <p>This product contains open source software. Where required by the applicable license, you may obtain the corresponding source code.</p>
 <footer>
 <p class="generator">Generated by onot 0.0.0-test.</p>
