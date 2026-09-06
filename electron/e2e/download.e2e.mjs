@@ -8,7 +8,7 @@ import { expect, test } from "@playwright/test";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { launchApp, setFormat, spdxFixture, uploadAndWaitParse } from "./_helpers.mjs";
+import { launchApp, saveButton, setFormat, spdxFixture, uploadAndWaitParse } from "./_helpers.mjs";
 
 const CASES = [
   { fmt: "html", contains: "OSS Notice for example-product" },
@@ -30,7 +30,7 @@ for (const { fmt, contains } of CASES) {
 
       await uploadAndWaitParse(window, spdxFixture);
       await setFormat(window, fmt);
-      await window.getByRole("button", { name: new RegExp(`download ${fmt}`, "i") }).click();
+      await saveButton(window).click();
 
       const saved = await waitForDownloadedFile(dir);
       const body = await fs.readFile(saved, "utf8");

@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // Scenario 2: the PDF is produced via the Electron printToPDF path, not the sidecar (weasyprint).
-// Download pdf → window.onot.exportPdf → ipcMain "export-pdf" → offscreen printToPDF → dialog → fs.writeFile.
+// Save notice (PDF) → window.onot.exportPdf → ipcMain "export-pdf" → offscreen printToPDF → dialog → fs.writeFile.
 // Stub dialog.showSaveDialog at runtime to inject the save path (no changes to production).
 // (Notice content is verified server-side by pytest — here we only go as far as producing a valid PDF.)
 import { expect, test } from "@playwright/test";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { launchApp, setFormat, spdxFixture, uploadAndWaitParse } from "./_helpers.mjs";
+import { launchApp, saveButton, setFormat, spdxFixture, uploadAndWaitParse } from "./_helpers.mjs";
 
 test("exports a valid PDF via Electron printToPDF", async () => {
   test.setTimeout(90000); // Local offscreen rendering can be slow, so allow extra time.
@@ -25,7 +25,7 @@ test("exports a valid PDF via Electron printToPDF", async () => {
       dialog.showSaveDialog = async () => ({ canceled: false, filePath: p });
     }, pdfPath);
 
-    await window.getByRole("button", { name: /download pdf/i }).click();
+    await saveButton(window).click();
 
     await waitForFile(pdfPath);
     const buf = await fs.readFile(pdfPath);

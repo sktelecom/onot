@@ -20,6 +20,10 @@ def create_app() -> FastAPI:
         allow_origin_regex=r"http://(localhost|127\.0\.0\.1)(:\d+)?",
         allow_methods=["*"],
         allow_headers=["*"],
+        # The desktop app runs on a different origin from the sidecar, and a cross-origin
+        # response hides every header but the safelisted few. Without this the frontend cannot
+        # read the filename the render endpoint chose and falls back to a generic one.
+        expose_headers=["Content-Disposition"],
     )
     app.include_router(router)
     return app
