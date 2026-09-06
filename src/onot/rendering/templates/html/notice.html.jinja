@@ -32,7 +32,7 @@
 <h2>{{ t("section.licenses") }}</h2>
 {% for lic in doc.licenses %}
 <div class="license" id="{{ lic.license_id | anchor }}">
-<h3>{{ lic.name }}{% if lic.is_deprecated %} (deprecated){% endif %}</h3>
+<h3>{{ lic.name }} ({{ lic.license_id }}){% if lic.is_deprecated %} ({{ t("license.deprecated") }}){% endif %}</h3>
 <p class="used-by">{{ t("license.used_by") }}: {{ lic.used_by | map(attribute="display") | join(", ") }}</p>
 {% if lic.text %}
 <pre>{{ lic.text }}</pre>
@@ -48,8 +48,11 @@
 {% if ctx.email %}
 <p class="contact">{{ t("closing", email=ctx.email) }}</p>
 {% endif %}
+<footer>
 {% if ctx.copyright_holder %}
-<footer>{{ t("footer.copyright", year=ctx.copyright_year or "", holder=ctx.copyright_holder) }}</footer>
+<p>{{ t("footer.copyright", year=ctx.copyright_year or "", holder=ctx.copyright_holder) }}</p>
 {% endif %}
+<p class="generator">{{ t("footer.generator", version=ctx.tool_version) }}</p>
+</footer>
 </body>
 </html>

@@ -1,9 +1,9 @@
+/* WeasyPrint-only additions. Everything that Chromium's printToPDF should also honour lives in
+   the @media print block of notice.css, so the two PDF routes cannot drift apart. */
 @page {
   size: A4;
   margin: 2cm;
-  @bottom-center { content: counter(page) " / " counter(pages); color: #888; font-size: 9pt; }
+  @bottom-center { content: counter(page) " / " counter(pages); color: #6b7280; font-size: 9pt; }
 }
-body { margin: 0; max-width: none; font-size: 10pt; }
-h2 { page-break-after: avoid; }
-.license { page-break-inside: avoid; }
-pre { white-space: pre-wrap; word-wrap: break-word; font-size: 8pt; }
+body { font-size: 10pt; }
+pre { font-size: 8pt; }

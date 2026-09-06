@@ -23,8 +23,8 @@ def _doc():
 
 
 @pytest.mark.parametrize(("fmt", "ext"), [("html", "html"), ("text", "txt"), ("markdown", "md")])
-def test_golden_matches(fmt, ext):
-    out = render(_doc(), fmt)
+def test_golden_matches(fmt, ext, normalize_version):
+    out = normalize_version(render(_doc(), fmt))
     assert out == (GOLDEN / f"slice_notice.{ext}").read_text(encoding="utf-8")
 
 

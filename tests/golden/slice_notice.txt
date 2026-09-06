@@ -5,14 +5,25 @@ This product includes open source software components listed below. The full lic
 
 Components
 ------------------------------------------------------------
-- Apache Commons Lang 1.1 : (LicenseRef-3 AND LGPL-2.0-or-later)
-- glibc 2.11.1 : LGPL-2.0-only AND LicenseRef-3 AND GPL-2.0-or-later WITH Bison-exception-2.2
-- Jena 3.12.0 : LGPL-2.1-only OR MIT OR BSD-3-Clause
-- Saxon 8.8 : GPL-2.0-only WITH Autoconf-exception-2.0 AND MIT
+Apache Commons Lang 1.1
+  License: (LicenseRef-3 AND LGPL-2.0-or-later)
+  Copyright: Copyright Example
+
+glibc 2.11.1
+  License: LGPL-2.0-only AND LicenseRef-3 AND GPL-2.0-or-later WITH Bison-exception-2.2
+  Copyright: Copyright 2008-2010 John Smith
+
+Jena 3.12.0
+  License: LGPL-2.1-only OR MIT OR BSD-3-Clause
+  Copyright: Copyright Example
+
+Saxon 8.8
+  License: GPL-2.0-only WITH Autoconf-exception-2.0 AND MIT
+  Copyright: Copyright Saxonica Ltd
 
 Licenses
 ------------------------------------------------------------
-[Autoconf-exception-2.0] Autoconf exception 2.0
+Autoconf exception 2.0 (Autoconf-exception-2.0)
 Used by: Saxon 8.8
 
 As a special exception, the Free Software Foundation gives unlimited permission to copy, distribute and modify the configure scripts that are the output of Autoconf. You need not follow the terms of the GNU General Public License when using or distributing such scripts, even though portions of the text of Autoconf appear in them. The GNU General Public License (GPL) does govern all other use of the material that constitutes the Autoconf program.
@@ -22,7 +33,7 @@ Certain portions of the Autoconf source text are designed to be copied (in certa
 This special exception to the GPL applies to versions of Autoconf released by the Free Software Foundation. When you make and distribute a modified version of Autoconf, you may extend this special exception to the GPL to apply to your modified version as well, *unless* your modified version has the potential to copy into its output some of the text that was the non-data portion of the version that you started with. (In other words, unless your change moves or copies text from the non-data portions to the data portions.) If your modification has such potential, you must delete any notice of this special exception to the GPL from your modified version.
 
 ------------------------------------------------------------
-[BSD-3-Clause] BSD 3-Clause "New" or "Revised" License
+BSD 3-Clause "New" or "Revised" License (BSD-3-Clause)
 Used by: Jena 3.12.0
 
 Copyright (c) <year> <owner>. 
@@ -38,7 +49,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ------------------------------------------------------------
-[Bison-exception-2.2] Bison exception 2.2
+Bison exception 2.2 (Bison-exception-2.2)
 Used by: glibc 2.11.1
 
 Bison Exception
@@ -48,7 +59,7 @@ As a special exception, you may create a larger work that contains part or all o
 This special exception was added by the Free Software Foundation in version 2.2 of Bison.
 
 ------------------------------------------------------------
-[GPL-2.0-only] GNU General Public License v2.0 only
+GNU General Public License v2.0 only (GPL-2.0-only)
 Used by: Saxon 8.8
 
 GNU GENERAL PUBLIC LICENSE
@@ -170,7 +181,7 @@ You should also get your employer (if you work as a programmer) or your school, 
 signature of Ty Coon, 1 April 1989 Ty Coon, President of Vice
 
 ------------------------------------------------------------
-[GPL-2.0-or-later] GNU General Public License v2.0 or later
+GNU General Public License v2.0 or later (GPL-2.0-or-later)
 Used by: glibc 2.11.1
 
 GNU GENERAL PUBLIC LICENSE
@@ -292,7 +303,7 @@ You should also get your employer (if you work as a programmer) or your school, 
 signature of Ty Coon, 1 April 1989 Ty Coon, President of Vice
 
 ------------------------------------------------------------
-[LGPL-2.0-only] GNU Library General Public License v2 only
+GNU Library General Public License v2 only (LGPL-2.0-only)
 Used by: glibc 2.11.1
 
 GNU LIBRARY GENERAL PUBLIC LICENSE
@@ -472,7 +483,7 @@ Ty Coon, President of Vice
 That's all there is to it!
 
 ------------------------------------------------------------
-[LGPL-2.0-or-later] GNU Library General Public License v2 or later
+GNU Library General Public License v2 or later (LGPL-2.0-or-later)
 Used by: Apache Commons Lang 1.1
 
 GNU LIBRARY GENERAL PUBLIC LICENSE
@@ -652,7 +663,7 @@ Ty Coon, President of Vice
 That's all there is to it!
 
 ------------------------------------------------------------
-[LGPL-2.1-only] GNU Lesser General Public License v2.1 only
+GNU Lesser General Public License v2.1 only (LGPL-2.1-only)
 Used by: Jena 3.12.0
 
 GNU LESSER GENERAL PUBLIC LICENSE
@@ -833,7 +844,7 @@ Ty Coon, President of Vice
 That's all there is to it!
 
 ------------------------------------------------------------
-[LicenseRef-3] CyberNeko License
+CyberNeko License (LicenseRef-3)
 Used by: Apache Commons Lang 1.1, glibc 2.11.1
 
 The CyberNeko Software License, Version 1.0
@@ -880,7 +891,7 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ------------------------------------------------------------
-[MIT] MIT License
+MIT License (MIT)
 Used by: Jena 3.12.0, Saxon 8.8
 
 MIT License
@@ -906,3 +917,4 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Offer of Source Code
 This product contains open source software. Where required by the applicable license, you may obtain the corresponding source code.
+Generated by onot 0.0.0-test.

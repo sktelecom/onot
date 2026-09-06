@@ -16,7 +16,7 @@ _{{ t("notice.generated", date=ctx.generated) }}_
 
 ## {{ t("section.licenses") }}
 {% for lic in doc.licenses %}
-### {{ lic.name }} (`{{ lic.license_id }}`)
+### {{ lic.name }} (`{{ lic.license_id }}`){% if lic.is_deprecated %} ({{ t("license.deprecated") }}){% endif %}
 
 {{ t("license.used_by") }}: {{ lic.used_by | map(attribute="display") | join(", ") }}
 {% if lic.text %}
@@ -40,3 +40,5 @@ _{{ t("notice.generated", date=ctx.generated) }}_
 
 {{ t("footer.copyright", year=ctx.copyright_year or "", holder=ctx.copyright_holder | md_inline) }}
 {% endif %}
+
+{{ t("footer.generator", version=ctx.tool_version) }}

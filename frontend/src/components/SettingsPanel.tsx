@@ -41,12 +41,15 @@ export function SettingsPanel({
       <CardTitle>{t(uiLang, "settings")}</CardTitle>
 
       <fieldset className="mb-4">
-        <legend className="mb-1 text-xs font-medium text-zinc-400">{t(uiLang, "formats")}</legend>
+        <legend className="mb-1 text-xs font-medium text-fg-muted">{t(uiLang, "formats")}</legend>
         <div className="flex flex-wrap gap-3">
           {ALL_FORMATS.map((fmt) => (
             <label key={fmt} className="flex items-center gap-1.5 text-sm">
               <input
                 type="checkbox"
+                // accent-color keeps the native control on the app's brand instead of the OS
+                // default, which used to disagree with the app whenever the two themes differed.
+                className="accent-brand"
                 checked={value.formats.includes(fmt)}
                 onChange={() => toggleFormat(fmt)}
               />
@@ -58,13 +61,13 @@ export function SettingsPanel({
 
       {COMPANY_FIELDS.map(({ key, label }) => (
         <label key={key} className="mb-2 block text-sm">
-          <span className="mb-1 block text-xs font-medium text-zinc-400">{t(uiLang, label)}</span>
+          <span className="mb-1 block text-xs font-medium text-fg-muted">{t(uiLang, label)}</span>
           <input
             value={value.company[key] ?? ""}
             onChange={(e) =>
               onChange({ ...value, company: { ...value.company, [key]: e.target.value } })
             }
-            className="w-full rounded-md border border-zinc-300 bg-transparent px-2 py-1.5 dark:border-zinc-700"
+            className="w-full rounded-control border border-border-strong bg-transparent px-2 py-1.5"
           />
         </label>
       ))}

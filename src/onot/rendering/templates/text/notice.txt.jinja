@@ -9,13 +9,18 @@
 {{ t("section.components") }}
 ------------------------------------------------------------
 {% for pkg in doc.packages %}
-- {{ pkg.display }} : {{ pkg.expression_display }}
-{% endfor %}
+{{ pkg.display }}
+  {{ t("table.license") }}: {{ pkg.expression_display }}
+{% if pkg.copyright_display %}
+  {{ t("table.copyright") }}: {{ pkg.copyright_display | oneline }}
+{% endif %}
 
+{% endfor %}
 {{ t("section.licenses") }}
 ------------------------------------------------------------
 {% for lic in doc.licenses %}
-[{{ lic.license_id }}] {{ lic.name }}
+{{ lic.name }} ({{ lic.license_id }}){% if lic.is_deprecated %} ({{ t("license.deprecated") }}){% endif %}
+
 {{ t("license.used_by") }}: {{ lic.used_by | map(attribute="display") | join(", ") }}
 {% if lic.text %}
 
@@ -33,5 +38,7 @@
 {{ t("closing", email=ctx.email | oneline) }}
 {% endif %}
 {% if ctx.copyright_holder %}
+
 {{ t("footer.copyright", year=ctx.copyright_year or "", holder=ctx.copyright_holder | oneline) }}
 {% endif %}
+{{ t("footer.generator", version=ctx.tool_version) }}

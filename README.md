@@ -45,18 +45,28 @@ pip install "onot[spdx,cyclonedx,excel,api]"   # from PyPI; add ,pdf for PDF out
 onot generate -i sbom.spdx.json -f html -f markdown --output-dir ./output
 
 #   -f/--format   html | text | markdown | pdf (repeatable)
-#   --lang        en
+#   --lang        en (the only language at present)
 #   --config      onot.yaml (company info, etc.)
 #   --online      fetch missing license texts remotely (offline by default)
 #   --stdout      write a single text format to stdout
 
-onot formats   # supported output formats
-onot version
+onot formats     # supported output formats
+onot --version   # or: onot version
 ```
 
 Input format is auto-detected by extension and content (including SPDX JSON vs.
 CycloneDX JSON). PDF output needs `pip install ".[pdf]"` (WeasyPrint); the desktop app
 uses a built-in converter.
+
+`onot generate --help` lists every option with examples. Exit codes, for scripting:
+
+| Code | Meaning |
+|--|--|
+| 0 | Success |
+| 1 | Other failure |
+| 2 | Input could not be read or parsed |
+| 3 | License resolution failed |
+| 4 | Invalid configuration |
 
 ## Local API (sidecar)
 

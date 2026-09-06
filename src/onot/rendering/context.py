@@ -8,6 +8,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 
+from onot import __version__
 from onot.core.config import Settings
 from onot.domain.models import NoticeDocument
 
@@ -23,6 +24,7 @@ class RenderContext:
     source_url: str
     generated: str
     license_ids: tuple[str, ...]
+    tool_version: str
 
 
 def _first(*values: str) -> str:
@@ -55,4 +57,6 @@ def build_context(
         source_url=_first(company.source_download_url, creation.source_download_url or ""),
         generated=now.strftime("%Y-%m-%d") if now is not None else "",
         license_ids=tuple(lic.license_id for lic in doc.licenses),
+        # Recorded in the notice footer so a reviewer can tell which build produced the file.
+        tool_version=__version__,
     )

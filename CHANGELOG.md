@@ -6,6 +6,40 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+### Added
+
+- The desktop app follows the system theme and offers an explicit Light or Dark
+  choice, which it remembers. Light mode was written but unreachable before, because
+  the app pinned dark mode on the document element.
+- `onot --version`, alongside the existing `onot version` subcommand.
+- Exit codes and worked examples in `onot --help` and the README, so the CLI can be
+  wired into a pipeline without reading the source.
+
+### Changed
+
+- The brand colour moves from green to the indigo of the logo, so the logo, the app
+  and the generated notice share one colour. Colours, radii and spacing are now
+  design tokens rather than values repeated across components.
+- All three text formats head a license with `Name (SPDX-Id)` and mark deprecated
+  ids. Previously the id appeared only in Markdown and the marker only in HTML.
+- Notices record the version of onot that produced them.
+
+### Fixed
+
+- The text notice now lists each component's copyright. It carried only the name and
+  license, while HTML and Markdown both carried a Copyright column, so a product
+  shipping the text notice alone omitted a notice that MIT and BSD style licenses
+  require to be retained.
+- Generated PDFs no longer waste pages. A keep-together rule was applied to license
+  blocks that run past a page, pushing each to a fresh page; on the SPDX sample this
+  cost two of seven pages.
+- The desktop app and the CLI now apply the same page rules when producing a PDF.
+- Accessibility: the primary button, the drop zone border, and the notice footer and
+  page numbers all meet WCAG AA contrast, where they measured 3.46:1, 1.9:1 and
+  3.54:1. The drop zone shows a focus indicator when reached by keyboard, having
+  shown none at all. Checkboxes follow the app's theme rather than the system's.
+  `prefers-reduced-motion` is honoured.
+
 ## [1.1.3]
 
 ### Security

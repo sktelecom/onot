@@ -4,6 +4,7 @@ import sampleSpdx from "./assets/example.spdx.json?raw";
 import { FileDropzone } from "./components/FileDropzone";
 import { Preview } from "./components/Preview";
 import { type NoticeSettings, SettingsPanel } from "./components/SettingsPanel";
+import { ThemeToggle } from "./components/ThemeToggle";
 import { Button } from "./components/ui/Button";
 import { Card, CardTitle } from "./components/ui/Card";
 import { parseSbom, type ParseResult, renderNotice } from "./lib/api";
@@ -116,7 +117,10 @@ export default function App() {
         <img src={logoMark} alt="onot" width={44} height={44} className="shrink-0" />
         <div>
           <h1 className="text-2xl font-bold">{t(uiLang, "title")}</h1>
-          <p className="text-sm text-zinc-400">{t(uiLang, "subtitle")}</p>
+          <p className="text-sm text-fg-muted">{t(uiLang, "subtitle")}</p>
+        </div>
+        <div className="ml-auto">
+          <ThemeToggle lang={uiLang} />
         </div>
       </header>
 
@@ -124,7 +128,7 @@ export default function App() {
         {error && (
           <div
             role="alert"
-            className="mb-4 rounded-md border border-red-300 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+            className="mb-4 rounded-control border border-danger-border bg-danger-bg p-3 text-sm text-danger-fg"
           >
             <div>
               {t(uiLang, "error")}: {error}
@@ -138,7 +142,7 @@ export default function App() {
         {info && (
           <div
             role="status"
-            className="mb-4 rounded-md border border-zinc-300 bg-zinc-50 p-3 text-sm text-zinc-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300"
+            className="mb-4 rounded-control border border-border bg-surface-raised p-3 text-sm text-fg"
           >
             {info}
           </div>
@@ -148,11 +152,11 @@ export default function App() {
         <div className="space-y-4">
           <FileDropzone lang={uiLang} onFile={handleFile} fileName={file?.name} />
           {status === "parsing" && (
-            <p className="text-sm text-zinc-400">{t(uiLang, "parsing")}</p>
+            <p className="text-sm text-fg-muted">{t(uiLang, "parsing")}</p>
           )}
           {!file && status === "idle" && (
             <div className="flex items-center gap-3">
-              <p className="text-sm text-zinc-400">{t(uiLang, "noFile")}</p>
+              <p className="text-sm text-fg-muted">{t(uiLang, "noFile")}</p>
               <Button
                 variant="secondary"
                 data-testid="try-sample"
@@ -165,11 +169,11 @@ export default function App() {
           {parsed && (
             <Card>
               <CardTitle>{parsed.document.name}</CardTitle>
-              <p className="text-sm text-zinc-400">
+              <p className="text-sm text-fg-muted">
                 {parsed.document.packages.length} {t(uiLang, "components")}
               </p>
               {parsed.warnings.length > 0 && (
-                <ul className="mt-2 list-disc pl-5 text-xs text-amber-600">
+                <ul className="mt-2 list-disc pl-5 text-xs text-warning-fg">
                   {parsed.warnings.map((w) => (
                     <li key={w}>{w}</li>
                   ))}
@@ -209,10 +213,10 @@ export default function App() {
                 ))}
               </div>
               {settings.formats.length === 0 && (
-                <p className="text-xs text-zinc-400">{t(uiLang, "noFormats")}</p>
+                <p className="text-xs text-fg-muted">{t(uiLang, "noFormats")}</p>
               )}
               {!parsed && (
-                <p className="text-xs text-zinc-400">{t(uiLang, "uploadFirst")}</p>
+                <p className="text-xs text-fg-muted">{t(uiLang, "uploadFirst")}</p>
               )}
             </div>
           </Card>
