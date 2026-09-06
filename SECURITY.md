@@ -34,6 +34,10 @@ Please include:
 
 - We aim to acknowledge a report within **5 business days**.
 - We will keep you informed as we investigate and prepare a fix.
+- The fix is developed in the temporary private fork GitHub creates alongside the
+  draft advisory, out of public view. Merging that fork is what lets the advisory be
+  published, so the patch reaches the public default branch a few minutes ahead of
+  the advisory itself. We publish as soon as the merge lands to keep that gap short.
 - Once a fix is released, we will credit you in the advisory unless you prefer to
   remain anonymous.
 
