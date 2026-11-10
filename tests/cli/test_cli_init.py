@@ -34,6 +34,15 @@ def test_the_template_covers_every_company_field(tmp_path):
     assert set(data["company"]) == set(CompanyConfig.model_fields)
 
 
+def test_init_reports_unwritable_location_cleanly(tmp_path):
+    target = tmp_path / "no-such-dir" / "onot.yaml"
+    result = runner.invoke(app, ["init", "--output", str(target)])
+    assert result.exit_code == 1
+    assert not isinstance(result.exception, OSError)
+    assert "error" in result.output.lower()
+    assert not target.exists()
+
+
 def test_init_refuses_to_overwrite_without_force(tmp_path):
     target = tmp_path / "onot.yaml"
     target.write_text("company:\n  organization: Mine\n", encoding="utf-8")
