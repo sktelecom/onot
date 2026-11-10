@@ -253,7 +253,11 @@ def init(
     if path.exists() and not force:
         typer.echo(f"error: {path} already exists. Pass --force to overwrite it.", err=True)
         raise typer.Exit(1)
-    path.write_text(_CONFIG_TEMPLATE, encoding="utf-8")
+    try:
+        path.write_text(_CONFIG_TEMPLATE, encoding="utf-8")
+    except OSError as exc:
+        typer.echo(f"error: cannot write configuration file '{path}': {exc}", err=True)
+        raise typer.Exit(1) from exc
     typer.echo(f"wrote {path}")
 
 
